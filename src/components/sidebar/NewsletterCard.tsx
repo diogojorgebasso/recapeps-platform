@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/card"
 import { SidebarInput } from "@/components/ui/sidebar"
 
-export function SidebarOptInForm() {
+export function NewsletterCard() {
     return (
-        <Card className="shadow-none">
+        <Card className="shadow-none mt-4">
             <form>
                 <CardHeader className="p-4 pb-0">
                     <CardTitle className="text-sm">Subscribe to our newsletter</CardTitle>
@@ -29,5 +29,5 @@ export function SidebarOptInForm() {
                 </CardContent>
             </form>
         </Card>
-    )
+    );
 }

@@ -1,6 +1,7 @@
 import { Route, Routes as ReactRouterRoutes } from "react-router-dom";
 
 import Layout from "./layouts/MainLayout";
+import AuthenticatedClientLayout from "./layouts/AuthenticatedClientLayout";
 import { lazy } from "react";
 import Login from "./pages/Login";
 import PrivateRoute from "./context/private-route";
@@ -20,8 +21,10 @@ export function Routes() {
             </Route>
             <Route path="/login" element={<Login />} />
             {/* Rotas protegidas */}
-            <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
-            <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
+            <Route element={<AuthenticatedClientLayout />}>
+                <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
+                <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
+            </Route>
             <Route path="*" element={<NotFoundPage />} />
         </ReactRouterRoutes >
     );
