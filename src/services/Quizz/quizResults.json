@@ -1,0 +1,24 @@
+[
+    {
+        "id": "1",
+        "userId": "testUser",
+        "quizId": "quiz1",
+        "score": 8,
+        "totalQuestions": 10,
+        "correctAnswers": 8,
+        "completedAt": {
+            "seconds": 1697353524
+        }
+    },
+    {
+        "id": "2",
+        "userId": "testUser",
+        "quizId": "quiz2",
+        "score": 7,
+        "totalQuestions": 10,
+        "correctAnswers": 7,
+        "completedAt": {
+            "seconds": 1697253524
+        }
+    }
+]
