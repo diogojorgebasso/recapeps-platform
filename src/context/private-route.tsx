@@ -1,19 +1,20 @@
 import { Navigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
-export default function PrivateRoute({ children }: { children: JSX.Element }) {
+type PrivateRouteProps = {
+    element: JSX.Element;
+};
 
+export default function PrivateRoute({ element }: PrivateRouteProps) {
     const { isAuthenticated, isLoadingAuth } = useAuth();
 
     if (isLoadingAuth) {
-        return (<Loader2 className="animate-spin" />)
-
+        return <div>Chargement...</div>; // Show loading state
     }
 
     if (!isAuthenticated) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/login" replace />;
     }
 
-    return children;
+    return element;
 };
