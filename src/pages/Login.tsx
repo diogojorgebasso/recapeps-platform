@@ -47,65 +47,67 @@ export default function Login() {
     };
 
     return (
-        <Card className="mx-auto max-w-sm">
-            <CardHeader>
-                <CardTitle className="text-2xl">Connexion</CardTitle>
-                <CardDescription>
-                    Entrez votre email ci-dessous pour accéder à votre compte
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="grid gap-4">
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="exemple@email.com"
-                            required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div className="grid gap-2">
-                        <div className="flex items-center">
-                            <Label htmlFor="password">Mot de passe</Label>
-                            <Link to="/forgot" className="ml-auto inline-block text-sm underline">
-                                Mot de passe oublié ?
-                            </Link>
+        <div className="flex h-screen w-full items-center">
+            <Card className="mx-auto max-w-sm">
+                <CardHeader>
+                    <CardTitle className="text-2xl">Connexion</CardTitle>
+                    <CardDescription>
+                        Entrez votre email ci-dessous pour accéder à votre compte
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="exemple@email.com"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        <div className="grid gap-2">
+                            <div className="flex items-center">
+                                <Label htmlFor="password">Mot de passe</Label>
+                                <Link to="/forgot" className="ml-auto inline-block text-sm underline">
+                                    Mot de passe oublié ?
+                                </Link>
+                            </div>
+                            <Input
+                                id="password"
+                                type="password"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                        <Button
+                            disabled={isLoadingAuth}
+                            type="button"
+                            className="w-full"
+                            onClick={handleLogin}
+                        >
+                            Connexion
+                        </Button>
+                        <Button
+                            disabled={isLoadingAuth}
+                            variant="outline"
+                            className="w-full"
+                            onClick={handleGoogleLogin}
+                        >
+                            Connexion avec Google
+                        </Button>
                     </div>
-                    <Button
-                        disabled={isLoadingAuth}
-                        type="button"
-                        className="w-full"
-                        onClick={handleLogin}
-                    >
-                        Connexion
-                    </Button>
-                    <Button
-                        disabled={isLoadingAuth}
-                        variant="outline"
-                        className="w-full"
-                        onClick={handleGoogleLogin}
-                    >
-                        Connexion avec Google
-                    </Button>
-                </div>
-                <div className="mt-4 text-center text-sm">
-                    Vous n&apos;avez pas encore de compte ?{" "}
-                    <Link to="/sign-up" className="underline">
-                        Inscrivez-vous
-                    </Link>
-                </div>
-            </CardContent>
-        </Card>
+                    <div className="mt-4 text-center text-sm">
+                        Vous n&apos;avez pas encore de compte ?{" "}
+                        <Link to="/sign-up" className="underline">
+                            Inscrivez-vous
+                        </Link>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     );
 }
