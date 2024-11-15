@@ -1,8 +1,16 @@
-import { getIdToken, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
+import {
+    getIdToken,
+    onAuthStateChanged,
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword,
+    signOut,
+    signInWithPopup,
+    GoogleAuthProvider,
+    User,
+} from "firebase/auth";
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { ReactNode } from "react";
 import { auth } from "@/utils/firebase";
-
 
 type AuthContextProps = {
     isAuthenticated: boolean;
@@ -10,63 +18,76 @@ type AuthContextProps = {
     email: string;
     currentUser: User | null;
     loginWithEmailAndPassword: (email: string, password: string) => Promise<void>;
-    signOut: () => Promise<void>,
-    getUserToken: () => Promise<string>,
-    handleRecoverPassword: (email: string) => Promise<void>,
+    loginWithGoogle: () => Promise<void>;
+    signOut: () => Promise<void>;
+    getUserToken: () => Promise<string>;
+    handleRecoverPassword: (email: string) => Promise<void>;
 };
 
 export const AuthContext = createContext({} as AuthContextProps);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [uid, setUid] = useState('');
-    const [email, setEmail] = useState('');
+    const [uid, setUid] = useState("");
+    const [email, setEmail] = useState("");
     const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (next => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             setIsLoadingAuth(false);
-            if (next && next.uid) {
-                setUid(next.uid);
-                setEmail(next.email ?? '');
+            if (user && user.uid) {
+                setUid(user.uid);
+                setEmail(user.email ?? "");
             } else {
-                setUid('');
+                setUid("");
             }
-        }));
+        });
         return unsubscribe;
     }, []);
 
+    // Login com email e senha
     const loginWithEmailAndPassword = useCallback(async (email: string, password: string) => {
         await signInWithEmailAndPassword(auth, email, password);
     }, []);
 
+    // Login com Google
+    const loginWithGoogle = useCallback(async () => {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+    }, []);
+
+    // Logout
     const signOutFn = useCallback(() => signOut(auth), []);
 
-    const handleRecoverPassword = async (email: string) => {
+    // Recuperar senha
+    const handleRecoverPassword = useCallback(async (email: string) => {
         await sendPasswordResetEmail(auth, email);
+    }, []);
 
-    };
-
+    // Obter token do usuário autenticado
     const getUserToken = useCallback(async () => {
         if (auth.currentUser) {
             return await getIdToken(auth.currentUser);
         }
-        return '';
+        return "";
     }, []);
 
+    // Verificar se o usuário está autenticado
     const isAuthenticated = useMemo(() => Boolean(uid), [uid]);
 
     return (
-        <AuthContext.Provider value={{
-            isAuthenticated,
-            isLoadingAuth,
-            email,
-            currentUser: auth.currentUser,
-            loginWithEmailAndPassword,
-            signOut: signOutFn,
-            getUserToken,
-            handleRecoverPassword,
-
-        }}>
+        <AuthContext.Provider
+            value={{
+                isAuthenticated,
+                isLoadingAuth,
+                email,
+                currentUser: auth.currentUser,
+                loginWithEmailAndPassword,
+                loginWithGoogle,
+                signOut: signOutFn,
+                getUserToken,
+                handleRecoverPassword,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

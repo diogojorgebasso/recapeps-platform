@@ -1,21 +1,20 @@
 
-import { getStorage, ref } from 'firebase/storage';
+import { getStorage } from 'firebase/storage';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getAnalytics } from 'firebase/analytics';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAV4wwPmsqU2Aj7M8rwzt_MCxA4vY7gd6s",
-    authDomain: "recapeps.firebaseapp.com",
-    projectId: "recapeps",
-    storageBucket: "recapeps.firebasestorage.app",
-    messagingSenderId: "177310005845",
-    appId: "1:177310005845:web:859576c075ad9309fc32dc",
-    measurementId: "G-70E4DQ0DP1"
+    apiKey: "AIzaSyCXb49PmpcCpPCyXaUxCMJnpJpTs0t0nLI",
+    authDomain: "recapeps-platform.firebaseapp.com",
+    projectId: "recapeps-platform",
+    storageBucket: "recapeps-platform.firebasestorage.app",
+    messagingSenderId: "148248325935",
+    appId: "1:148248325935:web:27093543499cf6a55b3bda",
+    measurementId: "G-RK00EBVHZN"
 };
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
-export const storageRef = ref(storage);

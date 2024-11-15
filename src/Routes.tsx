@@ -1,34 +1,28 @@
-import { Route, Routes as ReactRouterRoutes, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Route, Routes as ReactRouterRoutes } from "react-router-dom";
 
-import { Toaster, toaster } from "@/components/ui/toaster"
 import Login from "./pages/Login";
-
-import { useAuth } from "@/hooks/useAuth";
+import PrivateRoute from "./context/private-route";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dahsboard";
 
 export function Routes() {
-    const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
-
-
     return (
-        <>
-            <Toaster />
-            <ReactRouterRoutes>
-                <Route path="/" element={<Login />} />
-                {isAuthenticated && (
-                    <Route path="/" element={<Layout />}>
-                        <Route path="/expedient" element={<Expedient />} />
-                        <Route path="/expedient/:id" element={<ExportReport />} />
-                        <Route path="/consult-codes" element={<ConsultCodes />} />
-                        <Route path="/consult-codes/:id" element={<ConsultCodes />} />
-                        <Route path="/library" element={<Library />} />
-                        <Route path="/settings" element={<Configuration />} />
-                        <Route path="*" element={<ErrorPage />} />
-                    </Route>
-                )}
-            </ReactRouterRoutes>
-        </>
-
+        <ReactRouterRoutes>
+            {/* Rota pública */}
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            {/* Rotas protegidas */}
+            <Route
+                path="/*"
+                element={
+                    <PrivateRoute>
+                        <ReactRouterRoutes>
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/profile" element={<Dashboard />} />
+                        </ReactRouterRoutes>
+                    </PrivateRoute>
+                }
+            />
+        </ReactRouterRoutes >
     );
 }
