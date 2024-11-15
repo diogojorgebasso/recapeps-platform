@@ -2,7 +2,6 @@
 import { getStorage } from 'firebase/storage';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getAnalytics } from 'firebase/analytics';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCXb49PmpcCpPCyXaUxCMJnpJpTs0t0nLI",
@@ -14,7 +13,7 @@ const firebaseConfig = {
     measurementId: "G-RK00EBVHZN"
 };
 
-const app = initializeApp(firebaseConfig);
-getAnalytics(app);
+export const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
+auth.settings.appVerificationDisabledForTesting = true;
