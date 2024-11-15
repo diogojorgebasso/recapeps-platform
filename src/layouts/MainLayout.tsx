@@ -1,15 +1,16 @@
 import CookieBanner from "@/components/cookie/cookie-banner";
 import { Outlet } from "react-router-dom";
-import Menu from "./components/Menu";
+import Menu from "../components/Menu/Menu";
+import Footer from "@/components/Footer";
 
-
-export default function Layout() {
+export default function MainLayout() {
     return (
         <>
             <Menu />
-            <main><Outlet /> </main>
-            {/* Banner de cookies */}
+            <Outlet />
+            <Footer />
             <CookieBanner />
+
         </>
     );
 };

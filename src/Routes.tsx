@@ -1,6 +1,6 @@
 import { Route, Routes as ReactRouterRoutes } from "react-router-dom";
 
-import Layout from "./Layout";
+import Layout from "./layouts/MainLayout";
 import { lazy } from "react";
 import Login from "./pages/Login";
 import PrivateRoute from "./context/private-route";

@@ -16,6 +16,7 @@ type AuthContextProps = {
     isAuthenticated: boolean;
     isLoadingAuth: boolean;
     email: string;
+    photoURL: string;
     currentUser: User | null;
     loginWithEmailAndPassword: (email: string, password: string) => Promise<void>;
     loginWithGoogle: () => Promise<void>;
@@ -30,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [uid, setUid] = useState("");
     const [email, setEmail] = useState("");
     const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+    const [photoURL, setPhotoURL] = useState("");
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -37,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (user && user.uid) {
                 setUid(user.uid);
                 setEmail(user.email ?? "");
+                setPhotoURL(user.photoURL ?? "");
             } else {
                 setUid("");
             }
@@ -80,6 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 isAuthenticated,
                 isLoadingAuth,
                 email,
+                photoURL,
                 currentUser: auth.currentUser,
                 loginWithEmailAndPassword,
                 loginWithGoogle,
