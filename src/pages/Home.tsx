@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 export default function Home() {
     return (
@@ -14,7 +15,9 @@ export default function Home() {
                     <p className="text-lg text-muted-foreground mb-6">
                         Sua plataforma para organização de conhecimento e estudos.
                     </p>
-                    <Button className="px-6 py-3">Começar Agora</Button>
+                    <Link to="/login">
+                        <Button className="px-6 py-3">Começar Agora</Button>
+                    </Link>
                 </section>
 
                 {/* Seção de Funcionalidades */}
