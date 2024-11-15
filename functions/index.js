@@ -1,19 +1,39 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-const {onRequest} = require("firebase-functions/v2/https");
+const functions = require("firebase-functions/v1");
+const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+admin.initializeApp(); // Initialize the Firebase Admin SDK
+const db = admin.firestore();
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+exports.saveUserToFirestore = functions.auth.user().onCreate(async (user) => {
+    try {
+        // User properties from the Authentication object
+        const { uid, email, displayName, photoURL } = user;
+
+        const userData = {
+            uid: uid,
+            email: email || null,
+            name: displayName || null,
+            photoURL: photoURL || null,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            role: "user", // Default role, customize as needed
+        };
+
+        // Save user to Firestore in the "users" collection
+        return db.collection("users").doc(uid).set(userData).then(() => {
+            logger.info(`User ${uid} saved to Firestore successfully.`);
+        });
+    } catch (error) {
+        logger.error("Error saving user to Firestore:", error);
+    }
+});
+
+exports.deleteUserDocument = functions.auth
+    .user()
+    .onDelete(async (user) => {
+        return db.collection("users").doc(user.uid).delete().then(() => {
+            logger.info(`User ${user.uid} deleted from Firestore successfully.`);
+        }).catch((error) => {
+            logger.error("Error deleting user from Firestore:", error);
+        });
+    });
