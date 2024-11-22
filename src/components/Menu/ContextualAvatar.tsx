@@ -39,10 +39,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 
-
 export default function ContextualAvatar() {
 
-    const { photoURL, currentUser, email } = useAuth();
+    const { photoURL, currentUser, email, signOut } = useAuth();
 
     if (currentUser) {
 
@@ -127,7 +126,7 @@ export default function ContextualAvatar() {
                         <span>API</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={signOut}>
                         <LogOut />
                         <span>Log out</span>
                         <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

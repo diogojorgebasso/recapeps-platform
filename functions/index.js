@@ -10,23 +10,33 @@ exports.saveUserToFirestore = functions.auth.user().onCreate(async (user) => {
         // User properties from the Authentication object
         const { uid, email, displayName, photoURL } = user;
 
+        // Determine the role based on the email domain
+        const role = email && email.endsWith("@recapeps.com.br") ? "admin" : "user";
+
         const userData = {
             uid: uid,
             email: email || null,
             name: displayName || null,
             photoURL: photoURL || null,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            role: "user", // Default role, customize as needed
+            role: role, // Assign role dynamically
         };
 
         // Save user to Firestore in the "users" collection
-        return db.collection("users").doc(uid).set(userData).then(() => {
-            logger.info(`User ${uid} saved to Firestore successfully.`);
-        });
+        await db.collection("users").doc(uid).set(userData);
+
+        // Optionally, set custom claims for the user if they are an admin
+        if (role === "admin") {
+            await admin.auth().setCustomUserClaims(uid, { role });
+            logger.info(`Custom claims set for admin user ${uid}`);
+        }
+
+        logger.info(`User ${uid} saved to Firestore successfully.`);
     } catch (error) {
         logger.error("Error saving user to Firestore:", error);
     }
 });
+
 
 exports.deleteUserDocument = functions.auth
     .user()

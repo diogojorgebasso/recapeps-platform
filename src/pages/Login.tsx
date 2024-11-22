@@ -15,34 +15,52 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
+    const [isSubmitting, setIsSubmitting] = useState(false); // State for button loading
 
     const { loginWithGoogle, isLoadingAuth, isAuthenticated, loginWithEmailAndPassword } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Rediriger vers /dashboard si l'utilisateur est déjà authentifié
         if (!isLoadingAuth && isAuthenticated) {
             navigate("/dashboard");
         }
     }, [isAuthenticated, isLoadingAuth, navigate]);
 
     const handleGoogleLogin = async () => {
+        setErrorMessage(null); // Clear error messages
+        setIsSubmitting(true); // Set loading state
         try {
             await loginWithGoogle();
             console.log("Connexion avec Google réussie !");
             navigate("/dashboard");
-        } catch (error) {
-            console.error("Erreur lors de la connexion avec Google :", error);
+        } catch (error: any) {
+            setErrorMessage("Erreur lors de la connexion avec Google. Veuillez réessayer.");
+            console.error("Erreur lors de la connexion avec Google :", error.message);
+        } finally {
+            setIsSubmitting(false); // Reset loading state
         }
     };
 
     const handleLogin = async () => {
+        setErrorMessage(null); // Clear error messages
+        setIsSubmitting(true); // Set loading state
         try {
             await loginWithEmailAndPassword(email, password);
             console.log("Connexion réussie !");
             navigate("/dashboard");
-        } catch (error) {
-            console.error("Erreur lors de la connexion :", error);
+        } catch (error: any) {
+            // Handle specific errors based on Firebase Auth error codes
+            if (error.code === "auth/user-not-found") {
+                setErrorMessage("Utilisateur introuvable. Vérifiez votre email.");
+            } else if (error.code === "auth/wrong-password") {
+                setErrorMessage("Mot de passe incorrect. Veuillez réessayer.");
+            } else {
+                setErrorMessage("Erreur lors de la connexion. Veuillez réessayer.");
+            }
+            console.error("Erreur lors de la connexion :", error.message);
+        } finally {
+            setIsSubmitting(false); // Reset loading state
         }
     };
 
@@ -52,7 +70,7 @@ export default function Login() {
                 <CardHeader>
                     <CardTitle className="text-2xl">Connexion</CardTitle>
                     <CardDescription>
-                        Entrez votre email ci-dessous pour accéder à votre compte
+                        Entrez votre email ci-dessous pour accéder à votre compte.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -83,26 +101,29 @@ export default function Login() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+                        {errorMessage && (
+                            <p className="text-red-500 text-sm">{errorMessage}</p> // Display error messages
+                        )}
                         <Button
-                            disabled={isLoadingAuth}
+                            disabled={isSubmitting || isLoadingAuth} // Disable button when submitting
                             type="button"
                             className="w-full"
                             onClick={handleLogin}
                         >
-                            Connexion
+                            {isSubmitting ? "Connexion..." : "Connexion"}
                         </Button>
                         <Button
-                            disabled={isLoadingAuth}
+                            disabled={isSubmitting || isLoadingAuth}
                             variant="outline"
                             className="w-full"
                             onClick={handleGoogleLogin}
                         >
-                            Connexion avec Google
+                            {isSubmitting ? "Connexion..." : "Connexion avec Google"}
                         </Button>
                     </div>
                     <div className="mt-4 text-center text-sm">
                         Vous n&apos;avez pas encore de compte ?{" "}
-                        <Link to="/sign-up" className="underline">
+                        <Link to="/register" className="underline">
                             Inscrivez-vous
                         </Link>
                     </div>
