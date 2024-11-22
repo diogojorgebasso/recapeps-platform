@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function ChatPage() {
+export default function ChatBot() {
   const [messages, setMessages] = useState([
     { role: "user", content: "Olá, o que você pode fazer?" },
     { role: "assistant", content: "Posso ajudar com suas dúvidas e oferecer informações!" },
@@ -33,7 +33,6 @@ export default function ChatPage() {
         <h1 className="text-xl font-bold">ChatGPT Clone</h1>
       </header>
 
-      {/* Chat Messages */}
       <main className="flex-1 overflow-y-auto p-4 bg-muted">
         <div className="max-w-3xl mx-auto space-y-4">
           {messages.map((message, index) => (

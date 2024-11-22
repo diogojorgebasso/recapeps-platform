@@ -1,16 +1,33 @@
-import { getFirestore, collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import { db } from "@/utils/firebase";
+import { collection, getDocs } from 'firebase/firestore';
 
-export async function getQuizzesFromFirebase(userId: string) {
-    const db = getFirestore();
-    const quizResultsRef = collection(db, "quizResults");
-
-    const q = query(
-        quizResultsRef,
-        where("userId", "==", userId),
-        orderBy("completedAt", "desc"),
-        limit(5) // Pega os últimos 5 quizzes realizados
-    );
-
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+export interface Subject {
+  id: string;
+  name: string;
 }
+
+export interface Quiz {
+  id: string;
+  question: string;
+  options: string[];
+  answer: string;
+}
+
+// Função para buscar todas as matérias
+export const fetchSubjects = async (): Promise<Subject[]> => {
+  const querySnapshot = await getDocs(collection(db, 'subjects'));
+  return querySnapshot.docs.map(doc => ({
+    ...(doc.data() as Subject),
+    id: doc.id,
+  }));
+};
+
+// Função para buscar quizzes de uma matéria específica
+export const fetchQuizzesBySubject = async (subjectId: string): Promise<Quiz[]> => {
+  const quizzesRef = collection(db, `subjects/${subjectId}/quizzes`);
+  const querySnapshot = await getDocs(quizzesRef);
+  return querySnapshot.docs.map(doc => ({
+    ...(doc.data() as Quiz),
+    id: doc.id,
+  }));
+};
