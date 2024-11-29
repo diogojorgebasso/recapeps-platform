@@ -21,6 +21,9 @@ export default function AuthenticatedClientLayout() {
   function capitalizeFirstLetter(word: string) {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
+import { Outlet } from "react-router-dom"
+
+export default function AuthenticatedClientLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />

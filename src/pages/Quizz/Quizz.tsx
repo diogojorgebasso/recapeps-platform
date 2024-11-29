@@ -63,6 +63,7 @@ export default function Quizz() {
       } catch (error) {
         console.error("Erro ao salvar o quiz:", error);
       }
+
     }
   };
 
@@ -125,7 +126,6 @@ export default function Quizz() {
     <div className="h-screen flex flex-col items-center justify-center">
       {/* Barra de Progresso */}
       <Progress value={progress} />
-
       <Card className="max-w-md w-full">
         <CardHeader>
           <CardTitle className="text-xl text-center">{currentQuiz.question}</CardTitle>
@@ -142,7 +142,6 @@ export default function Quizz() {
           </ul>
         </CardContent>
       </Card>
-
       <div className="mt-4 flex justify-between items-center w-full max-w-md">
         <Button
           disabled={currentQuestion === 0}

@@ -35,7 +35,6 @@ export function Routes() {
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<SignUp />} />
-
             <Route element={<AuthenticatedClientLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/add-quizz" element={<AddQuestionForm />} />
