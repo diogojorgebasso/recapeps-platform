@@ -13,7 +13,7 @@ import {
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { ReactNode } from "react";
 import { auth } from "@/utils/firebase";
-import { getDoc, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase"; // Firestore instance
 
 type AuthContextProps = {
@@ -38,16 +38,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [uid, setUid] = useState("");
     const [email, setEmail] = useState("");
     const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-    const [photoURL, setPhotoURL] = useState("");
-    const [role, setRole] = useState("user"); // Default role
+    const [photoURL, setPhotoURL] = useState("/avatar.svg");
+    const [role, setRole] = useState("");
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setIsLoadingAuth(false);
             if (user && user.uid) {
                 setUid(user.uid);
-                setEmail(user.email ?? "");
-                setPhotoURL(user.photoURL ?? "");
+                setEmail(user.email!);
+                if (user.photoURL) {
+                    setPhotoURL(user.photoURL);
+                }
                 await fetchUserRole(user); // Fetch the user's role
             } else {
                 setUid("");

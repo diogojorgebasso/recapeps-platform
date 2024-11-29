@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router";
 
+
 export default function Home() {
     const features = [
         {
@@ -22,8 +23,8 @@ export default function Home() {
     ];
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <main className="flex-1 container mx-auto px-4 py-8">
+        <main className="min-h-screen flex flex-col">
+            <div className="flex-1 container mx-auto px-4 py-8">
                 <section className="text-center my-12">
                     <h2 className="text-4xl font-bold mb-4">Bem-vindo ao Recapeps-Web</h2>
                     <p className="text-lg text-muted-foreground mb-6">
@@ -49,7 +50,7 @@ export default function Home() {
                         ))}
                     </div>
                 </section>
-            </main>
-        </div>
+            </div>
+        </main>
     );
 }

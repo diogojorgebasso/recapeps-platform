@@ -47,21 +47,21 @@ const data = {
       ],
     },
     {
-      title: "Quizz",
-      url: "/quizz",
+      title: "Quiz",
+      url: "/quiz",
       icon: Bot,
       items: [
         {
           title: "Math",
-          url: "/math",
+          url: "/quiz/math",
         },
         {
           title: "Physics",
-          url: "/physics",
+          url: "/quiz/physics",
         },
         {
           title: "Quantum",
-          url: "/sport",
+          url: "/quiz/sport",
         },
       ],
     },
@@ -97,24 +97,6 @@ const data = {
       title: "Notes",
       url: "/notes",
       icon: NotebookTabs,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
     },
   ],
   navSecondary: [
