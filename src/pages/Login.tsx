@@ -11,12 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { Link, useNavigate } from "react-router";
+import { AuthError } from "firebase/auth";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
-    const [isSubmitting, setIsSubmitting] = useState(false); // State for button loading
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { loginWithGoogle, isLoadingAuth, isAuthenticated, loginWithEmailAndPassword } = useAuth();
     const navigate = useNavigate();
@@ -34,9 +35,9 @@ export default function Login() {
             await loginWithGoogle();
             console.log("Connexion avec Google réussie !");
             navigate("/dashboard");
-        } catch (error: any) {
+        } catch (error) {
             setErrorMessage("Erreur lors de la connexion avec Google. Veuillez réessayer.");
-            console.error("Erreur lors de la connexion avec Google :", error.message);
+            console.error("Erreur lors de la connexion avec Google :", (error as Error).message);
         } finally {
             setIsSubmitting(false); // Reset loading state
         }
@@ -49,16 +50,17 @@ export default function Login() {
             await loginWithEmailAndPassword(email, password);
             console.log("Connexion réussie !");
             navigate("/dashboard");
-        } catch (error: any) {
+        } catch (error) {
             // Handle specific errors based on Firebase Auth error codes
-            if (error.code === "auth/user-not-found") {
+            const authError = error as AuthError;
+            if (authError.code === "auth/user-not-found") {
                 setErrorMessage("Utilisateur introuvable. Vérifiez votre email.");
-            } else if (error.code === "auth/wrong-password") {
+            } else if (authError.code === "auth/wrong-password") {
                 setErrorMessage("Mot de passe incorrect. Veuillez réessayer.");
             } else {
                 setErrorMessage("Erreur lors de la connexion. Veuillez réessayer.");
             }
-            console.error("Erreur lors de la connexion :", error.message);
+            console.error("Erreur lors de la connexion :", authError.message);
         } finally {
             setIsSubmitting(false); // Reset loading state
         }
