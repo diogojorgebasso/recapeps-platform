@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 
 import Dashboard from "./pages/Dashboard";
 import NotFoundPage from "./pages/404";
-import Quizz from "./pages/Quizz/Quizz";
+import Quiz from "./pages/Quiz";
 import SignUp from "./pages/SignUp";
 import ChatBot from "./pages/ChatBot";
 import AddQuestionForm from "./components/dashboard/add-quizz";
@@ -30,7 +30,7 @@ export function Routes() {
     const userRoutes = (
         <>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/quiz" element={<Quizz />} />
+            <Route path="/quiz" element={<Quiz />} />
             <Route path="/chatbot" element={<ChatBot />} />
             <Route path="/notes" element={<Notes />} />
             <Route path="/profile" element={<Profile />} />
