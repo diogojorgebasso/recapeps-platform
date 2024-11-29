@@ -67,6 +67,7 @@ export default function Quizz() {
   }
 
   if (isFinished) {
+
     return (
       <div className="flex h-screen items-center justify-center">
         <Card className="max-w-md w-full">
@@ -99,7 +100,7 @@ export default function Quizz() {
   return (
     <div className="h-screen flex flex-col items-center justify-center">
       {/* Barra de Progresso */}
-      <Progress value={progress}/>
+      <Progress value={progress} />
 
       <Card className="max-w-md w-full">
         <CardHeader>

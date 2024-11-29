@@ -66,7 +66,7 @@ const data = {
     },
     {
       title: "FlashCards",
-      url: "#",
+      url: "flashcards",
       icon: BookOpen,
       items: [
         {

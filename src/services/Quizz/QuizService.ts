@@ -1,6 +1,6 @@
 import { getQuizzesFromMock } from "./MockDataSource";
 
-import { getQuizzesFromFirebase } from "@/api/getQuizzesFromFirebase";
+import { fetchQuizzesBySubject } from "@/api/getQuizzesFromFirebase";
 
 export async function getQuizzes() {
   if (import.meta.env.MODE === "production") {

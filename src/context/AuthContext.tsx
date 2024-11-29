@@ -16,6 +16,7 @@ import { getDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase"; // Firestore instance
 
 type AuthContextProps = {
+    uid: string;
     isAuthenticated: boolean;
     isLoadingAuth: boolean;
     email: string;
@@ -132,6 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return (
         <AuthContext.Provider
             value={{
+                uid,
                 isAuthenticated,
                 isLoadingAuth,
                 email,
