@@ -16,34 +16,40 @@ import Notes from "./pages/Notes";
 
 import Profile from "@/pages/Profile"
 import { useAuth } from "./hooks/useAuth";
+import ContactForm from "./pages/Contact";
+import About from "./pages/About";
 
 export function Routes() {
 
-    const { role, uid } = useAuth();
+    const { role } = useAuth();
 
     const adminRoutes = (
         <>
-            <Route path="/add-quizz" element={<AddQuestionForm />} />
+            <Route path="add-quizz" element={<AddQuestionForm />} />
         </>
     );
-    console.log(uid);
     const userRoutes = (
         <>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/quiz" element={<Quiz />} />
-            <Route path="/chatbot" element={<ChatBot />} />
-            <Route path="/notes" element={<Notes />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="quiz" element={<Quiz />} />
+            <Route path="chatbot" element={<ChatBot />} />
+            <Route path="notes" element={<Notes />} />
+            <Route path="profile" element={<Profile />} />
         </>
     );
 
     return (
         <ReactRouterRoutes>
             <Route element={<Layout />} >
-                <Route path="/" element={<Home />} />
+                <Route index element={<Home />} />
+                <Route path="contact" element={<ContactForm />} />
+                <Route path="about" element={<About />} />
+                <Route path="outlis">
+                    {/* <Route path="dashboard" element={<DashboardMock />} /> */}
+                </Route>
             </Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<SignUp />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<SignUp />} />
             <Route element={<AuthenticatedClientLayout />}>
                 {role === "admin" && adminRoutes}
                 {role === "user" && userRoutes}
