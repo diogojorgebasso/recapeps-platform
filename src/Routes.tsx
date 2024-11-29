@@ -1,8 +1,7 @@
-import { Route, Routes as ReactRouterRoutes, redirect } from "react-router";
+import { Route, Routes as ReactRouterRoutes } from "react-router";
 
 import Layout from "./layouts/MainLayout";
 import AuthenticatedClientLayout from "./layouts/AuthenticatedClientLayout";
-import { lazy, useEffect } from "react";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 
@@ -12,23 +11,15 @@ import Quizz from "./pages/Quizz/Quizz";
 import SignUp from "./pages/SignUp";
 import ChatBot from "./pages/ChatBot";
 import AddQuestionForm from "./components/dashboard/add-quizz";
-import { useAuth } from "./hooks/useAuth";
-import { useNavigate } from "react-router";
+
 import Notes from "./pages/Notes";
 
-const Profile = lazy(() => import("@/pages/Profile"));
+import Profile from "@/pages/Profile"
 
 export function Routes() {
-    const { isAuthenticated, role } = useAuth();
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            redirect("/login");
-        }
-    }, [isAuthenticated, navigate]);
 
-    console.log("Role: ", role);
+
     return (
         <ReactRouterRoutes>
             <Route element={<Layout />} >
