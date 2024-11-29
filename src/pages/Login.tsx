@@ -90,18 +90,18 @@ export default function Login() {
                         </div>
                         <div className="grid gap-2">
                             <div className="flex items-center">
-                                <Label htmlFor="password">Mot de passe</Label>
                                 <Link to="/forgot" className="ml-auto inline-block text-sm underline">
                                     Mot de passe oublié ?
                                 </Link>
                             </div>
-                            <Label htmlFor="password">Mot de passe</Label>
-                            <Input
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+                            <Label htmlFor="password">Mot de passe
+                                <Input
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </Label>
                         </div>
                         {errorMessage && (
                             <p className="text-red-500 text-sm">{errorMessage}</p> // Display error messages
