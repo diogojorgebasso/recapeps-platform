@@ -1,17 +1,6 @@
 import { db } from "@/utils/firebase";
 import { collection, getDocs } from 'firebase/firestore';
-
-export interface Subject {
-  id: string;
-  name: string;
-}
-
-export interface Quiz {
-  id: string;
-  question: string;
-  options: string[];
-  answer: string;
-}
+import { Quiz, Subject } from "@/types/Quizz";
 
 // Função para buscar todas as matérias
 export const fetchSubjects = async (): Promise<Subject[]> => {

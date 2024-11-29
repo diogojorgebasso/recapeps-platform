@@ -9,7 +9,7 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { manuNav } from "./MenuNav";
 import { ModeToggle } from "../ui/mode-toggle";
 import ContextualAvatar from "./ContextualAvatar";

@@ -8,6 +8,7 @@ import {
   Inbox,
   LifeBuoy,
   Map,
+  NotebookTabs,
   PieChart,
   Send,
 } from "lucide-react"
@@ -66,7 +67,7 @@ const data = {
     },
     {
       title: "FlashCards",
-      url: "#",
+      url: "flashcards",
       icon: BookOpen,
       items: [
         {
@@ -91,6 +92,11 @@ const data = {
       title: "ChatBot",
       url: "/chatbot",
       icon: Bot,
+    },
+    {
+      title: "Notes",
+      url: "/notes",
+      icon: NotebookTabs,
       items: [
         {
           title: "General",

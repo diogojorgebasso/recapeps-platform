@@ -2,7 +2,6 @@ import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -13,6 +12,15 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { Outlet, useLocation } from "react-router"
+
+export default function AuthenticatedClientLayout() {
+  const { pathname } = useLocation()
+  const pathnames = pathname.split("/").filter((x) => x);
+
+  function capitalizeFirstLetter(word: string) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }
 import { Outlet } from "react-router-dom"
 
 export default function AuthenticatedClientLayout() {
@@ -26,15 +34,16 @@ export default function AuthenticatedClientLayout() {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
-                </BreadcrumbItem>
+                {pathnames.map((name, index) => {
+                  return (
+                    <>
+                      <BreadcrumbSeparator key={index} className="hidden md:block" />
+                      <BreadcrumbItem key={index}>
+                        <BreadcrumbPage>{capitalizeFirstLetter(name)}</BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </>
+                  )
+                })}
               </BreadcrumbList>
             </Breadcrumb>
           </div>

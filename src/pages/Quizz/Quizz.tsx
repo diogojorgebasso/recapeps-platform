@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { fetchSubjects, fetchQuizzesBySubject, Subject, Quiz } from "@/api/getQuizzesFromFirebase";
+import { fetchSubjects, fetchQuizzesBySubject } from "@/api/getQuizzesFromFirebase";
+import { Subject, Quiz } from "@/types/Quizz";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { saveUserQuiz } from "@/api/saveQuizToFirebase";
 
 export default function Quizz() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -38,6 +40,30 @@ export default function Quizz() {
       setCurrentQuestion(nextQuestion);
     } else {
       setIsFinished(true);
+      handleSaveQuiz(); // Salva o quiz quando finalizar
+    }
+  };
+
+  const handleSaveQuiz = async () => {
+    if (currentSubject && isFinished) {
+      const result = {
+        subjectId: currentSubject,
+        score: score,
+        totalQuestions: quizzes.length,
+        date: new Date().toISOString(),
+        questions: quizzes.map((quiz, index) => ({
+          questionId: quiz.id,
+          selectedAnswer: index < currentQuestion ? quizzes[index].answer : null,
+        })),
+      };
+
+      try {
+        await saveUserQuiz(currentSubject, result);
+        console.log("Quiz salvo com sucesso!");
+      } catch (error) {
+        console.error("Erro ao salvar o quiz:", error);
+      }
+
     }
   };
 
@@ -99,8 +125,7 @@ export default function Quizz() {
   return (
     <div className="h-screen flex flex-col items-center justify-center">
       {/* Barra de Progresso */}
-      <Progress value={progress}/>
-
+      <Progress value={progress} />
       <Card className="max-w-md w-full">
         <CardHeader>
           <CardTitle className="text-xl text-center">{currentQuiz.question}</CardTitle>
@@ -117,8 +142,6 @@ export default function Quizz() {
           </ul>
         </CardContent>
       </Card>
-
-      {/* Paginação */}
       <div className="mt-4 flex justify-between items-center w-full max-w-md">
         <Button
           disabled={currentQuestion === 0}

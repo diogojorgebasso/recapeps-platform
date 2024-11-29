@@ -1,7 +1,6 @@
 import { logEvent, getAnalytics } from "firebase/analytics"
 
-import QuizScoresChart from "@/components/dashboard/historicData";
-import StyledQuizScoresChart from "@/components/dashboard/historicData2";
+import QuizScoresChart from "@/components/dashboard/UserQuizScoresChart";
 
 export default function Dashboard() {
     const analytics = getAnalytics();
@@ -9,9 +8,7 @@ export default function Dashboard() {
 
     return (
         <div>
-        <h1>Dashboard</h1>
-        <QuizScoresChart />
-        <StyledQuizScoresChart />
+            <QuizScoresChart />
         </div>
     )
 }
