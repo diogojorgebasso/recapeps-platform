@@ -78,17 +78,16 @@ export default function Menu() {
                         </NavigationMenuLink>
                     </NavigationMenuItem>
                 </NavigationMenuList>
-
-                {/* Right Actions */}
-                <div className="flex items-center space-x-4">
-                    <ModeToggle />
-                    <ContextualAvatar />
-                </div>
             </NavigationMenu>
 
+            <div className="ml-auto flex items-center space-x-4">
+                <ContextualAvatar />
+                <ModeToggle />
+            </div>
         </div>
     );
 }
+
 
 type ListItemProps = {
     to: string;
