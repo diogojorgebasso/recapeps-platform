@@ -12,16 +12,16 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Outlet, useLocation, useNavigate, redirect } from "react-router"
+import { Outlet, useLocation, useNavigate } from "react-router"
 import { useAuth } from "@/hooks/useAuth"
 import { useEffect } from "react"
 export default function AuthenticatedClientLayout() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-
+  console.log(isAuthenticated);
   useEffect(() => {
     if (!isAuthenticated) {
-      redirect("/login");
+      navigate("/login");
     }
   }, [isAuthenticated, navigate]);
   const { pathname } = useLocation()
