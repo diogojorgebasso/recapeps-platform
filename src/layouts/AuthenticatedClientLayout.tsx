@@ -17,13 +17,14 @@ import { useAuth } from "@/hooks/useAuth"
 import { useEffect } from "react"
 export default function AuthenticatedClientLayout() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-  console.log(isAuthenticated);
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isLoadingAuth && !isAuthenticated) {
       navigate("/login");
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, isLoadingAuth]);
+
   const { pathname } = useLocation()
   const pathnames = pathname.split("/").filter((x) => x);
 
@@ -44,7 +45,7 @@ export default function AuthenticatedClientLayout() {
                 {pathnames.map((name, index) => {
                   return (
                     <>
-                      <BreadcrumbSeparator key={index} className="hidden md:block" />
+                      <BreadcrumbSeparator className="hidden md:block" />
                       <BreadcrumbItem key={index}>
                         <BreadcrumbPage>{capitalizeFirstLetter(name)}</BreadcrumbPage>
                       </BreadcrumbItem>

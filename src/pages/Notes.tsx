@@ -25,6 +25,7 @@ export default function Notes() {
 
     return (
         <div>
+            <title>Notes</title>
             <Button onClick={() => handleButtonClick(filePath)}>
                 {loading ? "Carregando..." : "Abrir PDF"}
             </Button>

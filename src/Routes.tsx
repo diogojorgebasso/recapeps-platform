@@ -15,10 +15,27 @@ import AddQuestionForm from "./components/dashboard/add-quizz";
 import Notes from "./pages/Notes";
 
 import Profile from "@/pages/Profile"
+import { useAuth } from "./hooks/useAuth";
 
 export function Routes() {
 
+    const { role, uid } = useAuth();
 
+    const adminRoutes = (
+        <>
+            <Route path="/add-quizz" element={<AddQuestionForm />} />
+        </>
+    );
+    console.log(uid);
+    const userRoutes = (
+        <>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/quiz" element={<Quizz />} />
+            <Route path="/chatbot" element={<ChatBot />} />
+            <Route path="/notes" element={<Notes />} />
+            <Route path="/profile" element={<Profile />} />
+        </>
+    );
 
     return (
         <ReactRouterRoutes>
@@ -28,12 +45,8 @@ export function Routes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<SignUp />} />
             <Route element={<AuthenticatedClientLayout />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/add-quizz" element={<AddQuestionForm />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/quizz" element={<Quizz />} />
-                <Route path="/chatbot" element={<ChatBot />} />
-                <Route path="/notes" element={<Notes />} />
+                {role === "admin" && adminRoutes}
+                {role === "user" && userRoutes}
             </Route>
             <Route path="*" element={<NotFoundPage />} />
         </ReactRouterRoutes >

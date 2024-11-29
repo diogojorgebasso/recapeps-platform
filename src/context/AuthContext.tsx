@@ -39,11 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [email, setEmail] = useState("");
     const [isLoadingAuth, setIsLoadingAuth] = useState(true);
     const [photoURL, setPhotoURL] = useState("/avatar.svg");
-    const [role, setRole] = useState("");
+    const [role, setRole] = useState("user");
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setIsLoadingAuth(false);
             if (user && user.uid) {
                 setUid(user.uid);
                 setEmail(user.email!);
@@ -51,6 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setPhotoURL(user.photoURL);
                 }
                 await fetchUserRole(user); // Fetch the user's role
+                setIsLoadingAuth(false);
             } else {
                 setUid("");
                 setRole("user");
@@ -60,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const fetchUserRole = async (user: User) => {
+        console.log("Fetching user role...");
         try {
             const idTokenResult = await user.getIdTokenResult();
             if (idTokenResult.claims.role && typeof idTokenResult.claims.role === "string") {
