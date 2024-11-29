@@ -4,14 +4,14 @@ import { storage } from "@/utils/firebase";
 import { Button } from "@/components/ui/button";
 
 export default function Notes() {
-    const [filePath, setFilePath] = useState("/mixite/mixite_sexuee.pdf");
+    const filePath = "/mixite/mixite_sexuee.pdf";
     const [loading, setLoading] = useState(false);
 
-    const handleButtonClick = async () => {
+    const handleButtonClick = async (filepath: string) => {
         setLoading(true);
 
         try {
-            const fileRef = ref(storage, filePath);
+            const fileRef = ref(storage, filepath);
             const url = await getDownloadURL(fileRef);
             window.open(url, "_blank");
         } catch (error) {
@@ -25,7 +25,7 @@ export default function Notes() {
 
     return (
         <div>
-            <Button onClick={handleButtonClick}>
+            <Button onClick={() => handleButtonClick(filePath)}>
                 {loading ? "Carregando..." : "Abrir PDF"}
             </Button>
         </div>
