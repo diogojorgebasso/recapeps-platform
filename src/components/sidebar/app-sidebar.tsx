@@ -8,6 +8,7 @@ import {
   Inbox,
   LifeBuoy,
   Map,
+  NotebookTabs,
   PieChart,
   Send,
 } from "lucide-react"
@@ -91,24 +92,11 @@ const data = {
       title: "ChatBot",
       url: "/chatbot",
       icon: Bot,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
+    },
+    {
+      title: "Notes",
+      url: "/notes",
+      icon: NotebookTabs,
     },
   ],
   navSecondary: [
