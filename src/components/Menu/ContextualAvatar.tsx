@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 import {
     Cloud,
@@ -41,7 +41,7 @@ import {
 
 export default function ContextualAvatar() {
 
-    const { photoURL, currentUser, email, signOut } = useAuth();
+    const { photoURL, currentUser, signOut } = useAuth();
 
     if (currentUser) {
 
@@ -53,11 +53,10 @@ export default function ContextualAvatar() {
                             src={photoURL}
                             alt="User Avatar"
                         />
-                        <AvatarFallback>{email}</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <DropdownMenuItem>
@@ -67,7 +66,7 @@ export default function ContextualAvatar() {
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <CreditCard />
-                            <span>Billing</span>
+                            <span>inscription</span>
                             <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
