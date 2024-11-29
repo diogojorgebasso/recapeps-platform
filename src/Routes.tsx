@@ -19,7 +19,7 @@ import Notes from "./pages/Notes";
 const Profile = lazy(() => import("@/pages/Profile"));
 
 export function Routes() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, role } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,6 +28,7 @@ export function Routes() {
         }
     }, [isAuthenticated, navigate]);
 
+    console.log("Role: ", role);
     return (
         <ReactRouterRoutes>
             <Route element={<Layout />} >

@@ -95,8 +95,8 @@ export default function Login() {
                                     Mot de passe oublié ?
                                 </Link>
                             </div>
+                            <Label htmlFor="password">Mot de passe</Label>
                             <Input
-                                id="password"
                                 type="password"
                                 required
                                 value={password}

@@ -57,22 +57,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return unsubscribe;
     }, []);
 
-    // Fetch user role from Firestore or Custom Claims
     const fetchUserRole = async (user: User) => {
         try {
-            // Option 1: Fetch role from Firestore
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                if (userData.role && typeof userData.role === "string") {
-                    setRole(userData.role); // Ensure the role is a string
-                }
-            }
-
-            // Option 2: Fetch role from Custom Claims
             const idTokenResult = await user.getIdTokenResult();
             if (idTokenResult.claims.role && typeof idTokenResult.claims.role === "string") {
-                setRole(idTokenResult.claims.role); // Ensure the role is a string
+                setRole(idTokenResult.claims.role);
             }
         } catch (error) {
             console.error("Error fetching user role:", error);
@@ -93,9 +82,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const { user } = userCredential;
 
-            // Default role is "user", but you can set custom roles based on the email domain
-            const role = email.endsWith("@recapeps.com.br") ? "admin" : "user";
-
             // Save the user to Firestore
             await setDoc(doc(db, "users", user.uid), {
                 uid: user.uid,
@@ -103,11 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 name: user.displayName || null,
                 photoURL: user.photoURL || null,
                 createdAt: new Date().toISOString(),
-                role,
             });
-
-            // Optionally set custom claims if needed (requires backend)
-            console.log(`User signed up with role: ${role}`);
         } catch (error) {
             console.error("Error during sign-up:", error);
             throw error;
