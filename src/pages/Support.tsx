@@ -20,10 +20,11 @@ export default function Support() {
                             Pour des questions techniques ou liées au développement, contactez Diogo.
                         </p>
                         <a
-                            href="mailto:diogo@example.com"
+                            href="mailto:diogo.basso@depinfonancy.net"
                             className="text-blue-600 font-medium hover:underline"
                         >
-                            diogo@example.com
+                            diogo.basso@depinfonancy.net
+
                         </a>
                     </div>
 
@@ -31,13 +32,13 @@ export default function Support() {
                     <div className="bg-white shadow-md rounded-lg p-6">
                         <h3 className="text-xl font-bold mb-2">Support Commercial</h3>
                         <p className="text-gray-600 mb-4">
-                            Pour des demandes commerciales, contactez Corentin.
+                            Pour des demandes commerciales, contactez M. Corentin.
                         </p>
                         <a
-                            href="mailto:corentin@example.com"
+                            href="mailto:corentinfelder@gmail.com"
                             className="text-blue-600 font-medium hover:underline"
                         >
-                            corentin@example.com
+                            corentinfelder@gmail.com
                         </a>
                     </div>
                 </section>
