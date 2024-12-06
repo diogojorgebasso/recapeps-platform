@@ -18,6 +18,8 @@ import Profile from "@/pages/Profile"
 import { useAuth } from "./hooks/useAuth";
 import ContactForm from "./pages/Contact";
 import About from "./pages/About";
+import FlashcardsPage from "./pages/FlashCard";
+import Support from "./pages/Support";
 
 export function Routes() {
 
@@ -35,6 +37,7 @@ export function Routes() {
             <Route path="chatbot" element={<ChatBot />} />
             <Route path="notes" element={<Notes />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="flashcards" element={<FlashcardsPage />} />
         </>
     );
 
@@ -44,6 +47,7 @@ export function Routes() {
                 <Route index element={<Home />} />
                 <Route path="contact" element={<ContactForm />} />
                 <Route path="about" element={<About />} />
+                <Route path="support" element={<Support />} />
                 <Route path="outlis">
                     {/* <Route path="dashboard" element={<DashboardMock />} /> */}
                 </Route>

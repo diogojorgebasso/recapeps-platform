@@ -22,7 +22,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { NewsletterCard } from "./NewsletterCard"
 import { NavLink } from "react-router"
 
 const data = {
@@ -95,12 +94,12 @@ const data = {
   navSecondary: [
     {
       title: "Support",
-      url: "#",
+      url: "/support",
       icon: LifeBuoy,
     },
     {
       title: "Feedback",
-      url: "/feedback",
+      url: "https://forms.gle/T53NiA3mLWJGMtD4A",
       icon: Send,
     },
   ]
@@ -128,7 +127,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NewsletterCard />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

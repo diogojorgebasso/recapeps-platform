@@ -8,16 +8,32 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { Link, useNavigate } from "react-router";
-import { AuthError } from "firebase/auth";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react"; // Icon library (can replace with others)
 
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+
+    const schema = z.object({
+        email: z.string().email({ message: "Email inválido" }),
+        password: z.string().min(6, { message: "A senha deve ter pelo menos 6 caracteres" }),
+    });
+
+    const form = useForm({
+        resolver: zodResolver(schema),
+        mode: "onBlur",
+        defaultValues: {
+            email: "",
+            password: "",
+        },
+    });
 
     const { loginWithGoogle, isLoadingAuth, isAuthenticated, loginWithEmailAndPassword } = useAuth();
     const navigate = useNavigate();
@@ -29,8 +45,8 @@ export default function Login() {
     }, [isAuthenticated, isLoadingAuth, navigate]);
 
     const handleGoogleLogin = async () => {
-        setErrorMessage(null); // Clear error messages
-        setIsSubmitting(true); // Set loading state
+        setErrorMessage(null);
+        setIsSubmitting(true);
         try {
             await loginWithGoogle();
             console.log("Connexion avec Google réussie !");
@@ -39,20 +55,20 @@ export default function Login() {
             setErrorMessage("Erreur lors de la connexion avec Google. Veuillez réessayer.");
             console.error("Erreur lors de la connexion avec Google :", (error as Error).message);
         } finally {
-            setIsSubmitting(false); // Reset loading state
+            setIsSubmitting(false);
         }
     };
 
     const handleLogin = async () => {
-        setErrorMessage(null); // Clear error messages
-        setIsSubmitting(true); // Set loading state
+        setErrorMessage(null);
+        setIsSubmitting(true);
+        const { email, password } = form.getValues();
         try {
             await loginWithEmailAndPassword(email, password);
             console.log("Connexion réussie !");
             navigate("/dashboard");
         } catch (error) {
-            // Handle specific errors based on Firebase Auth error codes
-            const authError = error as AuthError;
+            const authError = error as { code: string; message: string };
             if (authError.code === "auth/user-not-found") {
                 setErrorMessage("Utilisateur introuvable. Vérifiez votre email.");
             } else if (authError.code === "auth/wrong-password") {
@@ -62,7 +78,7 @@ export default function Login() {
             }
             console.error("Erreur lors de la connexion :", authError.message);
         } finally {
-            setIsSubmitting(false); // Reset loading state
+            setIsSubmitting(false);
         }
     };
 
@@ -76,59 +92,83 @@ export default function Login() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="exemple@email.com"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <div className="flex items-center">
-                                <Link to="/forgot" className="ml-auto inline-block text-sm underline">
-                                    Mot de passe oublié ?
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(handleLogin)}>
+                            <div className="grid gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Email</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="exemple@email.com" {...field} />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <div className="flex items-center justify-between">
+                                                <FormLabel>Mot de passe</FormLabel>
+                                                <Link to="/forgot" className="text-sm underline">
+                                                    Mot de passe oublié ?
+                                                </Link>
+                                            </div>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Input
+                                                        type={showPassword ? "text" : "password"}
+                                                        {...field}
+                                                        placeholder="******"
+                                                        autoComplete="current-password"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                        className="absolute inset-y-0 right-2 flex items-center text-gray-600"
+                                                    >
+                                                        {showPassword ? (
+                                                            <EyeOff className="h-5 w-5" />
+                                                        ) : (
+                                                            <Eye className="h-5 w-5" />
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                {errorMessage && (
+                                    <p className="text-red-500 text-sm">{errorMessage}</p>
+                                )}
+                                <Button
+                                    disabled={isSubmitting}
+                                    type="submit"
+                                    className="w-full"
+                                >
+                                    {isSubmitting ? "Connexion..." : "Connexion"}
+                                </Button>
+                                <Button
+                                    disabled={isSubmitting}
+                                    variant="outline"
+                                    className="w-full"
+                                    onClick={handleGoogleLogin}
+                                >
+                                    Connexion avec Google
+                                </Button>
+                            </div>
+                            <div className="mt-4 text-center text-sm">
+                                Vous n&apos;avez pas encore de compte ?{" "}
+                                <Link to="/register" className="underline">
+                                    Inscrivez-vous
                                 </Link>
                             </div>
-                            <Label htmlFor="password">Mot de passe
-                                <Input
-                                    type="password"
-                                    required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                            </Label>
-                        </div>
-                        {errorMessage && (
-                            <p className="text-red-500 text-sm">{errorMessage}</p> // Display error messages
-                        )}
-                        <Button
-                            disabled={isSubmitting || isLoadingAuth} // Disable button when submitting
-                            type="button"
-                            className="w-full"
-                            onClick={handleLogin}
-                        >
-                            {isSubmitting ? "Connexion..." : "Connexion"}
-                        </Button>
-                        <Button
-                            disabled={isSubmitting || isLoadingAuth}
-                            variant="outline"
-                            className="w-full"
-                            onClick={handleGoogleLogin}
-                        >
-                            {isSubmitting ? "Connexion..." : "Connexion avec Google"}
-                        </Button>
-                    </div>
-                    <div className="mt-4 text-center text-sm">
-                        Vous n&apos;avez pas encore de compte ?{" "}
-                        <Link to="/register" className="underline">
-                            Inscrivez-vous
-                        </Link>
-                    </div>
+                        </form>
+                    </Form>
                 </CardContent>
             </Card>
         </div>

@@ -13,7 +13,7 @@ import {
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { ReactNode } from "react";
 import { auth } from "@/utils/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase"; // Firestore instance
 
 type AuthContextProps = {
@@ -62,11 +62,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const fetchUserRole = async (user: User) => {
-        console.log("Fetching user role...");
         try {
-            const idTokenResult = await user.getIdTokenResult();
-            if (idTokenResult.claims.role && typeof idTokenResult.claims.role === "string") {
-                setRole(idTokenResult.claims.role);
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                if (userData.role && typeof userData.role === "string") {
+                    setRole(userData.role); // Ensure the role is a string
+                }
             }
         } catch (error) {
             console.error("Error fetching user role:", error);

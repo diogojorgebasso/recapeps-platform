@@ -1,3 +1,4 @@
+import React from "react"
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import {
   Breadcrumb,
@@ -15,15 +16,17 @@ import {
 import { Outlet, useLocation, useNavigate } from "react-router"
 import { useAuth } from "@/hooks/useAuth"
 import { useEffect } from "react"
+
 export default function AuthenticatedClientLayout() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const { isAuthenticated, isLoadingAuth, role } = useAuth();
 
   useEffect(() => {
+    console.log(role)
     if (!isLoadingAuth && !isAuthenticated) {
       navigate("/login");
     }
-  }, [isAuthenticated, navigate, isLoadingAuth]);
+  }, [isAuthenticated, navigate, role, isLoadingAuth]);
 
   const { pathname } = useLocation()
   const pathnames = pathname.split("/").filter((x) => x);
@@ -42,16 +45,14 @@ export default function AuthenticatedClientLayout() {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                {pathnames.map((name, index) => {
-                  return (
-                    <>
-                      <BreadcrumbSeparator className="hidden md:block" />
-                      <BreadcrumbItem key={index}>
-                        <BreadcrumbPage>{capitalizeFirstLetter(name)}</BreadcrumbPage>
-                      </BreadcrumbItem>
-                    </>
-                  )
-                })}
+                {pathnames.map((name, index) => (
+                  <React.Fragment key={index}>
+                    <BreadcrumbSeparator className="hidden md:block" />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{capitalizeFirstLetter(name)}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </React.Fragment>
+                ))}
               </BreadcrumbList>
             </Breadcrumb>
           </div>
