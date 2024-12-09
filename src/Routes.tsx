@@ -20,6 +20,7 @@ import ContactForm from "./pages/Contact";
 import About from "./pages/About";
 import FlashcardsPage from "./pages/FlashCard";
 import Support from "./pages/Support";
+import DashboardAdmin from "./pages/DashboardAdmin";
 
 export function Routes() {
 
