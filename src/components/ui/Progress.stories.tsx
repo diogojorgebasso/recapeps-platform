@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { Progress } from "./progress"; // Adjust the import path if necessary
 
