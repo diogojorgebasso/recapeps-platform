@@ -28,6 +28,7 @@ export function Routes() {
     const adminRoutes = (
         <>
             <Route path="add-quizz" element={<AddQuestionForm />} />
+            <Route path="dashboard" element={<DashboardAdmin />} />
         </>
     );
     const userRoutes = (

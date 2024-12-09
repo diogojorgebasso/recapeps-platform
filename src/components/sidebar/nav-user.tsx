@@ -11,7 +11,6 @@ import {
 
 import {
   Avatar,
-  AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
 import {
@@ -34,7 +33,7 @@ import { useAuth } from "@/hooks/useAuth"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
-  const { email, name, photoURL } = useAuth();
+  const { email, name, photoURL, signOut } = useAuth();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -46,7 +45,6 @@ export function NavUser() {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={photoURL} alt={name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{name}</span>
@@ -97,7 +95,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={signOut}>
               <LogOut />
               Log out
             </DropdownMenuItem>

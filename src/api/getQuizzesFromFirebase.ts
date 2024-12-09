@@ -15,8 +15,10 @@ export const fetchSubjects = async (): Promise<Subject[]> => {
 export const fetchQuizzesBySubject = async (subjectId: string): Promise<Quiz[]> => {
   const quizzesRef = collection(db, `subjects/${subjectId}/quizzes`);
   const querySnapshot = await getDocs(quizzesRef);
-  return querySnapshot.docs.map(doc => ({
+  const allQuizzes = querySnapshot.docs.map(doc => ({
     ...(doc.data() as Quiz),
     id: doc.id,
   }));
+  const shuffledQuizzes = allQuizzes.sort(() => Math.random() - 0.5); // Embaralhamento
+  return shuffledQuizzes.slice(0, 10); // Seleciona os 10 primeiros
 };
