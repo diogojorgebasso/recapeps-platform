@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import * as RadioGroup from "@radix-ui/react-radio-group";
+import { useAuth } from "@/hooks/useAuth";
 
 type Plan = {
     id: string;
@@ -40,6 +41,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, selectedPlan, setSelectedPlan
 const CheckoutPage: React.FC = () => {
     const [selectedPlan, setSelectedPlan] = useState<string>("basic");
     const navigate = useNavigate();
+    const { getUserToken } = useAuth();
 
     const plans: Plan[] = [
         {
@@ -78,16 +80,22 @@ const CheckoutPage: React.FC = () => {
     ];
 
     const handleCheckout = async () => {
+        const token = await getUserToken();
+        console.log(token);
         const selectedPlanDetails = plans.find((plan) => plan.id === selectedPlan);
         if (!selectedPlanDetails) return;
 
-        const response = await fetch("/createStripeCheckoutSession", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                plan: selectedPlanDetails.id,
+        const items = [
+            {
                 amount: selectedPlanDetails.amount,
-            }),
+                quantity: 1,
+            },
+        ];
+
+        const response = await fetch("https://us-central1-recapeps-platform.cloudfunctions.net/createStripeCheckoutSession", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ items }),
         });
         console.log(response);
 
