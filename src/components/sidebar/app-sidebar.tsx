@@ -6,6 +6,7 @@ import {
   Bot,
   Inbox,
   LifeBuoy,
+  ListTodo,
   NotebookTabs,
   Send,
 } from "lucide-react"
@@ -27,56 +28,46 @@ import { NavLink } from "react-router"
 const data = {
   navMain: [
     {
-      title: "Dashboard",
+      title: "Tableau de bord",
       url: "/dashboard",
       icon: Inbox,
       isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        }
-      ],
     },
     {
-      title: "Quiz",
-      url: "/quiz",
-      icon: Bot,
+      title: "Quizz",
+      url: "/quizz",
+      icon: ListTodo,
       items: [
         {
-          title: "Math",
+          title: "Exp. pédagogiques",
           url: "/quiz/math",
         },
         {
-          title: "Physics",
-          url: "/quiz/physics",
+          title: "Les émotions",
+          url: "/quiz/emotions",
         },
         {
-          title: "Quantum",
-          url: "/quiz/sport",
+          title: "Mixité sexuée",
+          url: "/quiz/mixite-sexuee",
         },
       ],
     },
     {
-      title: "FlashCards",
-      url: "flashcards",
+      title: "Flashcards",
+      url: "/flashcards",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Mutations du système éducatif",
+          url: "/flashcards/mutations-systeme-educatif",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Contexte politique",
+          url: "/flashcards/contexte-politique",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
+          title: "Sport scolaire",
+          url: "/flashcards/sport-scolaire",
         },
       ],
     },
@@ -89,6 +80,17 @@ const data = {
       title: "Notes",
       url: "/notes",
       icon: NotebookTabs,
+      items: [
+        {
+          title: "Mixité sexuée",
+          url: "/notes/ecrit-1/mixite-sexuee",
+        },
+        {
+          title: "Les emotions",
+          url: "/notes/ecrit-2/sport-scolaire",
+        },
+
+      ]
     },
   ],
   navSecondary: [
@@ -113,13 +115,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <NavLink to="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <img src="/logo.svg" alt="Recapeps" className="rounded-lg" />
+                <div className="flex aspect-square size-16 items-center justify-center bg-sidebar-primary text-sidebar-primary-foreground">
+                  <img src="/Identity.svg" alt="Recap'eps" className="rounded-lg" />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">RECAPEPS</span>
-                  <span className="truncate text-xs">Plataform</span>
-                </div>
+                <p className="font-bold grid flex-1 text-left text-sm leading-tight">
+                  RECAP'EPS
+                </p>
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>

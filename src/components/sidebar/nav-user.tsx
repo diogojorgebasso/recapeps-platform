@@ -4,7 +4,6 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
   Sparkles,
 } from "lucide-react"
@@ -28,12 +27,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { NavLink } from "react-router"
+import { NavLink, useNavigate } from "react-router"
 import { useAuth } from "@/hooks/useAuth"
-
 export function NavUser() {
   const { isMobile } = useSidebar()
   const { email, name, photoURL, signOut } = useAuth();
+  const navigate = useNavigate();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -75,19 +74,15 @@ export function NavUser() {
               <NavLink target="_blank" to="https://buy.stripe.com/3cs3ep5x6bFP7kI7su">
                 <DropdownMenuItem>
                   <Sparkles />
-                  Upgrade to Pro
+                  Passez à Recap'eps Pro
                 </DropdownMenuItem>
               </NavLink>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/profile")}>
                 <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+                Profil
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />

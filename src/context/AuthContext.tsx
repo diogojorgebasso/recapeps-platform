@@ -36,7 +36,7 @@ type AuthContextProps = {
 export const AuthContext = createContext({} as AuthContextProps);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [name] = useState("student");
+    const [name] = useState("Étudiant");
     const [uid, setUid] = useState("");
     const [email, setEmail] = useState("");
     const [isLoadingAuth, setIsLoadingAuth] = useState(true);

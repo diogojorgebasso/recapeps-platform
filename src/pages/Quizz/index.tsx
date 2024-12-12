@@ -95,7 +95,7 @@ export default function Quizz() {
       <div className="flex h-screen items-center justify-center">
         <Card className="max-w-md w-full bg-white shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Select a Subject</CardTitle>
+            <CardTitle className="text-2xl text-center">Choisir un thème</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-4">
@@ -155,12 +155,12 @@ export default function Quizz() {
               <li key={index}>
                 <Button
                   className={`w-full rounded-lg py-2 text-white shadow-md transition break-words ${selectedAnswer
-                      ? option === currentQuiz.answer
-                        ? "bg-green-500"
-                        : option === selectedAnswer
-                          ? "bg-red-500"
-                          : "bg-gray-400"
-                      : "bg-blue-500 hover:bg-blue-600"
+                    ? option === currentQuiz.answer
+                      ? "bg-green-500"
+                      : option === selectedAnswer
+                        ? "bg-red-500"
+                        : "bg-gray-400"
+                    : "bg-blue-500 hover:bg-blue-600"
                     }`}
                   disabled={!!selectedAnswer}
                   onClick={() => handleAnswer(option)}

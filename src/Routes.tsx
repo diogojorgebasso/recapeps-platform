@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 
 import Dashboard from "./pages/Dashboard";
 import NotFoundPage from "./pages/404";
-import Quiz from "./pages/Quiz";
+import Quizz from "./pages/Quizz";
 import SignUp from "./pages/SignUp";
 import ChatBot from "./pages/ChatBot";
 import AddQuestionForm from "./components/dashboard/add-quizz";
@@ -21,6 +21,8 @@ import About from "./pages/About";
 import FlashcardsPage from "./pages/FlashCard";
 import Support from "./pages/Support";
 import DashboardAdmin from "./pages/DashboardAdmin";
+import TermesCondition from "./pages/Termes-Condition";
+import DashboardMock from "./pages/DashboardMock";
 
 export function Routes() {
 
@@ -35,11 +37,12 @@ export function Routes() {
     const userRoutes = (
         <>
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="quiz" element={<Quiz />} />
+            <Route path="quizz" element={<Quizz />} />
             <Route path="chatbot" element={<ChatBot />} />
             <Route path="notes" element={<Notes />} />
             <Route path="profile" element={<Profile />} />
             <Route path="flashcards" element={<FlashcardsPage />} />
+            <Route path="account" element={<Profile />} />
         </>
     );
 
@@ -50,8 +53,9 @@ export function Routes() {
                 <Route path="contact" element={<ContactForm />} />
                 <Route path="about" element={<About />} />
                 <Route path="support" element={<Support />} />
+                <Route path="termes-et-condition" element={<TermesCondition />} />
                 <Route path="outlis">
-                    {/* <Route path="dashboard" element={<DashboardMock />} /> */}
+                    <Route path="dashboard" element={<DashboardMock />} />
                 </Route>
             </Route>
             <Route path="login" element={<Login />} />

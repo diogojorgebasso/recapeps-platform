@@ -18,7 +18,7 @@ type Quiz = {
  */
 export const addMultipleQuizzesToFirestore = async (quizzes: Quiz[]) => {
   try {
-    const quizzesRef = collection(db, "subjects"); // Reference to the 'quizzes' collection
+    const quizzesRef = collection(db, "subjects", "expérimentations-pédagogiques"); // Reference to the 'quizzes' collection
 
     // Add each quiz to Firestore
     for (const quiz of quizzes) {
