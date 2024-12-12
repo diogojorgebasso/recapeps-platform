@@ -6,7 +6,7 @@ const admin = require("firebase-admin");
 
 const db = getFirestore();
 
-const createStripeCheckoutSession = onRequest(async (req, res) => {
+const createStripeCheckoutSession = onRequest({ cors: "https://recapeps-platform.web.app" }, async (req, res) => {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method Not Allowed" });
     return;
