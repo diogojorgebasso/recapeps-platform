@@ -4,7 +4,7 @@ import Layout from "./layouts/MainLayout";
 import AuthenticatedClientLayout from "./layouts/AuthenticatedClientLayout";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-
+import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard";
 import NotFoundPage from "./pages/404";
 import Quizz from "./pages/Quizz";
@@ -54,6 +54,7 @@ export function Routes() {
                 <Route path="about" element={<About />} />
                 <Route path="support" element={<Support />} />
                 <Route path="termes-et-condition" element={<TermesCondition />} />
+                <Route path="checkout" element={<Checkout />} />
                 <Route path="outlis">
                     <Route path="dashboard" element={<DashboardMock />} />
                 </Route>

@@ -41,24 +41,44 @@ exports.deleteUserDocument = functions.auth
         }).catch((error) => {
             logger.error("Error deleting user from Firestore:", error);
         });
-    });
+});
 
 exports.createStripeCheckoutSession = functions.https.onCall(async (data, context) => {
-        const { items } = data;
-      
-        try {
-          const paymentIntent = await stripe.paymentIntents.create({
-            amount: items.reduce((total, item) => total + item.amount * item.quantity, 0),
-            currency: "usd",
-            automatic_payment_methods: { enabled: true },
-            metadata: {
-              firebaseUID: context.auth?.uid || "unknown",
-            },
-          });
-      
-          return { clientSecret: paymentIntent.client_secret };
-        } catch (error) {
-          console.error("Erro ao criar Payment Intent:", error);
-          throw new functions.https.HttpsError("internal", error.message);
-        }
-      });
+  if (!context.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated.");
+  }
+
+  const { items } = data;
+  const userId = context.auth.uid;
+
+  try {
+    // Calculate the total amount in cents
+    const amount = items.reduce((total, item) => total + item.amount * item.quantity, 0);
+
+    // Create a Payment Intent with Stripe
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: "usd",
+      automatic_payment_methods: { enabled: true },
+      metadata: { firebaseUID: userId },
+    });
+
+    // Save payment details to Firestore under the user's document
+    const paymentData = {
+      amount: amount / 100, // Store in dollars for readability
+      currency: "usd",
+      status: "pending",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      items: items, // Save the list of items
+      paymentIntentId: paymentIntent.id,
+    };
+
+    await db.collection("users").doc(userId).collection("payments").add(paymentData);
+
+    // Return the client secret to the frontend for payment confirmation
+    return { clientSecret: paymentIntent.client_secret };
+  } catch (error) {
+    console.error("Error creating Stripe Payment Intent:", error);
+    throw new functions.https.HttpsError("internal", "Failed to create payment session.");
+  }
+});
