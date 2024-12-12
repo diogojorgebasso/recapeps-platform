@@ -31,6 +31,7 @@ type AuthContextProps = {
     signOut: () => Promise<void>;
     getUserToken: () => Promise<string>;
     handleRecoverPassword: (email: string) => Promise<void>;
+    updatePhotoURLInContext: (newPhotoURL: string) => void;
 };
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -48,9 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (user && user.uid) {
                 setUid(user.uid);
                 setEmail(user.email!);
-                if (user.photoURL) {
-                    setPhotoURL(user.photoURL);
-                }
+                setPhotoURL(user.photoURL || "/avatar.svg");
                 await fetchUserRole(user); // Fetch the user's role
                 setIsLoadingAuth(false);
             } else {
@@ -75,6 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const updatePhotoURLInContext = (newPhotoURL: string) => {
+        setPhotoURL(newPhotoURL);
+    };
+
     const loginWithEmailAndPassword = useCallback(async (email: string, password: string) => {
         await signInWithEmailAndPassword(auth, email, password);
     }, []);
@@ -89,7 +92,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const { user } = userCredential;
 
-            // Save the user to Firestore
             await setDoc(doc(db, "users", user.uid), {
                 uid: user.uid,
                 email: user.email,
@@ -109,7 +111,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await sendPasswordResetEmail(auth, email);
     }, []);
 
-    // Get user token
     const getUserToken = useCallback(async () => {
         if (auth.currentUser) {
             return await getIdToken(auth.currentUser);
@@ -117,7 +118,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return "";
     }, []);
 
-    // Check if user is authenticated
     const isAuthenticated = useMemo(() => Boolean(uid), [uid]);
 
     return (
@@ -137,6 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 signOut: signOutFn,
                 getUserToken,
                 handleRecoverPassword,
+                updatePhotoURLInContext,
             }}
         >
             {children}
