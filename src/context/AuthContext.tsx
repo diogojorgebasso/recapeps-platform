@@ -51,21 +51,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (user && user.uid) {
                 setUid(user.uid);
                 setEmail(user.email!);
-                setPhotoURL(user.photoURL || "/avatar.svg");
-                await fetchUserRole(user);
+                await fetchUserPhoto(user.uid);
+                await fetchUserRole(user.uid);
                 await checkUserSubscription(user.uid);
                 setIsLoadingAuth(false);
-            } else {
-                setUid("");
-                setRole("user");
             }
         });
         return unsubscribe;
     }, []);
 
-    const fetchUserRole = async (user: User) => {
+    const fetchUserPhoto = async (uid: string) => {
         try {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
+            const userDoc = await getDoc(doc(db, "users", uid));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                if (userData.photoURL) {
+                    setPhotoURL(userData.photoURL);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching user photo:", error);
+        }
+    }
+
+
+    const fetchUserRole = async (uid: string) => {
+        try {
+            const userDoc = await getDoc(doc(db, "users", uid));
             if (userDoc.exists()) {
                 const userData = userDoc.data();
                 if (userData.role && typeof userData.role === "string") {
