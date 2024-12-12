@@ -1,13 +1,15 @@
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
+require("dotenv").config();
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = require("stripe")(stripeSecretKey);
 
-admin.initializeApp(); // Initialize the Firebase Admin SDK
+admin.initializeApp();
 const db = admin.firestore();
 
 exports.saveUserToFirestore = functions.auth.user().onCreate(async (user) => {
     try {
-        // User properties from the Authentication object
         const { uid, email, displayName, photoURL } = user;
 
         // Determine the role based on the email domain
@@ -22,14 +24,7 @@ exports.saveUserToFirestore = functions.auth.user().onCreate(async (user) => {
             role: role, // Assign role dynamically
         };
 
-        // Save user to Firestore in the "users" collection
         await db.collection("users").doc(uid).set(userData);
-
-        // Optionally, set custom claims for the user if they are an admin
-        if (role === "admin") {
-            await admin.auth().setCustomUserClaims(uid, { role });
-            logger.info(`Custom claims set for admin user ${uid}`);
-        }
 
         logger.info(`User ${uid} saved to Firestore successfully.`);
     } catch (error) {
