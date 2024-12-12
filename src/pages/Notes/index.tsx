@@ -1,4 +1,6 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import { NavLink } from "react-router";
+import { Button } from "@/components/ui/button";
 
 export default function Notes() {
     return (
@@ -10,13 +12,13 @@ export default function Notes() {
                         value="exam1"
                         className="flex-1 text-center py-3 font-medium text-gray-700 hover:text-blue-600 focus:text-blue-600 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
                     >
-                        Ecrit 1
+                        Écrit 1
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value="exam2"
                         className="flex-1 text-center py-3 font-medium text-gray-700 hover:text-blue-600 focus:text-blue-600 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
                     >
-                        Prova 2
+                        Écrit 2
                     </Tabs.Trigger>
                 </Tabs.List>
 
@@ -25,50 +27,25 @@ export default function Notes() {
                     value="exam1"
                     className="p-4 text-gray-800 space-y-2"
                 >
-                    <h3 className="text-lg font-semibold">Links para Prova 1</h3>
-                    <ul className="list-disc list-inside">
-                        <li>
-                            <a
-                                href="#"
-                                className="text-blue-600 hover:underline"
-                            >
-                                Link para conteúdo 1
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="text-blue-600 hover:underline"
-                            >
-                                Link para conteúdo 2
-                            </a>
-                        </li>
-                    </ul>
+                    <NavLink to="/notes/ecrit-1/mixite-sexuee">
+                        <Button
+                            className="text-blue-600 hover:underline"
+                        >
+                            Mixité Sexuée
+                        </Button>
+                    </NavLink>
+
                 </Tabs.Content>
 
                 <Tabs.Content
                     value="exam2"
                     className="p-4 text-gray-800 space-y-2"
                 >
-                    <h3 className="text-lg font-semibold">Links para Prova 2</h3>
-                    <ul className="list-disc list-inside">
-                        <li>
-                            <a
-                                href="#"
-                                className="text-blue-600 hover:underline"
-                            >
-                                Link para conteúdo 1
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="text-blue-600 hover:underline"
-                            >
-                                Link para conteúdo 2
-                            </a>
-                        </li>
-                    </ul>
+                    <NavLink to="/notes/ecrit-2/les-emotion" >
+                        <Button>
+                            Les Emotion
+                        </Button>
+                    </NavLink>
                 </Tabs.Content>
             </Tabs.Root>
         </div>
