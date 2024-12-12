@@ -47,3 +47,23 @@ exports.deleteUserDocument = functions.auth
             logger.error("Error deleting user from Firestore:", error);
         });
     });
+
+exports.createStripeCheckoutSession = functions.https.onCall(async (data, context) => {
+        const { items } = data;
+      
+        try {
+          const paymentIntent = await stripe.paymentIntents.create({
+            amount: items.reduce((total, item) => total + item.amount * item.quantity, 0),
+            currency: "usd",
+            automatic_payment_methods: { enabled: true },
+            metadata: {
+              firebaseUID: context.auth?.uid || "unknown",
+            },
+          });
+      
+          return { clientSecret: paymentIntent.client_secret };
+        } catch (error) {
+          console.error("Erro ao criar Payment Intent:", error);
+          throw new functions.https.HttpsError("internal", error.message);
+        }
+      });
