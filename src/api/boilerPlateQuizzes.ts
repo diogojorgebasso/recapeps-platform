@@ -12,24 +12,6 @@ type Quiz = {
   questions: Question[];
 };
 
-/**
- * Add multiple quizzes to the Firestore database
- * @param quizzes - Array of quiz data to add
- */
-export const addMultipleQuizzesToFirestore = async (quizzes: Quiz[]) => {
-  try {
-    const quizzesRef = collection(db, "subjects", "expérimentations-pédagogiques"); // Reference to the 'quizzes' collection
-
-    // Add each quiz to Firestore
-    for (const quiz of quizzes) {
-      await addDoc(quizzesRef, quiz);
-    }
-  } catch (error) {
-    console.error("Error adding quizzes:", error);
-  }
-};
-
-// Define all the quizzes
 const quizzes: Quiz[] = [
   {
     questions: [
@@ -207,5 +189,21 @@ const quizzes: Quiz[] = [
   }
 ];
 
-// Call the function to add all quizzes
-addMultipleQuizzesToFirestore(quizzes);
+
+/**
+ * Add multiple quizzes to the Firestore database
+ * @param quizzes - Array of quiz data to add
+ */
+export const addMultipleQuizzesToFirestore = async () => {
+  try {
+    const quizzesRef = collection(db, "subjects", "expérimentations-pédagogiques"); // Reference to the 'quizzes' collection
+
+    // Add each quiz to Firestore
+    for (const quiz of quizzes) {
+      await addDoc(quizzesRef, quiz);
+    }
+  } catch (error) {
+    console.error("Error adding quizzes:", error);
+  }
+};
+

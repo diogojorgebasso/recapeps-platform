@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router";
 import { AuthProvider } from "@/context/AuthContext";
 import { CookieProvider } from "./context/CookieContext";
 
+
 export default function App() {
   return (
     <AuthProvider>

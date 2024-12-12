@@ -20,4 +20,5 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider('6Le-6H8qAAAAABnX3YE60B2yDwojG0nZAEd0a7ne'),
+  isTokenAutoRefreshEnabled: true
 });
