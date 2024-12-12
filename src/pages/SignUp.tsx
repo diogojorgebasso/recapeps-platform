@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -17,9 +17,14 @@ export default function SignUp() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const { signUpWithEmailAndPassword, isLoadingAuth } = useAuth();
+    const { signUpWithEmailAndPassword, isLoadingAuth, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/dashboard");
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleSignUp = async () => {
         if (password !== confirmPassword) {

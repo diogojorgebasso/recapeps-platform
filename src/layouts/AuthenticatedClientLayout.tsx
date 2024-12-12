@@ -22,7 +22,6 @@ export default function AuthenticatedClientLayout() {
   const { isAuthenticated, isLoadingAuth, role } = useAuth();
 
   useEffect(() => {
-    console.log(role)
     if (!isLoadingAuth && !isAuthenticated) {
       navigate("/login");
     }

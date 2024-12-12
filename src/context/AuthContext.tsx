@@ -8,17 +8,18 @@ import {
     signInWithPopup,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
-    User,
+    User
 } from "firebase/auth";
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { ReactNode } from "react";
 import { auth } from "@/utils/firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "@/utils/firebase"; // Firestore instance
 
 type AuthContextProps = {
     name: string;
     uid: string;
+    subscribed: boolean;
     isAuthenticated: boolean;
     isLoadingAuth: boolean;
     email: string;
@@ -31,6 +32,7 @@ type AuthContextProps = {
     signOut: () => Promise<void>;
     getUserToken: () => Promise<string>;
     handleRecoverPassword: (email: string) => Promise<void>;
+    updatePhotoURLInContext: (newPhotoURL: string) => void;
 };
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -42,16 +44,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [isLoadingAuth, setIsLoadingAuth] = useState(true);
     const [photoURL, setPhotoURL] = useState("/avatar.svg");
     const [role, setRole] = useState("user");
+    const [subscribed, setSubscribed] = useState(false); // State to track subscription status
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user && user.uid) {
                 setUid(user.uid);
                 setEmail(user.email!);
-                if (user.photoURL) {
-                    setPhotoURL(user.photoURL);
-                }
-                await fetchUserRole(user); // Fetch the user's role
+                setPhotoURL(user.photoURL || "/avatar.svg");
+                await fetchUserRole(user);
+                await checkUserSubscription(user.uid);
                 setIsLoadingAuth(false);
             } else {
                 setUid("");
@@ -75,6 +77,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const checkUserSubscription = useCallback(async (userId: string) => {
+        try {
+            const paymentsRef = collection(db, `users/${userId}/payments`);
+
+            const q = query(
+                paymentsRef,
+                where("status", "==", "active"), // Check for active subscriptions
+                orderBy("createdAt", "desc") // Sort by creation date
+            );
+
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                console.log("Active subscription found");
+                setSubscribed(true); // Subscription exists
+            } else {
+                console.log("No active subscription found");
+                setSubscribed(false); // No active subscription
+            }
+        } catch (error) {
+            console.error("Error checking user subscription:", error);
+            setSubscribed(false); // Assume no subscription on error
+        }
+    }, []);
+
+
+    const updatePhotoURLInContext = (newPhotoURL: string) => {
+        setPhotoURL(newPhotoURL);
+    };
+
     const loginWithEmailAndPassword = useCallback(async (email: string, password: string) => {
         await signInWithEmailAndPassword(auth, email, password);
     }, []);
@@ -89,7 +121,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const { user } = userCredential;
 
-            // Save the user to Firestore
             await setDoc(doc(db, "users", user.uid), {
                 uid: user.uid,
                 email: user.email,
@@ -109,7 +140,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await sendPasswordResetEmail(auth, email);
     }, []);
 
-    // Get user token
     const getUserToken = useCallback(async () => {
         if (auth.currentUser) {
             return await getIdToken(auth.currentUser);
@@ -117,7 +147,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return "";
     }, []);
 
-    // Check if user is authenticated
     const isAuthenticated = useMemo(() => Boolean(uid), [uid]);
 
     return (
@@ -125,18 +154,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             value={{
                 name,
                 uid,
+                subscribed,
                 isAuthenticated,
                 isLoadingAuth,
                 email,
                 photoURL,
                 currentUser: auth.currentUser,
-                role, // Provide role in the context
+                role,
                 loginWithEmailAndPassword,
                 loginWithGoogle,
-                signUpWithEmailAndPassword, // Add sign-up functionality
+                signUpWithEmailAndPassword,
                 signOut: signOutFn,
                 getUserToken,
                 handleRecoverPassword,
+                updatePhotoURLInContext,
             }}
         >
             {children}

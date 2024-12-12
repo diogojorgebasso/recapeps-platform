@@ -24,7 +24,7 @@ export default function ContactForm() {
 
         try {
             // Add formData to the Firestore collection
-            await addDoc(collection(db, "contactMessages"), formData);
+            await addDoc(collection(db, "contact"), formData);
             setSubmitted(true);
 
             // Reset form after successful submission
