@@ -49,7 +49,7 @@ const createStripeCheckoutSession = onRequest(async (req, res) => {
     const paymentData = {
       amount: amount,
       currency: "eur",
-      status: "pending",
+      status: "pending", // when is this updated?
       createdAt: FieldValue.serverTimestamp(),
       items,
       paymentIntentId: paymentIntent.id,

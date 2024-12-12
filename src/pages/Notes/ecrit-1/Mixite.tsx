@@ -1,6 +1,19 @@
 import { ReactNode } from "react";
 
-export default function Notes() {
+
+const Section = ({ title, children, bgColor }: { title: string, children: ReactNode, bgColor: string }) => {
+    return (
+        <section className="p-6 rounded-lg shadow-md" id={title}>
+            <h2 className={`${bgColor} text-xl font-bold mb-4`}>{title}</h2>
+            <div className="text-gray-700">{children}</div>
+        </section>
+    );
+};
+
+
+export default function Mixite() {
+
+
     return (
         <div>
             <header className="bg-gradient-to-r from-blue-400 to-red-400 text-white p-6 flex items-center justify-between">
@@ -90,15 +103,45 @@ export default function Notes() {
                         <span className="block italic">(Bourdieu).</span>
                     </p>
                 </Section>
+                <Section title="III - Proposition de plan" bgColor="bg-blue-200">
+                    <div className="overflow-x-auto border border-gray-300 rounded-b-md">
+                        <table className="table-auto w-full text-left border-collapse">
+                            <thead className="bg-gray-100">
+                                <tr>
+                                    <th className="py-3 px-4 text-pink-600 font-bold text-center">1918 - 1959</th>
+                                    <th className="py-3 px-4 text-pink-600 font-bold text-center">1959 - 1985</th>
+                                    <th className="py-3 px-4 text-pink-600 font-bold text-center">1985 - 2025</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="border-t">
+                                    <td className="py-3 px-4">
+                                        Séparation des Filles et des Garçons, en terme spatial, de contenu, de méthodes
+                                    </td>
+                                    <td className="py-3 px-4">
+                                        Avènement de la mixité scolaire, qui reste peu appliquée sur le terrain
+                                    </td>
+                                    <td className="py-3 px-4">
+                                        La mixité est établie à l’école et en EPS
+                                    </td>
+                                </tr>
+                                <tr className="border-t">
+                                    <td className="py-3 px-4">
+                                        Un début de coéducation tend à s’installer
+                                    </td>
+                                    <td className="py-3 px-4">
+                                        Certains novateurs en faveur de la mixité et de l’égalité des sexes vont agir en ce sens à l’école et en EPS
+                                    </td>
+                                    <td className="py-3 px-4">
+                                        La mixité installée n’induit pas une égalité entre les sexes
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </Section>
+
             </div>
         </div >
     )
 }
-const Section = ({ title, children, bgColor }: { title: string, children: ReactNode, bgColor: string }) => {
-    return (
-        <section className="p-6 rounded-lg shadow-md" id={title}>
-            <h2 className={`${bgColor} text-xl font-bold mb-4`}>{title}</h2>
-            <div className="text-gray-700">{children}</div>
-        </section>
-    );
-};

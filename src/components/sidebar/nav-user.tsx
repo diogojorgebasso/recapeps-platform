@@ -71,7 +71,7 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <NavLink target="_blank" to="https://buy.stripe.com/3cs3ep5x6bFP7kI7su">
+              <NavLink to="/checkout">
                 <DropdownMenuItem>
                   <Sparkles />
                   Passez à Recap'eps Pro

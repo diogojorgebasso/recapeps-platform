@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
         });
         return unsubscribe;
-    }, []);
+    });
 
     const fetchUserPhoto = async (uid: string) => {
         try {
@@ -81,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (userDoc.exists()) {
                 const userData = userDoc.data();
                 if (userData.role && typeof userData.role === "string") {
-                    setRole(userData.role); // Ensure the role is a string
+                    setRole(userData.role);
                 }
             }
         } catch (error) {
@@ -95,11 +95,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             const q = query(
                 paymentsRef,
-                where("status", "==", "active"), // Check for active subscriptions
-                orderBy("createdAt", "desc") // Sort by creation date
+                where("status", "==", "active"),
+                orderBy("createdAt", "desc")
             );
 
             const querySnapshot = await getDocs(q);
+
+            console.log(querySnapshot)
 
             if (!querySnapshot.empty) {
                 console.log("Active subscription found");
