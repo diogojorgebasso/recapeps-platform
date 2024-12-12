@@ -35,14 +35,14 @@ export default function Login() {
         },
     });
 
-    const { loginWithGoogle, isLoadingAuth, isAuthenticated, loginWithEmailAndPassword } = useAuth();
+    const { loginWithGoogle, isAuthenticated, loginWithEmailAndPassword } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isLoadingAuth && isAuthenticated) {
+        if (isAuthenticated) {
             navigate("/dashboard");
         }
-    }, [isAuthenticated, isLoadingAuth, navigate]);
+    }, [isAuthenticated, navigate]);
 
     const handleGoogleLogin = async () => {
         setErrorMessage(null);
