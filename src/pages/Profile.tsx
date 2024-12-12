@@ -5,9 +5,10 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { NavLink } from "react-router";
 
 export default function Profile() {
-    const { photoURL, updatePhotoURLInContext, uid } = useAuth();
+    const { photoURL, updatePhotoURLInContext, uid, subscribed } = useAuth();
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<{ width: number; height: number; x: number; y: number } | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -79,32 +80,31 @@ export default function Profile() {
 
     return (
         <div className="space-y-8">
-            <div>
-                <section>
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">
-                        Informations Personnelles
-                    </h2>
-                    <div className="flex items-start space-x-6">
-                        <div className="flex flex-col items-center">
-                            <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border border-gray-300">
-                                <img
-                                    src={photoURL}
-                                    alt="Profile"
-                                    className="object-cover w-full h-full"
-                                />
-                            </div>
-                            <label className="mt-4 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
-                                Changer la photo
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={handleFileChange}
-                                />
-                            </label>
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+                Informations Personnelles
+            </h2>
+            <section className="flex">
+
+                <div className="flex items-start space-x-6">
+                    <div className="flex flex-col items-center">
+                        <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border border-gray-300">
+                            <img
+                                src={photoURL}
+                                alt="Profile"
+                                className="object-cover w-full h-full"
+                            />
                         </div>
+                        <label className="mt-4 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
+                            Changer la photo
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleFileChange}
+                            />
+                        </label>
                     </div>
-                </section>
+                </div>
 
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogContent>
@@ -169,7 +169,7 @@ export default function Profile() {
                         />
                     </div>
                 </div>
-            </div >
+            </section>
 
             < section >
                 <h2 className="text-xl font-semibold text-gray-700 mb-4">Changer le Mot de Passe</h2>
@@ -206,15 +206,22 @@ export default function Profile() {
                     </p>
                 </ section>
 
-                {/* Section: Purchase History */}
+                {/* TODO : get the history */}
                 < section >
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">Historique des Achats</h2>
-                    <p className="text-gray-600">
-                        Abonnement: <span className="font-semibold">Premium (Actif)</span>
-                    </p>
-                    <p className="text-gray-600">
-                        Dernier achat: <span className="font-semibold">10 décembre 2024</span>
-                    </p>
+                    {subscribed ?
+                        <>
+                            <h2 className="text-xl font-semibold text-gray-700 mb-4">Historique des Achats</h2>
+                            <p className="text-gray-600">
+                                Abonnement: <span className="font-semibold">Premium (Actif)</span>
+                            </p>
+                            <p className="text-gray-600">
+                                Dernier achat: <span className="font-semibold">10 décembre 2024</span>
+                            </p>
+                        </>
+                        : <div>
+                            <h2>Make your subscription</h2>
+                            <NavLink to="/checkout">Subscribe</NavLink>
+                        </div>}
                 </ section>
             </section>
         </div >
