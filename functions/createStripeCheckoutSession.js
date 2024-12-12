@@ -2,6 +2,7 @@ const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const { onRequest } = require("firebase-functions/v2/https");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const admin = require("firebase-admin");
 
 const db = getFirestore();
 
@@ -40,14 +41,14 @@ const createStripeCheckoutSession = onRequest(async (req, res) => {
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
-      currency: "usd",
+      currency: "eur",
       automatic_payment_methods: { enabled: true },
       metadata: { firebaseUID: userId },
     });
 
     const paymentData = {
-      amount: amount / 100,
-      currency: "usd",
+      amount: amount,
+      currency: "eur",
       status: "pending",
       createdAt: FieldValue.serverTimestamp(),
       items,
