@@ -8,7 +8,7 @@ const stripe = require("stripe")(stripeSecretKey);
 admin.initializeApp();
 const db = admin.firestore();
 
-exports.saveUserToFirestore = functions.auth.user().onCreate(async (user) => {
+exports.saveRoleToFirestore = functions.auth.user().onCreate(async (user) => {
     try {
         const { uid, email, displayName, photoURL } = user;
 
