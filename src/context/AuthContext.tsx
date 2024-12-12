@@ -8,17 +8,18 @@ import {
     signInWithPopup,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
-    User,
+    User
 } from "firebase/auth";
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { ReactNode } from "react";
 import { auth } from "@/utils/firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "@/utils/firebase"; // Firestore instance
 
 type AuthContextProps = {
     name: string;
     uid: string;
+    subscribed: boolean;
     isAuthenticated: boolean;
     isLoadingAuth: boolean;
     email: string;
@@ -43,6 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [isLoadingAuth, setIsLoadingAuth] = useState(true);
     const [photoURL, setPhotoURL] = useState("/avatar.svg");
     const [role, setRole] = useState("user");
+    const [subscribed, setSubscribed] = useState(false); // State to track subscription status
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -50,7 +52,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setUid(user.uid);
                 setEmail(user.email!);
                 setPhotoURL(user.photoURL || "/avatar.svg");
-                await fetchUserRole(user); // Fetch the user's role
+                await fetchUserRole(user);
+                await checkUserSubscription(user.uid);
                 setIsLoadingAuth(false);
             } else {
                 setUid("");
@@ -73,6 +76,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.error("Error fetching user role:", error);
         }
     };
+
+    const checkUserSubscription = useCallback(async (userId: string) => {
+        try {
+            const paymentsRef = collection(db, `users/${userId}/payments`);
+
+            const q = query(
+                paymentsRef,
+                where("status", "==", "active"), // Check for active subscriptions
+                orderBy("createdAt", "desc") // Sort by creation date
+            );
+
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                console.log("Active subscription found");
+                setSubscribed(true); // Subscription exists
+            } else {
+                console.log("No active subscription found");
+                setSubscribed(false); // No active subscription
+            }
+        } catch (error) {
+            console.error("Error checking user subscription:", error);
+            setSubscribed(false); // Assume no subscription on error
+        }
+    }, []);
+
 
     const updatePhotoURLInContext = (newPhotoURL: string) => {
         setPhotoURL(newPhotoURL);
@@ -125,15 +154,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             value={{
                 name,
                 uid,
+                subscribed,
                 isAuthenticated,
                 isLoadingAuth,
                 email,
                 photoURL,
                 currentUser: auth.currentUser,
-                role, // Provide role in the context
+                role,
                 loginWithEmailAndPassword,
                 loginWithGoogle,
-                signUpWithEmailAndPassword, // Add sign-up functionality
+                signUpWithEmailAndPassword,
                 signOut: signOutFn,
                 getUserToken,
                 handleRecoverPassword,
