@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface PaymentPageState {
     clientSecret: string;
@@ -12,6 +13,7 @@ interface PaymentPageState {
     };
 }
 
+const stripePromise = loadStripe("pk_test_51IOvMXBiilgt3voLm7kvY2GAgsyYVssTyO59sttI2KqgGLTrgPMA5WHox80IXFS7YCuQuo40nXj0qX9JKZiTRocQ00l1cSSkFU")
 const PaymentPage: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -46,30 +48,32 @@ const PaymentPage: React.FC = () => {
     };
 
     return (
-        <div className="p-8 max-w-lg mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Payer pour {selectedPlan.name}</h1>
-            <p className="mb-4">Prix: {selectedPlan.price}</p>
-            <form onSubmit={handlePayment}>
-                <CardElement
-                    options={{
-                        style: {
-                            base: {
-                                fontSize: "16px",
-                                color: "#424770",
-                                "::placeholder": { color: "#aab7c4" },
+        <Elements stripe={stripePromise}>
+            <div className="p-8 max-w-lg mx-auto">
+                <h1 className="text-2xl font-bold mb-4">Payer pour {selectedPlan.name}</h1>
+                <p className="mb-4">Prix: {selectedPlan.price}</p>
+                <form onSubmit={handlePayment}>
+                    <CardElement
+                        options={{
+                            style: {
+                                base: {
+                                    fontSize: "16px",
+                                    color: "#424770",
+                                    "::placeholder": { color: "#aab7c4" },
+                                },
+                                invalid: { color: "#9e2146" },
                             },
-                            invalid: { color: "#9e2146" },
-                        },
-                    }}
-                />
-                <button
-                    type="submit"
-                    className="w-full mt-6 py-3 bg-green-600 text-white rounded-lg font-medium text-lg hover:bg-green-700 transition-all"
-                >
-                    Payer
-                </button>
-            </form>
-        </div>
+                        }}
+                    />
+                    <button
+                        type="submit"
+                        className="w-full mt-6 py-3 bg-green-600 text-white rounded-lg font-medium text-lg hover:bg-green-700 transition-all"
+                    >
+                        Payer
+                    </button>
+                </form>
+            </div>
+        </Elements>
     );
 };
 
