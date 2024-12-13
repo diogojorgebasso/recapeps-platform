@@ -11,6 +11,7 @@ import Quizz from "./pages/Quizz";
 import SignUp from "./pages/SignUp";
 import ChatBot from "./pages/ChatBot";
 import AddQuestionForm from "./components/dashboard/add-quizz";
+import SubjectQuiz from "./pages/Quizz/SubjectQuiz";
 
 import Notes from "./pages/Notes";
 
@@ -18,12 +19,15 @@ import Profile from "@/pages/Profile"
 import { useAuth } from "./hooks/useAuth";
 import ContactForm from "./pages/Contact";
 import About from "./pages/About";
-import FlashcardsPage from "./pages/FlashCard";
+import FlashcardsPage from "./pages/Flashcards";
+import FlashcardsSubject from "./pages/Flashcards/subject";
 import Support from "./pages/Support";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import TermesCondition from "./pages/Termes-Condition";
 import DashboardMock from "./pages/DashboardMock";
 import PaymentPage from "./pages/Checkout/Payment";
+import Mixite from "./pages/Notes/ecrit-1/Mixite";
+import LesEmotion from "./pages/Notes/ecrit-2/les-emotion";
 
 export function Routes() {
 
@@ -39,10 +43,16 @@ export function Routes() {
         <>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="quizz" element={<Quizz />} />
+            <Route path="quizz/:exame/:subjectId" element={<SubjectQuiz />} />
             <Route path="chatbot" element={<ChatBot />} />
-            <Route path="notes" element={<Notes />} />
+            <Route path="notes">
+                <Route index element={<Notes />} />
+                <Route path="ecrit-1/mixite-sexuee" element={<Mixite />} />
+                <Route path="ecrit-2/les-emotion" element={<LesEmotion />} />
+            </Route>
             <Route path="profile" element={<Profile />} />
             <Route path="flashcards" element={<FlashcardsPage />} />
+            <Route path="flashcards/:subjectId" element={<FlashcardsSubject />} />
             <Route path="account" element={<Profile />} />
         </>
     );

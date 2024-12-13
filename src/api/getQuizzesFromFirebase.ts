@@ -3,8 +3,8 @@ import { collection, getDocs } from 'firebase/firestore';
 import { Quiz, Subject } from "@/types/Quizz";
 
 // Função para buscar todas as matérias
-export const fetchSubjects = async (): Promise<Subject[]> => {
-  const querySnapshot = await getDocs(collection(db, 'subjects'));
+export const fetchSubjects = async (prova:string): Promise<Subject[]> => {
+  const querySnapshot = await getDocs(collection(db, prova));
   return querySnapshot.docs.map(doc => ({
     ...(doc.data() as Subject),
     id: doc.id,
@@ -12,8 +12,8 @@ export const fetchSubjects = async (): Promise<Subject[]> => {
 };
 
 // Função para buscar quizzes de uma matéria específica
-export const fetchQuizzesBySubject = async (subjectId: string): Promise<Quiz[]> => {
-  const quizzesRef = collection(db, `subjects/${subjectId}/quizzes`);
+export const fetchQuizzesBySubject = async (prova : string, subjectId: string): Promise<Quiz[]> => {
+  const quizzesRef = collection(db, `${prova}/${subjectId}/quizzes`);
   const querySnapshot = await getDocs(quizzesRef);
   const allQuizzes = querySnapshot.docs.map(doc => ({
     ...(doc.data() as Quiz),
