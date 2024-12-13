@@ -97,7 +97,7 @@ export default function QuizPage() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-center">
-                            Votre Pontuation: <strong>{score}</strong> / {quizzes.length}
+                            Votre Note: <strong>{score}</strong> / {quizzes.length}
                         </p>
                         <p className="text-center mt-4 text-white-700">{performanceMessage}</p>
                         <Button
