@@ -15,7 +15,6 @@ import { Link, useNavigate } from "react-router";
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
 
     const { signUpWithEmailAndPassword, isLoadingAuth, isAuthenticated } = useAuth();
     const navigate = useNavigate();
@@ -27,10 +26,6 @@ export default function SignUp() {
     }, [isAuthenticated, navigate]);
 
     const handleSignUp = async () => {
-        if (password !== confirmPassword) {
-            alert("Les mots de passe ne correspondent pas !");
-            return;
-        }
 
         try {
             await signUpWithEmailAndPassword(email, password);
@@ -74,19 +69,9 @@ export default function SignUp() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="confirm-password">Confirmez le mot de passe</Label>
-                            <Input
-                                id="confirm-password"
-                                type="password"
-                                placeholder="Répétez votre mot de passe"
-                                required
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                            />
-                        </div>
                         <Button
                             disabled={isLoadingAuth}
+                            variant="success"
                             type="button"
                             className="w-full"
                             onClick={handleSignUp}
