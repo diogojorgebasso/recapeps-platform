@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router";
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const [error, setError] = useState<unknown>(null);
     const { signUpWithEmailAndPassword, isLoadingAuth, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
@@ -32,6 +32,7 @@ export default function SignUp() {
             console.log("Inscription réussie !");
             navigate("/dashboard");
         } catch (error) {
+            setError(error);
             console.error("Erreur lors de l'inscription :", error);
         }
     };
@@ -69,6 +70,7 @@ export default function SignUp() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+                        {error && <p className="text-red-500">{error}</p>}
                         <Button
                             disabled={isLoadingAuth}
                             variant="success"
@@ -87,6 +89,6 @@ export default function SignUp() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     );
 }
