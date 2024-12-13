@@ -23,7 +23,7 @@ export default function Profile() {
         }
     };
 
-    const onCropComplete = (_croppedArea: any, croppedAreaPixels: any) => {
+    const onCropComplete = (_croppedArea: { x: number; y: number; width: number; height: number }, croppedAreaPixels: { x: number; y: number; width: number; height: number }) => {
         setCroppedAreaPixels(croppedAreaPixels);
     };
 

@@ -30,7 +30,7 @@ export default function QuizPage() {
             }
         };
         loadQuiz();
-    }, [subjectId]);
+    }, [subjectId, exame]);
 
     useEffect(() => {
         const saveQuizIfFinished = async () => {
