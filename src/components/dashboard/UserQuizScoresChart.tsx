@@ -51,7 +51,7 @@ export default function UserQuizScoresChart() {
           marginBottom: "10px",
         }}
       >
-        Votre Quiz récents
+        Vos derniers résultats
       </h2>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={quizData}>
@@ -60,7 +60,6 @@ export default function UserQuizScoresChart() {
             dataKey="quizName"
             stroke="#888"
             label={{
-              value: "Quizzes",
               position: "insideBottom",
               offset: -5,
               fill: "#888",

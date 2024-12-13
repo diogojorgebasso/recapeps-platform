@@ -40,15 +40,15 @@ const data = {
       items: [
         {
           title: "Exp. pédagogiques",
-          url: "/quiz/math",
+          url: "/quizz/ecrit-1/expérimentations-pédagogiques",
         },
         {
           title: "Les émotions",
-          url: "/quiz/emotions",
+          url: "/quizz/ecrit-2/les-émotions",
         },
         {
           title: "Mixité sexuée",
-          url: "/quiz/mixite-sexuee",
+          url: "/quizz/ecrit-1/mixité-sexuée",
         },
       ],
     },
@@ -77,7 +77,7 @@ const data = {
       icon: Bot,
     },
     {
-      title: "Notes",
+      title: "Fiches de révision",
       url: "/notes",
       icon: NotebookTabs,
       items: [
@@ -87,7 +87,7 @@ const data = {
         },
         {
           title: "Les emotions",
-          url: "/notes/ecrit-2/sport-scolaire",
+          url: "/notes/ecrit-2/les-emotion",
         },
 
       ]

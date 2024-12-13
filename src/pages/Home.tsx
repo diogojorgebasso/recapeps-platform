@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router";
-
 export default function Home() {
     const features = [
         {
@@ -20,15 +19,11 @@ export default function Home() {
             action: "Explorer",
         },
         {
-            title: "Quiz",
+            title: "Quizz",
             description: "Testez vos connaissances avec des quiz personnalisés.",
             action: "Commencer",
         },
-        {
-            title: "Profil",
-            description: "Gérez vos informations personnelles et vos préférences.",
-            action: "Modifier",
-        },
+
     ];
 
     return (
@@ -56,7 +51,9 @@ export default function Home() {
                                     <CardDescription>{feature.description}</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <Button variant="outline">{feature.action}</Button>
+                                    <Link to={`/${feature.title}`}>
+                                        <Button variant="outline">{feature.action}</Button>
+                                    </Link>
                                 </CardContent>
                             </Card>
                         ))}
