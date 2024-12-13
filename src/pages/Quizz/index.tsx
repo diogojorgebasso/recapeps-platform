@@ -44,7 +44,7 @@ export default function Home() {
             </TabsList>
 
             <TabsContent value="prova1" className="mt-4">
-              <p className="text-center mb-4 font-semibold">Matérias da Prova 1</p>
+              <p className="text-center mb-4 font-semibold">Choisissez votre sujet :</p>
               <ul className="space-y-4">
                 {subjects1.map((subject) => (
                   <li key={subject.id}>
@@ -59,7 +59,7 @@ export default function Home() {
             </TabsContent>
 
             <TabsContent value="prova2" className="mt-4">
-              <p className="text-center mb-4 font-semibold">Matérias da Prova 2</p>
+              <p className="text-center mb-4 font-semibold">Choisissez votre sujet :</p>
               <ul className="space-y-4">
                 {subjects2.map((subject) => (
                   <li key={subject.id}>

@@ -8,4 +8,5 @@ export interface Subject {
     question: string;
     options: string[];
     answer: string;
+    level:number;
   }

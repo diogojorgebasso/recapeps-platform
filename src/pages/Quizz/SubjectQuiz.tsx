@@ -117,9 +117,14 @@ export default function QuizPage() {
 
     return (
         <div className="h-screen flex flex-col items-center justify-center bg-gray-50">
-            <Card className="max-w-lg w-full bg-white shadow-lg">
+            <Card className="max-w-lg w-full shadow-lg relative">
                 <CardHeader>
                     <CardTitle className="text-xl text-center">{currentQuiz.question}</CardTitle>
+                    <div className="absolute top-0 right-2">
+                        <span className="bg-blue-500 text-white text-xs font-semibold px-2 rounded">
+                            niveau: {currentQuiz.level}
+                        </span>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <ul className="space-y-4">
@@ -149,9 +154,9 @@ export default function QuizPage() {
                             </li>
                         ))}
                     </ul>
-                    <div className="mt-2 flex items-center space-x-2">
+                    <div className="mt-2 flex">
                         <span>{progress.toFixed(0)}%</span>
-                        <Progress value={progress} className="flex-1" />
+                        <Progress value={40} />
                         <span>100%</span>
                     </div>
                     {selectedAnswer && (
