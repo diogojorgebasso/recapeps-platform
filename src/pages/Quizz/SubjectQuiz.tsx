@@ -132,8 +132,8 @@ export default function QuizPage() {
                                                 ? "success"
                                                 : option === selectedAnswer
                                                     ? "destructive"
-                                                    : "default"
-                                            : "default"
+                                                    : "outline"
+                                            : "outline"
                                     } className="w-full rounded-lg py-2 text-white shadow-md transition break-words"
                                     style={{
                                         whiteSpace: "normal", // Permite quebras de linha

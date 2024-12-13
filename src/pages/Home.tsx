@@ -14,7 +14,7 @@ export default function Home() {
             action: "Explorer",
         },
         {
-            title: "Cartes Mémoire",
+            title: "Flashcards",
             description: "Mémorisez des concepts importants de manière ludique.",
             action: "Explorer",
         },
@@ -35,9 +35,11 @@ export default function Home() {
                     <p className="text-lg text-muted-foreground mb-6">
                         Votre plateforme pour organiser vos connaissances et vos études.
                     </p>
-                    <Link to="/login">
-                        <Button className="px-6 py-3">Commencer Maintenant</Button>
-                    </Link>
+                    <Button asChild className="px-6 py-3">
+                        <Link to="/login">
+                            Commencer Maintenant
+                        </Link>
+                    </Button>
                 </section>
 
                 {/* Section des fonctionnalités */}

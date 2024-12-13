@@ -22,7 +22,7 @@ export default function Menu() {
                             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                                 <li>
                                     <Link
-                                        to="/outils/dashboard"
+                                        to="/dashboard"
                                         className="block select-none space-y-1 rounded-md p-3 no-underline transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                                     >
                                         <div className="text-sm font-medium leading-none">
@@ -36,7 +36,7 @@ export default function Menu() {
                                 </li>
                                 <li>
                                     <Link
-                                        to="/outils/notes"
+                                        to="/notes"
                                         className="block select-none space-y-1 rounded-md p-3 no-underline transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                                     >
                                         <div className="text-sm font-medium leading-none">
@@ -50,7 +50,7 @@ export default function Menu() {
                                 </li>
                                 <li>
                                     <Link
-                                        to="/outils/flashcards"
+                                        to="/flashcards"
                                         className="block select-none space-y-1 rounded-md p-3 no-underline transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                                     >
                                         <div className="text-sm font-medium leading-none">
@@ -64,15 +64,14 @@ export default function Menu() {
                                 </li>
                                 <li>
                                     <Link
-                                        to="/outils/chatbot"
+                                        to="/chatbot"
                                         className="block select-none space-y-1 rounded-md p-3 no-underline transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                                     >
                                         <div className="text-sm font-medium leading-none">
-                                            Chatbot
+                                            Quizz
                                         </div>
                                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                            Interagissez avec une IA pour poser des questions et
-                                            approfondir vos connaissances.
+                                            Testez vos connaissances avec des quiz personnalisés.
                                         </p>
                                     </Link>
                                 </li>

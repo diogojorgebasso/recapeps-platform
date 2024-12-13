@@ -14,7 +14,7 @@ import AddQuestionForm from "./components/dashboard/add-quizz";
 import SubjectQuiz from "./pages/Quizz/SubjectQuiz";
 
 import Notes from "./pages/Notes";
-
+import Team from "./pages/Team";
 import Profile from "@/pages/Profile"
 import { useAuth } from "./hooks/useAuth";
 import ContactForm from "./pages/Contact";
@@ -42,6 +42,7 @@ export function Routes() {
     const userRoutes = (
         <>
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="team" element={<Team />} />
             <Route path="quizz" element={<Quizz />} />
             <Route path="quizz/:exame/:subjectId" element={<SubjectQuiz />} />
             <Route path="chatbot" element={<ChatBot />} />
