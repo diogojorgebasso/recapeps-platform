@@ -107,7 +107,7 @@ export default function FlashcardsSubject() {
                     />
                 )}
             </div>
-            <div className="flex  items-center mt-8">
+            <div className="flex justify-center items-center mt-8 space-x-4">
                 <Button
                     onClick={handlePrevious}
                     variant="default"
