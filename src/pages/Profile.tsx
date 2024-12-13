@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { NavLink } from "react-router";
 
 export default function Profile() {
-    const { photoURL, updatePhotoURLInContext, uid, subscribed } = useAuth();
+    const { photoURL, updatePhotoURLInContext, uid, subscribed, email } = useAuth();
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<{ width: number; height: number; x: number; y: number } | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -164,7 +164,7 @@ export default function Profile() {
                         <label className="block text-gray-600 mb-1">Adresse Email</label>
                         <input
                             type="email"
-                            placeholder="email@example.com"
+                            value={email}
                             className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
                         />
                     </div>
@@ -208,9 +208,10 @@ export default function Profile() {
 
                 {/* TODO : get the history */}
                 < section >
+                    <h2 className="text-xl font-semibold text-gray-700 mb-4">Historique des Achats</h2>
+
                     {subscribed ?
                         <>
-                            <h2 className="text-xl font-semibold text-gray-700 mb-4">Historique des Achats</h2>
                             <p className="text-gray-600">
                                 Abonnement: <span className="font-semibold">Premium (Actif)</span>
                             </p>
