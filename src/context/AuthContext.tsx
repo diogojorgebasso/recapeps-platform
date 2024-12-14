@@ -148,7 +148,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const signOutFn = useCallback(() => signOut(auth), []);
+    const signOutFn = useCallback(async () => {
+        await signOut(auth);
+        window.location.reload();
+    }
+        , []);
 
     const handleRecoverPassword = useCallback(async (email: string) => {
         await sendPasswordResetEmail(auth, email);
