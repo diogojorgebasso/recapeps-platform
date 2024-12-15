@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
 import { fetchSubjects } from "@/api/getQuizzesFromFirebase";
 import { Subject } from "@/types/Quizz";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, Tabs } from "@chakra-ui/react";
 import { Button } from "@/components/ui/button";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs"; // Ajuste caso necessário, dependendo de onde seu componente Tabs está
 import { Link } from "react-router";
 
 export default function Home() {
   const [subjects1, setSubjects1] = useState<Subject[]>([]);
   const [subjects2, setSubjects2] = useState<Subject[]>([]);
-  const [selectedTab, setSelectedTab] = useState("prova1");
 
   useEffect(() => {
     const loadSubjects = async () => {
@@ -28,22 +21,22 @@ export default function Home() {
 
   return (
     <div className="flex h-screen items-center justify-center">
-      <Card className="max-w-md w-full bg-white shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Sélectionner un test</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-            <TabsList className="flex space-x-4 justify-center">
-              <TabsTrigger value="prova1" className="px-4 py-2 bg-blue-500 text-white rounded">
+      <Card.Root className="max-w-md w-full bg-white shadow-lg">
+        <Card.Header>
+          Sélectionner un test
+        </Card.Header>
+        <Card.Body>
+          <Tabs.Root >
+            <Tabs.List className="flex space-x-4 justify-center">
+              <Tabs.Trigger value="prova1" className="px-4 py-2 bg-blue-500 text-white rounded">
                 Écrit 1
-              </TabsTrigger>
-              <TabsTrigger value="prova2" className="px-4 py-2 bg-blue-500 text-white rounded">
+              </Tabs.Trigger>
+              <Tabs.Trigger value="prova2" className="px-4 py-2 bg-blue-500 text-white rounded">
                 Écrit 2
-              </TabsTrigger>
-            </TabsList>
+              </Tabs.Trigger>
+            </Tabs.List>
 
-            <TabsContent value="prova1" className="mt-4">
+            <Tabs.Content value="prova1" className="mt-4">
               <p className="text-center mb-4 font-semibold">Choisissez votre sujet :</p>
               <ul className="space-y-4">
                 {subjects1.map((subject) => (
@@ -56,9 +49,9 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-            </TabsContent>
+            </Tabs.Content>
 
-            <TabsContent value="prova2" className="mt-4">
+            <Tabs.Content value="prova2" className="mt-4">
               <p className="text-center mb-4 font-semibold">Choisissez votre sujet :</p>
               <ul className="space-y-4">
                 {subjects2.map((subject) => (
@@ -71,10 +64,10 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+            </Tabs.Content>
+          </Tabs.Root>
+        </Card.Body>
+      </Card.Root>
     </div>
   );
 }

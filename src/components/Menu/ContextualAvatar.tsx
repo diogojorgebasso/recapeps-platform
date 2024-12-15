@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth";
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
+import { defineStyle, MenuItemGroup } from "@chakra-ui/react"
 
 import {
     Cloud,
@@ -18,122 +19,134 @@ import {
 } from "lucide-react"
 
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+    MenuContent,
+    MenuItem,
+    MenuItemCommand,
+    MenuRoot,
+    MenuTrigger,
+    MenuSeparator
+} from "@/components/ui/menu"
 
 import {
-    Dialog,
+    DialogBody,
+    DialogCloseTrigger,
     DialogContent,
-    DialogDescription,
+    DialogFooter,
     DialogHeader,
+    DialogRoot,
     DialogTitle,
     DialogTrigger,
+    DialogActionTrigger
 } from "@/components/ui/dialog"
+
+const ringCss = defineStyle({
+    outlineWidth: "2px",
+    outlineColor: "colorPalette.500",
+    outlineOffset: "2px",
+    outlineStyle: "solid",
+})
 
 export default function ContextualAvatar() {
 
-    const { photoURL, currentUser, signOut } = useAuth();
+    const { photoURL, currentUser, signOut, name } = useAuth();
 
     if (currentUser) {
 
         return (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Avatar>
-                        <AvatarImage
-                            src={photoURL}
-                            alt="User Avatar"
-                        />
+            <MenuRoot>
+                <MenuTrigger asChild>
+                    <Avatar
+                        src={photoURL}
+                        name={name}
+                        css={ringCss}
+                    >
                     </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                        <Link to="/profile">
-                            <DropdownMenuItem>
+                </MenuTrigger>
+                <MenuContent className="w-56">
+                    <MenuItemGroup title="Mon Compte">
+                        <MenuItem value="profil" asChild>
+                            <Link to="/profile">
                                 <User />
-                                <span>Profil</span>
-                                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </Link>
-                        <Link to="checkout">
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                <span>Passez à Recap'eps Pro</span>
-                                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </Link>
-                        <Link to="profile">
-                            <DropdownMenuItem>
+                                Profil
+                                <MenuItemCommand>⇧⌘P</MenuItemCommand>
+                            </Link>
+                        </MenuItem>
+                        <MenuItem value="settings" asChild>
+                            <Link to="profile">
                                 <Settings />
-                                <span>Settings</span>
-                                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                            </DropdownMenuItem>
+                                Settings
+                                <MenuItemCommand>⌘S</MenuItemCommand>
+                            </Link>
+                        </MenuItem>
+                    </MenuItemGroup>
+                    <MenuSeparator />
+                    <MenuItem value="checkout" asChild>
+                        <Link to="checkout">
+                            <CreditCard />
+                            Passez à Recap'eps Pro
+                            <MenuItemCommand>⌘B</MenuItemCommand>
                         </Link>
-                        <Dialog>
-                            <DialogTrigger>
-                                <DropdownMenuItem>
-                                    <Keyboard />
-                                    <span>Keyboard shortcuts</span>
-                                    <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                    <DialogDescription>
-                                        This action cannot be undone. This will permanently delete your account
-                                        and remove your data from our servers.
-                                    </DialogDescription>
-                                </DialogHeader>
-                            </DialogContent>
-                        </Dialog>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
+                    </MenuItem>
+                    <MenuItem value="keyboard">
+                        <Keyboard />
+                        Keyboard shortcuts
+                        <MenuItemCommand>⌘K</MenuItemCommand>
+                    </MenuItem>
+                    <MenuItem value="team" asChild>
                         <Link to="team">
-                            <DropdownMenuItem>
-                                <Users />
-                                <span>Team</span>
-                            </DropdownMenuItem>
+                            <Users />
+                            Team
                         </Link>
+                    </MenuItem>
+                    <MenuItem value="team" asChild>
                         <Link to="team">
-                            <DropdownMenuItem>
-                                <Plus />
-                                <span>New Team</span>
-                                <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-                            </DropdownMenuItem>
+                            <Plus />
+                            New Team
+                            <MenuItemCommand>⌘+T</MenuItemCommand>
                         </Link>
-
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        <LifeBuoy />
-                        <span>Support</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem disabled>
+                    </MenuItem>
+                    <MenuSeparator />
+                    <MenuItem value="support" asChild>
+                        <Link to="support">
+                            <LifeBuoy />
+                            Support
+                        </Link>
+                    </MenuItem>
+                    <MenuItem value="api" disabled>
                         <Cloud />
-                        <span>API</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={signOut}>
-                        <LogOut />
-                        <span>Log out</span>
-                        <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+                        API
+                    </MenuItem>
+                    <MenuSeparator />
+                    <DialogRoot>
+                        <DialogTrigger asChild>
+                            <MenuItem value="logOut">
+                                <LogOut />
+                                Log out
+                                <MenuItemCommand>⇧⌘Q</MenuItemCommand>
+                            </MenuItem>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogCloseTrigger />
+                            <DialogHeader>
+                                <DialogTitle>Dialog Title</DialogTitle>
+                            </DialogHeader>
+                            <DialogBody>
+                                Voulez-vous bien vous déconnecter ?
+                            </DialogBody>
+                            <DialogFooter>
+                                <DialogActionTrigger asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </DialogActionTrigger>
+                                <Button onClick={signOut}>Sign Out</Button>
+                            </DialogFooter>
+                            <DialogCloseTrigger />
+                        </DialogContent>
+                    </DialogRoot>
+                </MenuContent>
+            </MenuRoot >
         )
     }
     else {
-        return (<Link to="/login"><Button>Login</Button></Link>)
+        return (<Button asChild><Link to="/login">Login</Link></Button>)
     }
 }

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { addQuizToSubject } from "@/api/postQuizzesFromFirebase";
-import { Textarea } from "../ui/textarea";
-import { Input } from "../ui/input";
+import { Textarea } from "@chakra-ui/react"
+import { Input } from "@chakra-ui/react"
 import { Button } from "../ui/button";
-import { Label } from "@radix-ui/react-label";
-import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue,  } from "@radix-ui/react-select";
+import { Field } from "../ui/field";
+
+
 export default function AddQuestionForm() {
   const [subjectId, setSubjectId] = useState("");
   const [question, setQuestion] = useState("");
@@ -45,32 +46,33 @@ export default function AddQuestionForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Campo ID do Sujeito */}
         <div>
-          <Label htmlFor="subject-id">ID do Sujeito</Label>
-          <Input
-            id="subject-id"
-            type="text"
-            value={subjectId}
-            onChange={(e) => setSubjectId(e.target.value)}
-            placeholder="Insira o ID do sujeito"
-            required
-          />
+          <Field label="ID do Sujeito">
+            <Input
+              type="text"
+              value={subjectId}
+              onChange={(e) => setSubjectId(e.target.value)}
+              placeholder="Insira o ID do sujeito"
+              required
+            />
+          </Field>
         </div>
 
         {/* Campo Pergunta */}
         <div>
-          <Label htmlFor="question">Pergunta</Label>
-          <Textarea
-            id="question"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Escreva a pergunta"
-            required
-          />
+          <Field label="Pergunta">
+            <Textarea
+              id="question"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Escreva a pergunta"
+              required
+            />
+          </Field>
         </div>
 
         {/* Campo Opções */}
         <div>
-          <Label>Opções</Label>
+          <Field>Opções</Field>
           {options.map((opt, index) => (
             <div key={index} className="mb-2">
               <Input
@@ -85,8 +87,8 @@ export default function AddQuestionForm() {
         </div>
 
         {/* Campo Resposta Correta */}
-        <div>
-          <Label>Resposta Correta</Label>
+        {/* <div>
+          <Field>Resposta Correta</Field>
           <Select
             onValueChange={(value) => setAnswer(value)}
             value={answer}
@@ -96,16 +98,16 @@ export default function AddQuestionForm() {
               <SelectValue placeholder="Selecione a resposta correta" />
             </SelectTrigger>
             <SelectContent>
-            {options
-              .filter((opt) => opt.trim() !== "") // Ignorar valores vazios
-              .map((opt, index) => (
-                <SelectItem key={index} value={opt}>
-                  {opt}
-                </SelectItem>
-              ))}
+              {options
+                .filter((opt) => opt.trim() !== "") // Ignorar valores vazios
+                .map((opt, index) => (
+                  <SelectItem key={index} value={opt}>
+                    {opt}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
-        </div>
+        </div> */}
 
         {/* Botão de Enviar */}
         <Button type="submit" className="w-full">

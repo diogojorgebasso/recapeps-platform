@@ -24,7 +24,6 @@ import FlashcardsSubject from "./pages/Flashcards/subject";
 import Support from "./pages/Support";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import TermesCondition from "./pages/Termes-Condition";
-import DashboardMock from "./pages/DashboardMock";
 import PaymentPage from "./pages/Checkout/Payment";
 import Mixite from "./pages/Notes/ecrit-1/Mixite";
 import LesEmotion from "./pages/Notes/ecrit-2/les-emotion";
@@ -68,9 +67,6 @@ export function Routes() {
                 <Route path="termes-et-condition" element={<TermesCondition />} />
                 <Route path="checkout" element={<Checkout />} />
                 <Route path="payment" element={<PaymentPage />} />
-                <Route path="outlis">
-                    <Route path="dashboard" element={<DashboardMock />} />
-                </Route>
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<SignUp />} />

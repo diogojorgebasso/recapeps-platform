@@ -1,29 +1,59 @@
+import { Popover as ChakraPopover, Portal } from "@chakra-ui/react"
+import { CloseButton } from "./close-button"
 import * as React from "react"
-import * as PopoverPrimitive from "@radix-ui/react-popover"
 
-import { cn } from "@/lib/utils"
+interface PopoverContentProps extends ChakraPopover.ContentProps {
+  portalled?: boolean
+  portalRef?: React.RefObject<HTMLElement>
+}
 
-const Popover = PopoverPrimitive.Root
+export const PopoverContent = React.forwardRef<
+  HTMLDivElement,
+  PopoverContentProps
+>(function PopoverContent(props, ref) {
+  const { portalled = true, portalRef, ...rest } = props
+  return (
+    <Portal disabled={!portalled} container={portalRef}>
+      <ChakraPopover.Positioner>
+        <ChakraPopover.Content ref={ref} {...rest} />
+      </ChakraPopover.Positioner>
+    </Portal>
+  )
+})
 
-const PopoverTrigger = PopoverPrimitive.Trigger
+export const PopoverArrow = React.forwardRef<
+  HTMLDivElement,
+  ChakraPopover.ArrowProps
+>(function PopoverArrow(props, ref) {
+  return (
+    <ChakraPopover.Arrow {...props} ref={ref}>
+      <ChakraPopover.ArrowTip />
+    </ChakraPopover.Arrow>
+  )
+})
 
-const PopoverContent = React.forwardRef<
-  React.ElementRef<typeof PopoverPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
->(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
-  <PopoverPrimitive.Portal>
-    <PopoverPrimitive.Content
-      ref={ref}
-      align={align}
-      sideOffset={sideOffset}
-      className={cn(
-        "z-50 w-72 rounded-md border border-neutral-200 bg-white p-4 text-neutral-950 shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50",
-        className
-      )}
+export const PopoverCloseTrigger = React.forwardRef<
+  HTMLButtonElement,
+  ChakraPopover.CloseTriggerProps
+>(function PopoverCloseTrigger(props, ref) {
+  return (
+    <ChakraPopover.CloseTrigger
+      position="absolute"
+      top="1"
+      insetEnd="1"
       {...props}
-    />
-  </PopoverPrimitive.Portal>
-))
-PopoverContent.displayName = PopoverPrimitive.Content.displayName
+      asChild
+      ref={ref}
+    >
+      <CloseButton size="sm" />
+    </ChakraPopover.CloseTrigger>
+  )
+})
 
-export { Popover, PopoverTrigger, PopoverContent }
+export const PopoverTitle = ChakraPopover.Title
+export const PopoverDescription = ChakraPopover.Description
+export const PopoverFooter = ChakraPopover.Footer
+export const PopoverHeader = ChakraPopover.Header
+export const PopoverRoot = ChakraPopover.Root
+export const PopoverBody = ChakraPopover.Body
+export const PopoverTrigger = ChakraPopover.Trigger

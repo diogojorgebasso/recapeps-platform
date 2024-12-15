@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogContent } from "@radix-ui/react-dialog";
 import Cropper from "react-easy-crop";
+import {
+    DialogContent,
+    DialogRoot,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "@/hooks/useAuth";
@@ -106,7 +110,7 @@ export default function Profile() {
                     </div>
                 </div>
 
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogRoot open={isDialogOpen}>
                     <DialogContent>
                         <DialogTitle>Crop photo</DialogTitle>
 
@@ -139,7 +143,7 @@ export default function Profile() {
                             </Button>
                         </div>
                     </DialogContent>
-                </Dialog>
+                </DialogRoot>
 
                 <div className="flex-1">
                     <div className="grid grid-cols-2 gap-4">

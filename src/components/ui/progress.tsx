@@ -1,26 +1,34 @@
+import { Progress as ChakraProgress } from "@chakra-ui/react"
+import { InfoTip } from "./toggle-tip"
 import * as React from "react"
-import * as ProgressPrimitive from "@radix-ui/react-progress"
 
-import { cn } from "@/lib/utils"
+export const ProgressBar = React.forwardRef<
+  HTMLDivElement,
+  ChakraProgress.TrackProps
+>(function ProgressBar(props, ref) {
+  return (
+    <ChakraProgress.Track {...props} ref={ref}>
+      <ChakraProgress.Range />
+    </ChakraProgress.Track>
+  )
+})
 
-const Progress = React.forwardRef<
-  React.ElementRef<typeof ProgressPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
->(({ className, value, ...props }, ref) => (
-  <ProgressPrimitive.Root
-    ref={ref}
-    className={cn(
-      "relative h-3 w-full overflow-hidden rounded-full bg-amber-200",
-      className
-    )}
-    {...props}
-  >
-    <ProgressPrimitive.Indicator
-      className="h-full w-full flex-1 bg-primary transition-all"
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-    />
-  </ProgressPrimitive.Root>
-))
-Progress.displayName = ProgressPrimitive.Root.displayName
+export interface ProgressLabelProps extends ChakraProgress.LabelProps {
+  info?: React.ReactNode
+}
 
-export { Progress }
+export const ProgressLabel = React.forwardRef<
+  HTMLDivElement,
+  ProgressLabelProps
+>(function ProgressLabel(props, ref) {
+  const { children, info, ...rest } = props
+  return (
+    <ChakraProgress.Label {...rest} ref={ref}>
+      {children}
+      {info && <InfoTip>{info}</InfoTip>}
+    </ChakraProgress.Label>
+  )
+})
+
+export const ProgressRoot = ChakraProgress.Root
+export const ProgressValueText = ChakraProgress.ValueText

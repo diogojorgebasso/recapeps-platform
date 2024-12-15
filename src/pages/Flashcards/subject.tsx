@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/utils/firebase"; // Ajuste o caminho para sua configuração do Firebase
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { db } from "@/utils/firebase";
+import { Card } from "@chakra-ui/react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router";
 
@@ -59,11 +59,11 @@ export default function FlashcardsSubject() {
     if (currentPage === flashcards.length) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <Card className="border p-6 max-w-md w-full">
-                    <CardHeader>
-                        <CardTitle className="text-2xl text-center">Félicitations!</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                <Card.Root className="border p-6 max-w-md w-full">
+                    <Card.Header>
+                        Félicitations!
+                    </Card.Header>
+                    <Card.Body>
                         <p className="text-center text-xl text-white">
                             Vous avez terminé toutes les flashcards.
                         </p>
@@ -73,8 +73,8 @@ export default function FlashcardsSubject() {
                         >
                             Retour à tout les sujets
                         </Button>
-                    </CardContent>
-                </Card>
+                    </Card.Body>
+                </Card.Root>
             </div>
         );
     }
@@ -110,7 +110,6 @@ export default function FlashcardsSubject() {
             <div className="flex justify-center items-center mt-8 space-x-4">
                 <Button
                     onClick={handlePrevious}
-                    variant="default"
                     disabled={currentPage === 0}
                     className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded"
                 >
@@ -121,7 +120,6 @@ export default function FlashcardsSubject() {
                 </span>
                 <Button
                     onClick={handleNext}
-                    variant="success"
                     disabled={currentPage === flashcards.length}
                     className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
                 >
@@ -141,11 +139,11 @@ function Flashcard({ word, explanation, showExplanation,
     }) {
 
     return (
-        <Card className="border p-6 max-w-md w-full">
-            <CardHeader>
-                <CardTitle className="text-2xl text-center">{word}</CardTitle>
-            </CardHeader>
-            <CardContent>
+        <Card.Root className="border p-6 max-w-md w-full">
+            <Card.Header>
+                ]{word}
+            </Card.Header>
+            <Card.Body>
                 {showExplanation ? (
                     <p className="text-center text-xl text-white">{explanation}</p>
                 ) : (
@@ -159,7 +157,7 @@ function Flashcard({ word, explanation, showExplanation,
                 >
                     {showExplanation ? "Cacher l'explication" : "Montrer l'explication"}
                 </Button>
-            </CardContent>
-        </Card>
+            </Card.Body>
+        </Card.Root>
     );
 }

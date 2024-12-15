@@ -1,105 +1,102 @@
 import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-    navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+    Box, Flex, HStack,
+    Text, SimpleGrid,
+    VStack
+} from "@chakra-ui/react";
 import { Link } from "react-router";
-import { ModeToggle } from "../ui/mode-toggle";
+import { Button } from "../ui/button";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu";
 import ContextualAvatar from "./ContextualAvatar";
+import { ColorModeButton } from "../ui/color-mode";
+import { ChevronDownIcon } from "lucide-react";
 
 export default function Menu() {
     return (
-        <div className="flex items-center justify-between w-full px-4 py-2 bg-gray-100 dark:bg-gray-700">
-            <NavigationMenu>
-                <NavigationMenuList>
-                    <NavigationMenuItem>
-                        <NavigationMenuTrigger>Fonctionnalités</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                                <li>
-                                    <Link
-                                        to="/dashboard"
-                                        className="block select-none space-y-1 rounded-md p-3 no-underline transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                    >
-                                        <div className="text-sm font-medium leading-none">
-                                            Tableau de Bord
-                                        </div>
-                                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                            Gérez vos activités et accédez rapidement à toutes vos
-                                            ressources éducatives.
-                                        </p>
+        <Box px={4} py={2}>
+            <Flex align="center" justify="space-between" w="full">
+                {/* Navigation Menu */}
+                <HStack gap={4}>
+                    {/* Fonctionnalités Menu */}
+                    <MenuRoot>
+                        <MenuTrigger asChild>
+                            <Button variant="plain" fontWeight="bold">
+                                Fonctionnalités <ChevronDownIcon />
+                            </Button>
+                        </MenuTrigger>
+                        <MenuContent p={4} boxShadow="lg" borderRadius="md" maxW="lg">
+                            <SimpleGrid columns={2} gap={4}>
+                                <MenuItem value="dashboard" asChild>
+                                    <Link to="/dashboard">
+                                        <VStack align="start">
+                                            <Text fontSize="sm" fontWeight="bold">
+                                                Tableau de Bord
+                                            </Text>
+                                            <Text fontSize="xs" color="gray.500">
+                                                Gérez vos activités et accédez rapidement à toutes vos
+                                                ressources éducatives.
+                                            </Text>
+                                        </VStack>
                                     </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/notes"
-                                        className="block select-none space-y-1 rounded-md p-3 no-underline transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                    >
-                                        <div className="text-sm font-medium leading-none">
-                                            Notes
-                                        </div>
-                                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                            Créez, organisez et révisez vos notes efficacement dans un
-                                            espace structuré.
-                                        </p>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/flashcards"
-                                        className="block select-none space-y-1 rounded-md p-3 no-underline transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                    >
-                                        <div className="text-sm font-medium leading-none">
-                                            Cartes Mémoire
-                                        </div>
-                                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                            Mémorisez des concepts clés avec des cartes interactives et
-                                            intuitives.
-                                        </p>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/chatbot"
-                                        className="block select-none space-y-1 rounded-md p-3 no-underline transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                    >
-                                        <div className="text-sm font-medium leading-none">
-                                            Quizz
-                                        </div>
-                                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                            Testez vos connaissances avec des quiz personnalisés.
-                                        </p>
-                                    </Link>
-                                </li>
-                            </ul>
-                        </NavigationMenuContent>
-                    </NavigationMenuItem>
+                                </MenuItem>
+                                <MenuItem value="notes" asChild>
+                                    <Link to="/notes">
+                                        <VStack align="start">
 
-                    {/* Documentation */}
-                    <NavigationMenuItem>
-                        <NavigationMenuLink asChild>
-                            <Link to="/contact" className={navigationMenuTriggerStyle()}>
-                                Contact
-                            </Link>
-                        </NavigationMenuLink>
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                        <NavigationMenuLink asChild>
-                            <Link to="/about" className={navigationMenuTriggerStyle()}>
-                                À Propos
-                            </Link>
-                        </NavigationMenuLink>
-                    </NavigationMenuItem>
-                </NavigationMenuList>
-            </NavigationMenu>
-            <div className="ml-auto flex items-center space-x-4">
-                <ContextualAvatar />
-                <ModeToggle />
-            </div>
-        </div>
+                                            <Text fontSize="sm" fontWeight="bold">
+                                                Notes
+                                            </Text>
+                                            <Text fontSize="xs" color="gray.500">
+                                                Créez, organisez et révisez vos notes efficacement dans un
+                                                espace structuré.
+                                            </Text>
+                                        </VStack>
+                                    </Link>
+                                </MenuItem>
+                                <MenuItem value="flashcards" asChild>
+                                    <Link to="/flashcards">
+                                        <VStack align="start">
+
+                                            <Text fontSize="sm" fontWeight="bold">
+                                                Cartes Mémoire
+                                            </Text>
+                                            <Text fontSize="xs" color="gray.500">
+                                                Mémorisez des concepts clés avec des cartes interactives et
+                                                intuitives.
+                                            </Text>
+                                        </VStack>
+                                    </Link>
+                                </MenuItem>
+                                <MenuItem value="quizz" asChild>
+                                    <VStack align="start">
+                                        <Link to="/quizz">
+                                            <Text fontSize="sm" fontWeight="bold">
+                                                Quizz
+                                            </Text>
+                                            <Text fontSize="xs" color="gray.500">
+                                                Testez vos connaissances avec des quiz personnalisés.
+                                            </Text>
+                                        </Link>
+                                    </VStack>
+                                </MenuItem>
+                            </SimpleGrid>
+                        </MenuContent>
+                    </MenuRoot>
+
+                    {/* Static Links */}
+                    <Button asChild fontWeight="bold">
+                        <Link to="/contact">Contact</Link>
+                    </Button>
+                    <Button fontWeight="bold">
+                        <Link to="/about">À Propos</Link>
+                    </Button>
+                </HStack>
+
+                {/* Right Actions */}
+                <HStack gap={4} ml="auto">
+                    <ContextualAvatar />
+                    <ColorModeButton />
+                </HStack>
+            </Flex>
+        </Box>
     );
 }

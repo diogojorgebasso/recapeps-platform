@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { db } from "@/utils/firebase"; // Adjust the path to your Firebase configuration
+import { db } from "@/utils/firebase";
 import { collection, addDoc } from "firebase/firestore";
 
 export default function ContactForm() {

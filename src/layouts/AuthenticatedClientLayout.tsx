@@ -1,25 +1,22 @@
-import React from "react"
-import { AppSidebar } from "@/components/sidebar/app-sidebar"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { Outlet, useLocation, useNavigate } from "react-router"
+import { useState } from "react"
 import { useAuth } from "@/hooks/useAuth"
+import { Outlet, useLocation, useNavigate } from "react-router"
+import { Separator, Box, IconButton, Flex } from "@chakra-ui/react"
+
+import { BreadcrumbCurrentLink, BreadcrumbLink, BreadcrumbRoot } from "@/components/ui/breadcrumb"
+
+import Sidebar from "@/components/sidebar/sidebar"
 import { useEffect } from "react"
+import { LuPanelLeftClose } from "react-icons/lu";
 
 export default function AuthenticatedClientLayout() {
   const navigate = useNavigate();
   const { isAuthenticated, isLoadingAuth, role } = useAuth();
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
 
   useEffect(() => {
     if (!isLoadingAuth && !isAuthenticated) {
@@ -35,29 +32,32 @@ export default function AuthenticatedClientLayout() {
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
+    <Flex>
+      {isSidebarOpen && <Sidebar />}
+      <Box>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
+            <IconButton
+              aria-label="Toggle Sidebar"
+              onClick={toggleSidebar}
+              variant="ghost"
+              size="sm"
+              _hover={{ bg: "gray.200" }}
+            >
+              <LuPanelLeftClose />
+            </IconButton>
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                {pathnames.map((name, index) => (
-                  <React.Fragment key={index}>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>{capitalizeFirstLetter(name)}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </React.Fragment>
-                ))}
-              </BreadcrumbList>
-            </Breadcrumb>
+            <BreadcrumbRoot>
+              {pathnames.map((name, index) => (
+                <BreadcrumbLink key={index} href={name}>{capitalizeFirstLetter(name)}
+                </BreadcrumbLink>
+              ))}
+              <BreadcrumbCurrentLink>Props</BreadcrumbCurrentLink>
+            </BreadcrumbRoot>
           </div>
         </header>
         <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
+      </Box>
+    </Flex>
   )
 }

@@ -14,7 +14,6 @@ export const CookieContext = createContext<ConsentContextType | undefined>(undef
 export const CookieProvider = ({ children }: { children: React.ReactNode }) => {
     const [consentGiven, setConsentGiven] = useState<boolean | null>(null);
 
-    // Carregar consentimento dos cookies do `localStorage`
     useEffect(() => {
         const storedConsent = localStorage.getItem("consent");
         if (storedConsent !== null) {
