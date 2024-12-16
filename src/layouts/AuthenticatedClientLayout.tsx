@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { useAuth } from "@/hooks/useAuth"
 import { Outlet, useLocation, useNavigate } from "react-router"
-import { Separator, Box, IconButton, Flex } from "@chakra-ui/react"
+import { Separator, Box, IconButton, Flex, HStack } from "@chakra-ui/react"
 
-import { BreadcrumbCurrentLink, BreadcrumbLink, BreadcrumbRoot } from "@/components/ui/breadcrumb"
+import { BreadcrumbCurrentLink, BreadcrumbRoot } from "@/components/ui/breadcrumb"
 
 import Sidebar from "@/components/sidebar/sidebar"
 import { useEffect } from "react"
@@ -32,32 +32,31 @@ export default function AuthenticatedClientLayout() {
   }
 
   return (
-    <Flex>
-      {isSidebarOpen && <Sidebar />}
-      <Box>
-        <header className="flex h-16 shrink-0 items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <IconButton
-              aria-label="Toggle Sidebar"
-              onClick={toggleSidebar}
-              variant="ghost"
-              size="sm"
-              _hover={{ bg: "gray.200" }}
-            >
-              <LuPanelLeftClose />
-            </IconButton>
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <BreadcrumbRoot>
-              {pathnames.map((name, index) => (
-                <BreadcrumbLink key={index} href={name}>{capitalizeFirstLetter(name)}
-                </BreadcrumbLink>
-              ))}
-              <BreadcrumbCurrentLink>Props</BreadcrumbCurrentLink>
-            </BreadcrumbRoot>
-          </div>
-        </header>
-        <Outlet />
-      </Box>
-    </Flex>
+    <Flex h="100vh">
+      <Sidebar isSidebarOpen={isSidebarOpen} path={pathnames} />
+      <Box flex="1" overflowY="auto">
+        <main>
+          <Box position="sticky" bg="currentcolor" top="0" as="header">
+            <HStack>
+              <IconButton
+                aria-label="Toggle Sidebar"
+                onClick={toggleSidebar}
+                variant="ghost"
+                size="sm">
+                <LuPanelLeftClose />
+              </IconButton>
+              <BreadcrumbRoot>
+                {pathnames.map((name, index) => (
+                  <BreadcrumbCurrentLink key={index}>&ge;	{capitalizeFirstLetter(name)}
+                  </BreadcrumbCurrentLink>
+                ))}
+              </BreadcrumbRoot>
+            </HStack>
+            <Separator />
+          </Box>
+          <Outlet />
+        </main>
+      </Box >
+    </Flex >
   )
 }

@@ -15,7 +15,7 @@ import SubjectQuiz from "./pages/Quizz/SubjectQuiz";
 
 import Notes from "./pages/Notes";
 import Team from "./pages/Team";
-import Profile from "@/pages/Profile"
+import Profil from "@/pages/Profil"
 import { useAuth } from "./hooks/useAuth";
 import ContactForm from "./pages/Contact";
 import About from "./pages/About";
@@ -50,10 +50,9 @@ export function Routes() {
                 <Route path="ecrit-1/mixite-sexuee" element={<Mixite />} />
                 <Route path="ecrit-2/les-emotion" element={<LesEmotion />} />
             </Route>
-            <Route path="profile" element={<Profile />} />
+            <Route path="profil" element={<Profil />} />
             <Route path="flashcards" element={<FlashcardsPage />} />
             <Route path="flashcards/:subjectId" element={<FlashcardsSubject />} />
-            <Route path="account" element={<Profile />} />
         </>
     );
 

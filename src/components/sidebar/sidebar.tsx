@@ -6,59 +6,81 @@ import {
   useDisclosure,
   MenuTrigger,
   MenuItem,
-  Collapsible
+  Collapsible,
+  HStack,
+  Image
 } from "@chakra-ui/react";
 import { Link } from "react-router";
-import { LuChevronsDownUp, LuSparkles, LuBadge, LuBell, LuLogOut } from "react-icons/lu";
+
+import { LuChevronsDownUp, LuSparkles, LuBadge, LuBell, LuLogOut, LuListTodo, LuInbox, LuNotebookPen, LuBot } from "react-icons/lu";
 
 import { MenuContent, MenuRoot, MenuSeparator, MenuItemGroup } from "../ui/menu";
 import {
-  FiGrid,
-  FiBook,
-  FiMessageSquare,
-  FiUser,
-  FiTool,
+  FiBookOpen,
   FiMail,
   FiHelpCircle,
-  FiChevronsDown
+  FiChevronDown,
+  FiChevronRight
 } from "react-icons/fi";
-import { Image } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar } from "../ui/avatar";
 import { ReactElement } from "react";
+import { Tooltip } from "../ui/tooltip";
+import { ColorModeButton } from "../ui/color-mode";
 
-const SidebarItem = ({ icon, label, children }: { icon: ReactElement, label: string, children?: ReactElement }) => {
+const SidebarItem = ({ icon, label, redirectTo, children, isSidebarOpen
+}: {
+  icon: ReactElement, label?: string, redirectTo: string, children?: ReactElement, isSidebarOpen: boolean;
+}) => {
   const { open, onToggle } = useDisclosure();
-
   return (
     <Box w="100%">
-      <Flex
-        align="center"
-        p="3"
-        cursor="pointer"
-        _hover={{ bg: "gray.100" }}
-        onClick={onToggle}
-      >
-        {icon}
-        <Text ml="3" fontWeight="medium">
-          {label}
-        </Text>
-        {children && <FiChevronsDown />}
-      </Flex>
-      {children && (
+      <Tooltip content={label} positioning={{ placement: "right-end" }}>
+        <Link to={redirectTo}>
+          <Flex
+            alignContent="space-around"
+            p="3"
+            cursor="pointer"
+            onClick={onToggle}
+            align="center"
+          >
+            {icon}
+            {isSidebarOpen &&
+              <>
+                <Text ml="3" fontWeight="medium">
+                  {label}
+                </Text>
+                <Box ml="auto">
+                  {children && (open ? <FiChevronDown /> : <FiChevronRight />)}
+                </Box>
+              </>
+            }
+          </Flex>
+        </Link>
+      </Tooltip>
+      {children && isSidebarOpen && (
         <Collapsible.Root open={open}>
           <Collapsible.Content>
-            <VStack
+            <Flex
+              direction="column"
               align="start"
               gap="2"
-              pl="8"
-              bg="gray.50"
+              pl="4"
               py="2"
               borderLeft="2px"
               borderColor="gray.200"
+              position="relative"
             >
+              <Box
+                position="absolute"
+                left="4"
+                top="0"
+                bottom="0"
+                borderLeft="2px solid"
+                borderColor="gray.200"
+              ></Box>
               {children}
-            </VStack>
+            </Flex>
           </Collapsible.Content>
         </Collapsible.Root>
       )}
@@ -66,34 +88,39 @@ const SidebarItem = ({ icon, label, children }: { icon: ReactElement, label: str
   );
 };
 
-const Sidebar = () => {
+export default function Sidebar({ path, isSidebarOpen }: { path: string[], isSidebarOpen: boolean }) {
   const { email, name, photoURL, signOut } = useAuth();
-
   return (
-    <Box
-      w="260px"
+    <Flex
+      transition="0.3s ease-in-out"
+      direction="column"
+      as="nav"
       minH="100vh"
-      bg="white"
       borderRight="1px"
       borderColor="gray.200"
+      boxShadow="md"
     >
-      {/* Logo */}
-      <Flex align="center" p="5" borderBottom="1px" borderColor="gray.200">
-        <Image src="/logo.svg" />
-        <Text fontWeight="bold" ml="3" fontSize="lg">
-          RECAP'EPS
-        </Text>
-      </Flex>
+      <HStack p="5" >
+        <Box w="10">
+          <Image src="/Logo.svg" alt="Logo Recapeps" />
+        </Box>
+        {isSidebarOpen &&
+          <Text fontWeight="bold" ml="3" fontSize="lg">
+            RECAP'EPS
+          </Text>
+        }
+      </HStack>
 
       {/* Menu Items */}
       <VStack align="start" gap="1" mt="4" px="2">
-        <Text px="3" fontSize="sm" color="gray.500" fontWeight="semibold">
-          Platform
-        </Text>
+        {isSidebarOpen &&
+          <Text px="3" fontSize="sm" color="gray.500" fontWeight="semibold">
+            Platform
+          </Text>
+        }
+        <SidebarItem isSidebarOpen={isSidebarOpen} icon={<LuInbox fill={path[0] === "dashboard" ? "orange" : "none"} />} label="Tableau de bord" redirectTo="dashboard" />
 
-        <SidebarItem icon={<FiGrid />} label="Tableau de bord" />
-
-        <SidebarItem icon={<FiBook />} label="Quizz">
+        <SidebarItem isSidebarOpen={isSidebarOpen} icon={<LuListTodo fill={path[0] === "quizz" ? "orange" : "none"} />} label="Quizz" redirectTo="quizz">
           <>
             <Link to="quizz/ecrit-1/expérimentations-pédagogiques">
               Exp. pédagogiques
@@ -107,59 +134,70 @@ const Sidebar = () => {
           </>
         </SidebarItem>
 
-        <SidebarItem icon={<FiMessageSquare />} label="Flashcards" />
-        <SidebarItem icon={<FiUser />} label="ChatBot" />
-        <SidebarItem icon={<FiTool />} label="Fiches de révision" />
+        <SidebarItem isSidebarOpen={isSidebarOpen} icon={<FiBookOpen fill={path[0] === "flashcards" ? "orange" : "none"} />} label="Flashcards" redirectTo="flashcards" >
+          <Link to="quizz/ecrit-1/expérimentations-pédagogiques">
+            Exp. pédagogiques
+          </Link>
+        </SidebarItem>
+        <SidebarItem isSidebarOpen={isSidebarOpen} icon={<LuBot fill={path[0] === "chatbot" ? "orange" : "none"} />} label="Chatbot" redirectTo="chatbot" />
+        <SidebarItem isSidebarOpen={isSidebarOpen} icon={<LuNotebookPen fill={path[0] === "notes" ? "orange" : "none"} />} label="Fiches de révision" redirectTo="notes" />
 
-        <SidebarItem icon={<FiHelpCircle />} label="Support" />
-        <SidebarItem icon={<FiMail />} label="Feedback" />
       </VStack>
 
-      {/* Footer User Info */}
-      <Box mt="auto" p="3" borderTop="1px" borderColor="gray.200">
-        <MenuRoot>
-          <MenuTrigger asChild>
-            <Avatar src={photoURL} name={name} className="h-8 w-8 rounded-lg" />
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">{name}</span>
-              <span className="truncate text-xs">{email}</span>
-            </div>
-            <LuChevronsDownUp className="ml-auto size-4" />
-          </MenuTrigger>
-          <MenuContent
-            className="min-w-56 rounded-lg"
-            alignContent="end">
-            <MenuItem value="checkout" asChild>
-              <Link to="/checkout">
-                <LuSparkles />
-                Passez à Recap'eps Pro
-              </Link>
-            </MenuItem>
-            <MenuSeparator />
-            <MenuItemGroup>
-              <MenuItem value="profil" asChild>
-                <Link to="/profil">
-                  <LuBadge />
-                  Profil
+      {/* User Profile */}
+      <VStack align="start" mt="auto">
+        <HStack>
+          <SidebarItem isSidebarOpen={isSidebarOpen} icon={<FiHelpCircle />} redirectTo="suport" />
+          <SidebarItem isSidebarOpen={isSidebarOpen} icon={<FiMail />} redirectTo="feedback" />
+          <ColorModeButton />
+        </HStack>
+        <Flex p="3" borderColor="gray.200">
+          <MenuRoot positioning={{ placement: "right-start" }}>
+            <MenuTrigger>
+              <HStack cursor="pointer">
+                <Avatar src={photoURL} name={name} className="h-8 w-8 rounded-lg" />
+                {isSidebarOpen &&
+                  <>
+                    <VStack align="start" gap="0">
+                      <Text className="truncate font-semibold">{name}</Text>
+                      <Text className="text-xs">{email}</Text>
+                    </VStack>
+                    <LuChevronsDownUp className="ml-auto size-4" />
+                  </>
+                }
+              </HStack>
+            </MenuTrigger>
+            <MenuContent className="min-w-56 rounded-lg" alignContent="end">
+              <MenuItem value="checkout" asChild>
+                <Link to="/checkout">
+                  <LuSparkles />
+                  Passez à Recap'eps Pro
                 </Link>
               </MenuItem>
-              <MenuItem value="notifications" asChild>
-                <Link to="/profil">
-                  <LuBell />
-                  Notifications
-                </Link>
+              <MenuSeparator />
+              <MenuItemGroup>
+                <MenuItem value="profil" asChild>
+                  <Link to="/profil">
+                    <LuBadge />
+                    Profil
+                  </Link>
+                </MenuItem>
+                <MenuItem value="notifications" asChild>
+                  <Link to="/profil">
+                    <LuBell />
+                    Notifications
+                  </Link>
+                </MenuItem>
+              </MenuItemGroup>
+              <MenuSeparator />
+              <MenuItem value="log-out" onClick={signOut}>
+                <LuLogOut />
+                Log out
               </MenuItem>
-            </MenuItemGroup>
-            <MenuSeparator />
-            <MenuItem value="log-out" onClick={signOut}>
-              <LuLogOut />
-              Log out
-            </MenuItem>
-          </MenuContent>
-        </MenuRoot>
-      </Box>
-    </Box >
+            </MenuContent>
+          </MenuRoot>
+        </Flex>
+      </VStack>
+    </Flex >
   );
 };
-
-export default Sidebar;
