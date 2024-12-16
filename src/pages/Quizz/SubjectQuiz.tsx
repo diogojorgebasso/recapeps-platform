@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { fetchQuizzesBySubject } from "@/api/getQuizzesFromFirebase";
 import { Quiz } from "@/types/Quizz";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { ProgressBar, ProgressRoot } from "@/components/ui/progress";
 import { saveUserQuiz } from "@/api/saveQuizToFirebase";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router";
+import { Card } from "@chakra-ui/react";
 
 export default function QuizPage() {
     const router = useParams();
@@ -91,11 +91,11 @@ export default function QuizPage() {
                 : "Ne vous découragez pas ! Chaque erreur est une opportunité d'apprendre. Vous pouvez le faire ! 💪";
         return (
             <div className="flex h-screen items-center justify-center">
-                <Card className="max-w-md w-full bg-white shadow-lg">
-                    <CardHeader>
-                        <CardTitle className="text-2xl text-center">Quiz Terminé !</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                <Card.Root className="max-w-md w-full bg-white shadow-lg">
+                    <Card.Header>
+                        <Card.Title className="text-2xl text-center">Quiz Terminé !</Card.Title>
+                    </Card.Header>
+                    <Card.Body>
                         <p className="text-center">
                             Votre Note: <strong>{score}</strong> / {quizzes.length}
                         </p>
@@ -106,8 +106,8 @@ export default function QuizPage() {
                         >
                             Retour aux Quiz
                         </Button>
-                    </CardContent>
-                </Card>
+                    </Card.Body>
+                </Card.Root>
             </div>
         );
     }
@@ -117,21 +117,21 @@ export default function QuizPage() {
 
     return (
         <div className="h-screen flex flex-col items-center justify-center bg-gray-50">
-            <Card className="max-w-lg w-full shadow-lg relative">
-                <CardHeader>
-                    <CardTitle className="text-xl text-center">{currentQuiz.question}</CardTitle>
+            <Card.Root className="max-w-lg w-full shadow-lg relative">
+                <Card.Header>
+                    <Card.Title className="text-xl text-center">{currentQuiz.question}</Card.Title>
                     <div className="absolute top-0 right-2">
                         <span className="bg-blue-500 text-white text-xs font-semibold px-2 rounded">
                             niveau: {currentQuiz.level}
                         </span>
                     </div>
-                </CardHeader>
-                <CardContent>
+                </Card.Header>
+                <Card.Body>
                     <ul className="space-y-4">
                         {currentQuiz.options.map((option, index) => (
                             <li key={index}>
                                 <Button
-                                    variant={
+                                    colorPalette={
                                         selectedAnswer
                                             ? option === currentQuiz.answer
                                                 ? "success"
@@ -156,7 +156,9 @@ export default function QuizPage() {
                     </ul>
                     <div className="mt-2 flex">
                         <span>{progress.toFixed(0)}%</span>
-                        <Progress value={40} />
+                        <ProgressRoot value={progress} maxW="240px" striped animated>
+                            <ProgressBar />
+                        </ProgressRoot>
                         <span>100%</span>
                     </div>
                     {selectedAnswer && (
@@ -167,8 +169,8 @@ export default function QuizPage() {
                             Question suivante
                         </Button>
                     )}
-                </CardContent>
-            </Card>
+                </Card.Body>
+            </Card.Root>
         </div>
     );
 }

@@ -14,7 +14,7 @@ import { createContext, useCallback, useEffect, useMemo, useState } from "react"
 import { ReactNode } from "react";
 import { auth } from "@/utils/firebase";
 import { doc, setDoc, getDoc, collection, getDocs, query, where, orderBy } from "firebase/firestore";
-import { db } from "@/utils/firebase"; // Firestore instance
+import { db } from "@/utils/firebase";
 
 type AuthContextProps = {
     name: string;

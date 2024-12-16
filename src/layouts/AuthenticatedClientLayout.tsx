@@ -1,31 +1,28 @@
-import React from "react"
-import { AppSidebar } from "@/components/sidebar/app-sidebar"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { Outlet, useLocation, useNavigate } from "react-router"
+import { useState } from "react"
 import { useAuth } from "@/hooks/useAuth"
+import { Outlet, useLocation, useNavigate } from "react-router"
+import { Separator, Box, IconButton, Flex, HStack } from "@chakra-ui/react"
+
+import { BreadcrumbCurrentLink, BreadcrumbRoot } from "@/components/ui/breadcrumb"
+
+import Sidebar from "@/components/sidebar/sidebar"
 import { useEffect } from "react"
+import { LuPanelLeftClose } from "react-icons/lu";
 
 export default function AuthenticatedClientLayout() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoadingAuth, role } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
 
   useEffect(() => {
-    if (!isLoadingAuth && !isAuthenticated) {
+    if (!isAuthenticated) {
       navigate("/login");
     }
-  }, [isAuthenticated, navigate, role, isLoadingAuth]);
+  }, [isAuthenticated, navigate]);
 
   const { pathname } = useLocation()
   const pathnames = pathname.split("/").filter((x) => x);
@@ -35,29 +32,31 @@ export default function AuthenticatedClientLayout() {
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
+    <Flex h="100vh">
+      <Sidebar isSidebarOpen={isSidebarOpen} path={pathnames} />
+      <Box flex="1" overflowY="auto">
+        <main>
+          <Box position="sticky" bg={{ base: "white", _dark: "black" }} top="0" as="header">
+            <HStack>
+              <IconButton
+                aria-label="Toggle Sidebar"
+                onClick={toggleSidebar}
+                variant="ghost"
+                size="sm">
+                <LuPanelLeftClose />
+              </IconButton>
+              <BreadcrumbRoot>
                 {pathnames.map((name, index) => (
-                  <React.Fragment key={index}>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>{capitalizeFirstLetter(name)}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </React.Fragment>
+                  <BreadcrumbCurrentLink key={index}>&ge;	{capitalizeFirstLetter(name)}
+                  </BreadcrumbCurrentLink>
                 ))}
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
+              </BreadcrumbRoot>
+            </HStack>
+            <Separator />
+          </Box>
+          <Outlet />
+        </main>
+      </Box >
+    </Flex >
   )
 }

@@ -15,7 +15,7 @@ import SubjectQuiz from "./pages/Quizz/SubjectQuiz";
 
 import Notes from "./pages/Notes";
 import Team from "./pages/Team";
-import Profile from "@/pages/Profile"
+import Profil from "@/pages/Profil"
 import { useAuth } from "./hooks/useAuth";
 import ContactForm from "./pages/Contact";
 import About from "./pages/About";
@@ -24,7 +24,6 @@ import FlashcardsSubject from "./pages/Flashcards/subject";
 import Support from "./pages/Support";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import TermesCondition from "./pages/Termes-Condition";
-import DashboardMock from "./pages/DashboardMock";
 import PaymentPage from "./pages/Checkout/Payment";
 import Mixite from "./pages/Notes/ecrit-1/Mixite";
 import LesEmotion from "./pages/Notes/ecrit-2/les-emotion";
@@ -51,10 +50,9 @@ export function Routes() {
                 <Route path="ecrit-1/mixite-sexuee" element={<Mixite />} />
                 <Route path="ecrit-2/les-emotion" element={<LesEmotion />} />
             </Route>
-            <Route path="profile" element={<Profile />} />
+            <Route path="profil" element={<Profil />} />
             <Route path="flashcards" element={<FlashcardsPage />} />
             <Route path="flashcards/:subjectId" element={<FlashcardsSubject />} />
-            <Route path="account" element={<Profile />} />
         </>
     );
 
@@ -68,9 +66,6 @@ export function Routes() {
                 <Route path="termes-et-condition" element={<TermesCondition />} />
                 <Route path="checkout" element={<Checkout />} />
                 <Route path="payment" element={<PaymentPage />} />
-                <Route path="outlis">
-                    <Route path="dashboard" element={<DashboardMock />} />
-                </Route>
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<SignUp />} />

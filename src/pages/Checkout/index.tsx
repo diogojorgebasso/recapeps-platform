@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useAuth } from "@/hooks/useAuth";
+import { CheckboxCard } from "@/components/ui/checkbox-card"
+import { CheckboxGroup, } from "@chakra-ui/react"
 
 type Plan = {
     id: string;
@@ -18,7 +19,7 @@ interface PlanCardProps {
 }
 
 const PlanCard: React.FC<PlanCardProps> = ({ plan, selectedPlan, setSelectedPlan }) => (
-    <RadioGroup.Item
+    <CheckboxCard
         value={plan.id}
         className={`border p-4 rounded-lg shadow-sm transition-all cursor-pointer ${selectedPlan === plan.id ? "border-blue-600" : "border-gray-300 hover:shadow-md"
             }`}
@@ -35,7 +36,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, selectedPlan, setSelectedPlan
                 </li>
             ))}
         </ul>
-    </RadioGroup.Item>
+    </CheckboxCard>
 );
 
 const CheckoutPage: React.FC = () => {
@@ -106,7 +107,7 @@ const CheckoutPage: React.FC = () => {
     return (
         <div className="p-8 max-w-2xl mx-auto">
             <h1 className="text-3xl font-bold text-center mb-6">Choisissez votre plan</h1>
-            <RadioGroup.Root className="space-y-6" value={selectedPlan}>
+            <CheckboxGroup className="space-y-6" defaultValue={[selectedPlan]}>
                 {plans.map((plan) => (
                     <PlanCard
                         key={plan.id}
@@ -115,7 +116,7 @@ const CheckoutPage: React.FC = () => {
                         setSelectedPlan={setSelectedPlan}
                     />
                 ))}
-            </RadioGroup.Root>
+            </CheckboxGroup>
             <button
                 onClick={handleCheckout}
                 className="w-full mt-6 py-3 bg-blue-600 text-white rounded-lg font-medium text-lg hover:bg-blue-700 transition-all"

@@ -24,7 +24,6 @@ export default function Support() {
                             className="text-blue-600 font-medium hover:underline"
                         >
                             diogo.basso@depinfonancy.net
-
                         </a>
                     </div>
 

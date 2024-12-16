@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import {
+  Box,
+  Heading,
+  Table,
+} from "@chakra-ui/react";
+
+import {
   LineChart,
   Line,
   XAxis,
@@ -22,7 +28,7 @@ type QuizData = {
 export default function UserQuizScoresChart() {
   const [quizData, setQuizData] = useState<QuizData[]>([]);
   const { uid } = useAuth();
-  console.log(quizData)
+
   useEffect(() => {
     const loadData = async () => {
       if (uid) {
@@ -62,53 +68,38 @@ export default function UserQuizScoresChart() {
 
   return (
     <>
-      <div
-        style={{
-          backgroundColor: "#1a1a1a",
-          padding: "20px",
-          borderRadius: "8px",
-          maxWidth: "600px",
-          margin: "0 auto",
-        }}
+      <Box
+        p={6}
+        borderRadius="md"
+        maxWidth="600px"
+        mx="auto"
+        mb={8}
       >
-        <h2
-          style={{
-            color: "#fff",
-            textAlign: "center",
-            marginBottom: "10px",
-          }}
-        >
+        <Heading size="md" textAlign="center" mb={4}>
           Vos derniers résultats
-        </h2>
+        </Heading>
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={quizData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+            <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="quizName"
-              stroke="#888"
               label={{
                 position: "insideBottom",
                 offset: -5,
-                fill: "#888",
               }}
             />
             <YAxis
-              stroke="#888"
               label={{
                 value: "Score",
                 angle: -90,
                 position: "insideLeft",
-                fill: "#888",
               }}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#333",
                 borderRadius: "5px",
                 border: "none",
               }}
-              itemStyle={{ color: "#fff" }}
-              labelStyle={{ color: "#aaa" }}
             />
             <Legend />
             <Line
@@ -120,40 +111,41 @@ export default function UserQuizScoresChart() {
             />
           </LineChart>
         </ResponsiveContainer>
-      </div>
-      <div className="container mx-auto py-8">
-        <h2 className="text-2xl font-bold text-center mb-6">Vos résultats des quizzes</h2>
-        <div className="overflow-x-auto">
-          <table className="table-auto w-full border-collapse border border-gray-800">
-            <thead>
-              <tr className="bg-gray-800 text-white">
-                <th className="border border-gray-700 px-4 py-2">Matière</th>
-                <th className="border border-gray-700 px-4 py-2">Tentatives</th>
-                <th className="border border-gray-700 px-4 py-2">Meilleure Note</th>
-                <th className="border border-gray-700 px-4 py-2">Date Dernière Tentative</th>
-              </tr>
-            </thead>
-            <tbody>
+      </Box>
+
+      <Box maxWidth="800px" mx="auto" py={8}>
+        <Heading size="lg" textAlign="center" mb={6}>
+          Vos résultats des quizzes
+        </Heading>
+        <Box overflowX="auto">
+          <Table.Root colorScheme="gray" size="sm">
+            <Table.Header>
+              <Table.Header>
+                <Table.ColumnHeader>Matière</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Tentatives</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Meilleure Note</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Date Dernière Tentative</Table.ColumnHeader>
+              </Table.Header>
+            </Table.Header>
+            <Table.Body>
               {tableData.map((row, index) => (
-                <tr
-                  key={index}
-                >
-                  <td className="border border-gray-700 px-4 py-2">{row.quizName}</td>
-                  <td className="border border-gray-700 px-4 py-2 text-center">{row.attempts}</td>
-                  <td className="border border-gray-700 px-4 py-2 text-center">{row.highestScore}</td>
-                  <td className="border border-gray-700 px-4 py-2 text-center">
+                <Table.Row key={index}>
+                  <Table.Cell>{row.quizName}</Table.Cell>
+                  <Table.Cell textAlign="center">{row.attempts}</Table.Cell>
+                  <Table.Cell textAlign="center">{row.highestScore}</Table.Cell>
+                  <Table.Cell textAlign="center">
                     {new Date(row.lastAttemptDate).toLocaleDateString("fr-FR", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
                     })}
-                  </td>
-                </tr>
+                  </Table.Cell>
+                </Table.Row>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </Table.Body>
+          </Table.Root>
+        </Box>
+      </Box>
     </>
   );
 }

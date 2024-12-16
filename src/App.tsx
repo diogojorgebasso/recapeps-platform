@@ -1,21 +1,20 @@
 import { Routes } from "./Routes";
 
-import { ThemeProvider } from "@/components/theme-provider"
 import { BrowserRouter } from "react-router";
 import { AuthProvider } from "@/context/AuthContext";
 import { CookieProvider } from "./context/CookieContext";
-
+import { Provider } from "@/components/ui/provider"
 
 export default function App() {
   return (
     <AuthProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Provider>
         <BrowserRouter>
           <CookieProvider>
             <Routes />
           </CookieProvider>
         </BrowserRouter>
-      </ThemeProvider>
+      </Provider>
     </AuthProvider>
   );
 }

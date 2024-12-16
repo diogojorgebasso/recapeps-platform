@@ -1,9 +1,13 @@
+import { Box, Container, Text } from "@chakra-ui/react";
+
 export default function Footer() {
     return (
-        <footer id="contact" className="w-full py-4">
-            <div className="container mx-auto text-center">
-                <p>&copy; {new Date().getFullYear()}Recapeps. Tous droits réservés.</p>
-            </div>
-        </footer>
-    )
+        <Box as="footer" id="contact" w="100%" py="4">
+            <Container maxW="container.lg" textAlign="center">
+                <Text fontSize="sm">
+                    &copy; {new Date().getFullYear()} Recapeps. Tous droits réservés.
+                </Text>
+            </Container>
+        </Box>
+    );
 }

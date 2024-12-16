@@ -1,88 +1,141 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router";
+import {
+    Box,
+    Container,
+    Heading,
+    Text,
+    SimpleGrid,
+    CardFooter,
+    VStack,
+    Card
+} from "@chakra-ui/react";
+
 export default function Home() {
-    const features = [
-        {
-            title: "Chatbot",
-            description: "Discutez avec une IA pour apprendre et réviser des contenus.",
-            action: "Explorer",
-        },
-        {
-            title: "Notes",
-            description: "Créez et organisez vos notes de manière efficace.",
-            action: "Explorer",
-        },
-        {
-            title: "Flashcards",
-            description: "Mémorisez des concepts importants de manière ludique.",
-            action: "Explorer",
-        },
-        {
-            title: "Quizz",
-            description: "Testez vos connaissances avec des quiz personnalisés.",
-            action: "Commencer",
-        },
-
-    ];
-
     return (
-        <main className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-            <div className="flex-1 container mx-auto px-4 py-8">
+        <Box minH="100vh" display="flex" flexDirection="column">
+            <Container maxW="container.lg" flex="1" py="8">
                 {/* Section d'introduction */}
-                <section className="text-center my-12">
-                    <h2 className="text-4xl font-bold mb-4">Bienvenue sur Recapeps!</h2>
-                    <p className="text-lg text-muted-foreground mb-6">
+                <VStack textAlign="center" gap="6" my="12">
+                    <Heading as="h2" size="xl" fontWeight="bold">
+                        Bienvenue sur Recapeps!
+                    </Heading>
+                    <Text fontSize="lg" color="gray.600">
                         Votre plateforme pour organiser vos connaissances et vos études.
-                    </p>
-                    <Button asChild className="px-6 py-3">
-                        <Link to="/login">
-                            Commencer Maintenant
-                        </Link>
+                    </Text>
+                    <Button asChild px="6" py="3">
+                        <Link to="/dashboard">Commencer Maintenant</Link>
                     </Button>
-                </section>
+                </VStack>
 
                 {/* Section des fonctionnalités */}
-                <section id="features" className="my-12">
-                    <h3 className="text-3xl font-bold text-center mb-6">Fonctionnalités</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {features.map((feature, index) => (
-                            <Card key={index} className="shadow-md hover:shadow-lg transition-shadow duration-300">
-                                <CardHeader>
-                                    <CardTitle>{feature.title}</CardTitle>
-                                    <CardDescription>{feature.description}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <Link to={`/${feature.title}`}>
-                                        <Button variant="outline">{feature.action}</Button>
+                <Box id="features" my="12">
+                    <Heading as="h3" size="lg" textAlign="center" mb="6">
+                        Fonctionnalités
+                    </Heading>
+                    <SimpleGrid columns={{ base: 1, md: 3 }} gap="6">
+                        {/* Chatbot */}
+                        <Card.Root shadow="md" _hover={{ shadow: "lg" }} transition="all 0.3s">
+                            <Card.Header>
+                                <Heading size="md">Chatbot</Heading>
+                            </Card.Header>
+                            <Card.Body>
+                                <Text>Discutez avec une IA pour apprendre et réviser des contenus.</Text>
+                            </Card.Body>
+                            <CardFooter>
+                                <Button asChild variant="outline">
+                                    <Link to="/Chatbot">
+                                        Explorer
                                     </Link>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
+                                </Button>
+                            </CardFooter>
+                        </Card.Root>
+
+                        {/* Notes */}
+                        <Card.Root shadow="md" _hover={{ shadow: "lg" }} transition="all 0.3s">
+                            <Card.Header>
+                                <Heading size="md">Notes</Heading>
+                            </Card.Header>
+                            <Card.Body>
+                                <Text>Créez et organisez vos notes de manière efficace.</Text>
+                            </Card.Body>
+                            <CardFooter>
+                                <Button variant="outline">
+                                    <Link to="/Notes">
+                                        Explorer
+                                    </Link>
+                                </Button>
+                            </CardFooter>
+                        </Card.Root>
+
+                        {/* Flashcards */}
+                        <Card.Root shadow="md" _hover={{ shadow: "lg" }} transition="all 0.3s">
+                            <Card.Header>
+                                <Heading size="md">Flashcards</Heading>
+                            </Card.Header>
+                            <Card.Body>
+                                <Text>Mémorisez des concepts importants de manière ludique.</Text>
+                            </Card.Body>
+                            <CardFooter>
+                                <Button variant="outline">
+                                    <Link to="/Flashcards">
+                                        Explorer
+                                    </Link>
+                                </Button>
+                            </CardFooter>
+                        </Card.Root>
+
+                        {/* Quizz */}
+                        <Card.Root shadow="md" _hover={{ shadow: "lg" }} transition="all 0.3s">
+                            <Card.Header>
+                                <Heading size="md">Quizz</Heading>
+                            </Card.Header>
+                            <Card.Body>
+                                <Text>Testez vos connaissances avec des quiz personnalisés.</Text>
+                            </Card.Body>
+                            <CardFooter>
+                                <Button variant="outline">
+                                    <Link to="/Quizz">
+                                        Commencer
+                                    </Link>
+                                </Button>
+                            </CardFooter>
+                        </Card.Root>
+                    </SimpleGrid>
+                </Box>
 
                 {/* Section supplémentaire */}
-                <section id="about" className="my-12">
-                    <h3 className="text-3xl font-bold text-center mb-6">Pourquoi Recapeps-Web ?</h3>
-                    <p className="text-center text-lg max-w-2xl mx-auto">
+                <Box id="about" my="12" textAlign="center">
+                    <Heading as="h3" size="lg" mb="6">
+                        Pourquoi Recapeps-Web ?
+                    </Heading>
+                    <Text fontSize="lg" maxW="2xl" mx="auto">
                         Recapeps-Web vous offre des outils modernes pour maximiser votre apprentissage.
                         Explorez une plateforme intuitive, personnalisable et conçue pour répondre à vos besoins éducatifs.
-                    </p>
-                </section>
+                    </Text>
+                </Box>
 
                 {/* Section Appel à l'action */}
-                <section id="cta" className="my-12 bg-blue-500 text-white py-8 rounded-lg">
-                    <div className="text-center">
-                        <h3 className="text-3xl font-bold mb-4">Rejoignez notre communauté dès aujourd'hui !</h3>
-                        <Link to="/register">
-                            <Button variant="default" className="px-6 py-3 bg-white text-blue-500 hover:bg-gray-100">
-                                S'inscrire
-                            </Button>
-                        </Link>
-                    </div>
-                </section>
-            </div>
-        </main>
+                <Box id="cta" my="12" bg="blue.500" color="white" py="8" borderRadius="lg">
+                    <VStack textAlign="center" gap="4">
+                        <Heading as="h3" size="lg">
+                            Rejoignez notre communauté dès aujourd&apos;hui !
+                        </Heading>
+                        <Button
+                            asChild
+                            px="6"
+                            py="3"
+                            bg="white"
+                            color="blue.500"
+                            _hover={{ bg: "gray.100" }}
+                        >
+                            <Link to="/register">
+                                S&apos;inscrire
+                            </Link>
+                        </Button>
+                    </VStack>
+                </Box>
+            </Container>
+        </Box>
     );
 }

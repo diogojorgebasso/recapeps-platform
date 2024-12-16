@@ -1,6 +1,6 @@
-import * as Tabs from "@radix-ui/react-tabs";
 import { NavLink } from "react-router";
 import { Button } from "@/components/ui/button";
+import { Tabs } from "@chakra-ui/react"
 
 export default function Notes() {
     return (
