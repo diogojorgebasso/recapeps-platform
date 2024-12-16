@@ -41,7 +41,7 @@ import {
 
 const ringCss = defineStyle({
     outlineWidth: "2px",
-    outlineColor: "colorPalette.500",
+    outlineColor: "green.500",
     outlineOffset: "2px",
     outlineStyle: "solid",
 })
@@ -54,7 +54,7 @@ export default function ContextualAvatar() {
 
         return (
             <MenuRoot>
-                <MenuTrigger asChild>
+                <MenuTrigger>
                     <Avatar
                         src={photoURL}
                         name={name}

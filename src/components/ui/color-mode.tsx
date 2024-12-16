@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 "use client"
 
 import type { IconButtonProps } from "@chakra-ui/react"
@@ -8,7 +9,9 @@ import type { ThemeProviderProps } from "next-themes"
 import * as React from "react"
 import { LuMoon, LuSun } from "react-icons/lu"
 
-export function ColorModeProvider(props: ThemeProviderProps) {
+export interface ColorModeProviderProps extends ThemeProviderProps { }
+
+export function ColorModeProvider(props: ColorModeProviderProps) {
   return (
     <ThemeProvider attribute="class" disableTransitionOnChange {...props} />
   )
@@ -36,9 +39,11 @@ export function ColorModeIcon() {
   return colorMode === "light" ? <LuMoon /> : <LuSun />
 }
 
+interface ColorModeButtonProps extends Omit<IconButtonProps, "aria-label"> { }
+
 export const ColorModeButton = React.forwardRef<
   HTMLButtonElement,
-  Omit<IconButtonProps, "aria-label">
+  ColorModeButtonProps
 >(function ColorModeButton(props, ref) {
   const { toggleColorMode } = useColorMode()
   return (

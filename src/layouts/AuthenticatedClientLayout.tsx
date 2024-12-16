@@ -36,7 +36,7 @@ export default function AuthenticatedClientLayout() {
       <Sidebar isSidebarOpen={isSidebarOpen} path={pathnames} />
       <Box flex="1" overflowY="auto">
         <main>
-          <Box position="sticky" bg="currentcolor" top="0" as="header">
+          <Box position="sticky" bg={{ base: "white", _dark: "black" }} top="0" as="header">
             <HStack>
               <IconButton
                 aria-label="Toggle Sidebar"
