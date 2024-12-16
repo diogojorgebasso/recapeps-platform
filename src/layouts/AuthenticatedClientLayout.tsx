@@ -11,7 +11,7 @@ import { LuPanelLeftClose } from "react-icons/lu";
 
 export default function AuthenticatedClientLayout() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoadingAuth, role } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -19,10 +19,10 @@ export default function AuthenticatedClientLayout() {
   };
 
   useEffect(() => {
-    if (!isLoadingAuth && !isAuthenticated) {
+    if (!isAuthenticated) {
       navigate("/login");
     }
-  }, [isAuthenticated, navigate, role, isLoadingAuth]);
+  }, [isAuthenticated, navigate]);
 
   const { pathname } = useLocation()
   const pathnames = pathname.split("/").filter((x) => x);
