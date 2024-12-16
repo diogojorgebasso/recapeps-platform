@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Cropper from "react-easy-crop";
+import Cropper, { Area } from "react-easy-crop";
 import {
     Box,
     Button,
@@ -37,7 +37,7 @@ import { HiUpload } from "react-icons/hi";
 export default function Profil() {
     const { photoURL, updatePhotoURLInContext, uid, subscribed, email } = useAuth();
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [isUploading, setIsUploading] = useState(false);
@@ -50,7 +50,7 @@ export default function Profil() {
         setOpenDialog(true);
     };
 
-    const onCropComplete = (_croppedArea: any, croppedPixels: any) => {
+    const onCropComplete = (_croppedArea: Area, croppedPixels: { x: number; y: number; width: number; height: number }) => {
         setCroppedAreaPixels(croppedPixels);
     };
 
