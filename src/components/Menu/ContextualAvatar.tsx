@@ -48,7 +48,7 @@ const ringCss = defineStyle({
 
 export default function ContextualAvatar() {
 
-    const { photoURL, currentUser, signOut, name } = useAuth();
+    const { photoURL, currentUser, signOut, firstName } = useAuth();
 
     if (currentUser) {
 
@@ -57,7 +57,7 @@ export default function ContextualAvatar() {
                 <MenuTrigger>
                     <Avatar
                         src={photoURL}
-                        name={name}
+                        name={firstName}
                         css={ringCss}
                     >
                     </Avatar>
@@ -65,7 +65,7 @@ export default function ContextualAvatar() {
                 <MenuContent className="w-56">
                     <MenuItemGroup title="Mon Compte">
                         <MenuItem value="profil" asChild>
-                            <Link to="/profile">
+                            <Link to="/profil">
                                 <User />
                                 Profil
                                 <MenuItemCommand>⇧⌘P</MenuItemCommand>

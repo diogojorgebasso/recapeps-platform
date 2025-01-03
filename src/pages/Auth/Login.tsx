@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, Input } from "@chakra-ui/react";
+import { Card, Input, Link as ChakraLink } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
-
+import { Link } from "react-router";
 export default function Login() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,52 +74,52 @@ export default function Login() {
     };
 
     return (
-        <div className="flex h-screen w-full items-center">
-            <Card.Root className="mx-auto max-w-sm">
-                <Card.Header>
-                    <Card.Title className="text-2xl">Connexion</Card.Title>
-                    <Card.Description>
-                        Entrez votre email ci-dessous pour accéder à votre compte.
-                    </Card.Description>
-                </Card.Header>
-                <Card.Body>
-                    <form onSubmit={handleSubmit(handleLogin)}>
-                        <div className="grid gap-4">
-                            <Field label="email">
-                                <Input autoComplete="email" placeholder="exemple@email.com" {...register("email")} />
-                            </Field>
-                            <Link to="/forgot" className="text-sm underline">
-                                Mot de passe oublié ?
-                            </Link>
-                            <PasswordInput {...register("password")} />
-                            {errorMessage && (
-                                <p className="text-red-500 text-sm">{errorMessage}</p>
-                            )}
-                            <Button
-                                disabled={isSubmitting}
-                                type="submit"
-                                className="w-full"
-                            >
-                                {isSubmitting ? "Connexion..." : "Connexion"}
-                            </Button>
-                            <Button
-                                disabled={isSubmitting}
-                                variant="outline"
-                                className="w-full"
-                                onClick={handleGoogleLogin}
-                            >
-                                Connexion avec Google
-                            </Button>
-                        </div>
-                        <div className="mt-4 text-center text-sm">
-                            Vous n&apos;avez pas encore de compte ?{" "}
-                            <Link to="/register" className="underline">
+        <Card.Root>
+            <Card.Header>
+                <Card.Title className="text-2xl">Connexion</Card.Title>
+                <Card.Description>
+                    Entrez votre email ci-dessous pour accéder à votre compte.
+                </Card.Description>
+            </Card.Header>
+            <Card.Body>
+                <form onSubmit={handleSubmit(handleLogin)}>
+                    <Field label="Email">
+                        <Input autoComplete="email" placeholder="exemple@email.com" {...register("email")} />
+                    </Field>
+                    <ChakraLink variant="underline" asChild >
+                        <Link to="/forgot-password">
+                            Mot de passe oublié ?
+                        </Link>
+                    </ChakraLink>
+                    <PasswordInput {...register("password")} />
+                    {errorMessage && (
+                        <p className="text-red-500 text-sm">{errorMessage}</p>
+                    )}
+                    <Button
+                        disabled={isSubmitting}
+                        type="submit"
+                        className="w-full"
+                    >
+                        {isSubmitting ? "Connexion..." : "Connexion"}
+                    </Button>
+                    <Button
+                        disabled={isSubmitting}
+                        variant="outline"
+                        className="w-full"
+                        onClick={handleGoogleLogin}
+                    >
+                        Connexion avec Google
+                    </Button>
+                    <div className="mt-4 text-center text-sm">
+                        Vous n&apos;avez pas encore de compte ?{" "}
+                        <ChakraLink variant="underline" asChild >
+                            <Link to="/register" >
                                 Inscrivez-vous
                             </Link>
-                        </div>
-                    </form>
-                </Card.Body>
-            </Card.Root>
-        </div>
+                        </ChakraLink>
+                    </div>
+                </form>
+            </Card.Body>
+        </Card.Root>
     );
 }

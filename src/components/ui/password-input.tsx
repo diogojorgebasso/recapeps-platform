@@ -57,6 +57,7 @@ export const PasswordInput = React.forwardRef<
   return (
     <InputGroup
       width="full"
+      align="center"
       endElement={
         <VisibilityTrigger
           disabled={rest.disabled}

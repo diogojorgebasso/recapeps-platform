@@ -19,11 +19,13 @@ import { Link } from "react-router";
 import { Avatar } from "@/components/ui/avatar";
 import {
     DialogBody,
+    DialogTrigger,
     DialogActionTrigger,
     DialogContent,
     DialogFooter,
     DialogHeader,
     DialogRoot,
+    DialogCloseTrigger,
 } from "@/components/ui/dialog"
 import { Field } from "@/components/ui/field";
 import { Toaster, toaster } from "@/components/ui/toaster"
@@ -33,15 +35,24 @@ import {
     FileUploadTrigger,
 } from "@/components/ui/file-upload"
 import { HiUpload } from "react-icons/hi";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export default function Profil() {
-    const { photoURL, updatePhotoURLInContext, uid, subscribed, email } = useAuth();
+    const { photoURL, firstName, secondName,
+        updatePhotoURLInContext, uid, subscribed, email,
+        handleEmailChange, updateUserName, deleteUserAccount,
+        isEmailNotificationEnabled, updateEmailNotificationPreference } = useAuth();
+    const [newEmailNotification, setNewEmailNotification] = useState(isEmailNotificationEnabled);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [isUploading, setIsUploading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false)
+    const [newEmail, setNewEmail] = useState(email);
+    const [newFirstName, setNewFirstName] = useState(firstName)
+    const [newSecondName, setNewSecondName] = useState(secondName)
+    const [currentPassword, setCurrentPassword] = useState("")
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -110,14 +121,29 @@ export default function Profil() {
         })
     };
 
+    const handleUserChange = async () => {
+        setIsUploading(true);
+        await updateUserName(newFirstName, newSecondName);
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (newEmail != email && emailRegex.test(newEmail)) {
+            await handleEmailChange(currentPassword, email);
+        }
+        setIsUploading(false);
+        toaster.create({
+            title: "Profil mise à jour",
+            type: "success",
+            description: "Votre profil a été mise à jour avec succès.",
+        })
+    }
+
     return (
         <Box p={6}>
             <Toaster />
             <Heading as="h2" size="lg" mb={6}>
                 Profil
             </Heading>
-            <Flex gap={6}>
-                <VStack gap={4} align="center">
+            <Flex gap={10}>
+                <VStack gap={4} >
                     <Box w="200px" h="200px">
                         <Avatar size="full" name="Profile Photo" src={photoURL} />
                     </Box>
@@ -163,27 +189,45 @@ export default function Profil() {
                     </DialogRoot>
                 </VStack>
 
-                <Box flex="1">
-                    <Fieldset.Root mb={4}>
-                        <Fieldset.Legend>Informations Personnelles</Fieldset.Legend>
+                <VStack>
+                    <Fieldset.Root>
                         <Fieldset.Content>
                             <HStack>
                                 <Field label="Prénom">
-                                    <Input placeholder="Votre prénom" />
+                                    <Input onChange={e => setNewFirstName(e.target.value)} value={newFirstName} />
                                 </Field>
                                 <Field label="Nom">
-                                    <Input placeholder="Votre nom" />
+                                    <Input onChange={e => setNewSecondName(e.target.value)} value={newSecondName} />
                                 </Field>
                             </HStack>
-                            <Field label="Adresse Email">
-                                <Input placeholder={email} />
+                            <PasswordInput onChange={e => setCurrentPassword(e.target.value)} value={currentPassword} />
+                            <Field errorText="Vous besoin de ecrire ton mot de passe actuel" label="Adresse Email">
+                                <Input onChange={(e) => setNewEmail(e.target.value)} value={newEmail} />
                             </Field>
                             <Field label="Nouveau Mot de Passe">
-                                <Input type="password" placeholder="Nouveau mot de passe" />
+                                <Input autoComplete="new-password" type="password" placeholder="Nouveau mot de passe" />
                             </Field>
                         </Fieldset.Content>
+                        <DialogRoot placement="top">
+                            <DialogTrigger>
+                                <Button disabled={isUploading} onClick={() => handleUserChange()}>
+                                    Enregistrer
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>Confirmation</DialogHeader>
+                                <DialogBody>
+                                    <Text>
+                                        Si'l vous plait, confirmez votre email.
+                                    </Text>
+                                </DialogBody>
+                                <DialogFooter>
+                                </DialogFooter>
+                                <DialogCloseTrigger />
+                            </DialogContent>
+                        </DialogRoot>
                     </Fieldset.Root>
-                </Box>
+                </VStack>
             </Flex>
 
 
@@ -192,8 +236,15 @@ export default function Profil() {
                     Préférences Email
                 </Heading>
                 <VStack align="start" gap={2}>
-                    <Checkbox>Recevoir des notifications</Checkbox>
-                    <Checkbox>Recevoir des promotions</Checkbox>
+                    <Checkbox checked={newEmailNotification} onCheckedChange={() => {
+                        setNewEmailNotification(!newEmailNotification)
+                        updateEmailNotificationPreference(!newEmailNotification)
+                        toaster.create({
+                            title: "Préférence de notification mise à jour",
+                            type: "success",
+                            description: "Vos préférences de notification ont été mises à jour avec succès.",
+                        })
+                    }}>Recevoir des notifications</Checkbox>
                 </VStack>
             </Box>
 
@@ -224,11 +275,22 @@ export default function Profil() {
                         </Text>
                     </VStack>
                 ) : (
-                    <Button>
+                    <Button asChild>
                         <Link to="/checkout">Je voudrais profiter de Pro</Link>
                     </Button>
                 )}
             </Box>
-        </Box>
+
+            <Box>
+                <Heading as="h3" size="md" mb={4}>
+                    Supprimer le Compte
+                </Heading>
+                <Text>
+                    Vous pouvez supprimer votre compte à tout moment. Veuillez noter que
+                    cette action est irréversible.
+                </Text>
+                <Button colorPalette="red" onClick={() => deleteUserAccount(currentPassword)}>Supprimer le Compte</Button>
+            </Box>
+        </Box >
     );
 }
