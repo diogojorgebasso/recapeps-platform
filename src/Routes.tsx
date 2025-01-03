@@ -2,20 +2,20 @@ import { Route, Routes as ReactRouterRoutes } from "react-router";
 
 import Layout from "./layouts/MainLayout";
 import AuthenticatedClientLayout from "./layouts/AuthenticatedClientLayout";
-import Login from "./pages/Login";
+import Login from "./pages/Auth/Login";
 import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard";
 import NotFoundPage from "./pages/404";
 import Quizz from "./pages/Quizz";
-import SignUp from "./pages/SignUp";
+import SignUp from "./pages/Auth/SignUp";
 import ChatBot from "./pages/ChatBot";
 import AddQuestionForm from "./components/dashboard/add-quizz";
 import SubjectQuiz from "./pages/Quizz/SubjectQuiz";
 
 import Notes from "./pages/Notes";
 import Team from "./pages/Team";
-import Profil from "@/pages/Profil"
+import Profil from "@/pages/Auth/Profil"
 import { useAuth } from "./hooks/useAuth";
 import ContactForm from "./pages/Contact";
 import About from "./pages/About";
@@ -27,6 +27,7 @@ import TermesCondition from "./pages/Termes-Condition";
 import PaymentPage from "./pages/Checkout/Payment";
 import Mixite from "./pages/Notes/ecrit-1/Mixite";
 import LesEmotion from "./pages/Notes/ecrit-2/les-emotion";
+import ForgottenPassword from "./pages/Auth/ForgotPassword";
 
 export function Routes() {
 
@@ -69,6 +70,7 @@ export function Routes() {
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<SignUp />} />
+            <Route path="forgot-password" element={<ForgottenPassword />} />
             <Route element={<AuthenticatedClientLayout />}>
                 {role === "admin" && adminRoutes}
                 {role === "user" && userRoutes}

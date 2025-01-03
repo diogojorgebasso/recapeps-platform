@@ -89,7 +89,7 @@ const SidebarItem = ({ icon, label, redirectTo, children, isSidebarOpen
 };
 
 export default function Sidebar({ path, isSidebarOpen }: { path: string[], isSidebarOpen: boolean }) {
-  const { email, name, photoURL, signOut } = useAuth();
+  const { email, firstName, photoURL, signOut } = useAuth();
   return (
     <Flex
       transition="0.3s ease-in-out"
@@ -155,11 +155,11 @@ export default function Sidebar({ path, isSidebarOpen }: { path: string[], isSid
           <MenuRoot positioning={{ placement: "right-start" }}>
             <MenuTrigger>
               <HStack cursor="pointer">
-                <Avatar src={photoURL} name={name} className="h-8 w-8 rounded-lg" />
+                <Avatar src={photoURL} name={firstName} className="h-8 w-8 rounded-lg" />
                 {isSidebarOpen &&
                   <>
                     <VStack align="start" gap="0">
-                      <Text className="truncate font-semibold">{name}</Text>
+                      <Text className="truncate font-semibold">{firstName}</Text>
                       <Text className="text-xs">{email}</Text>
                     </VStack>
                     <LuChevronsDownUp className="ml-auto size-4" />
