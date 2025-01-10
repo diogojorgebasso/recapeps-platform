@@ -7,6 +7,6 @@ export interface Subject {
     id: string;
     question: string;
     options: string[];
-    answer: string;
+    answers: number[];
     level:number;
   }

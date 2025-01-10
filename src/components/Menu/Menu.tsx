@@ -1,6 +1,9 @@
 import {
-    Box, Flex, HStack,
-    Text, SimpleGrid,
+    Box,
+    Flex,
+    HStack,
+    Text,
+    SimpleGrid,
     VStack
 } from "@chakra-ui/react";
 import { Link } from "react-router";
@@ -91,7 +94,6 @@ export default function Menu() {
                     </Button>
                 </HStack>
 
-                {/* Right Actions */}
                 <HStack gap={4} ml="auto">
                     <ContextualAvatar />
                     <ColorModeButton />

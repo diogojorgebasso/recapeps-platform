@@ -57,7 +57,6 @@ export default function AuthenticatedClientLayout() {
 
   return (
     <Flex h="100vh">
-      {/* RENDER SIDEBAR DIFFERENTLY BASED ON SCREEN SIZE */}
       {isMobile ? (
         <DrawerRoot open={open} onOpenChange={(e) => onOpen(e.open)} placement="top">
           <DrawerBackdrop />
@@ -86,10 +85,9 @@ export default function AuthenticatedClientLayout() {
             as="header"
           >
             <HStack gap={2}>
-              {/* SHOW COLLAPSE BUTTON ON DESKTOP */}
               <IconButton
                 aria-label="Toggle Sidebar"
-                onClick={isMobile ? () => onOpen(true) : toggleSidebar} // On mobile, open drawer; on desktop, collapse
+                onClick={isMobile ? () => onOpen(true) : toggleSidebar}
                 variant="ghost"
                 size="sm"
               >

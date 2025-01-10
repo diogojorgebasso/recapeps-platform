@@ -4,7 +4,7 @@ import { fetchQuizzesBySubject } from "@/api/getQuizzesFromFirebase";
 import { Quiz } from "@/types/Quizz";
 import { saveUserQuiz } from "@/api/saveQuizToFirebase";
 import { useAuth } from "@/hooks/useAuth";
-import { ProgressBar, ProgressRoot } from "@/components/ui/progress"
+import { ProgressBar, ProgressRoot } from "@/components/ui/progress";
 
 import {
     Box,
@@ -17,7 +17,6 @@ import {
     Center,
 } from "@chakra-ui/react";
 
-
 export default function QuizPage() {
     const router = useParams();
     const navigate = useNavigate();
@@ -27,7 +26,9 @@ export default function QuizPage() {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
     const [isFinished, setIsFinished] = useState(false);
-    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+    const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
+    const [showFeedback, setShowFeedback] = useState(false);
+
     const { uid } = useAuth();
 
     useEffect(() => {
@@ -42,16 +43,16 @@ export default function QuizPage() {
 
     useEffect(() => {
         const saveQuizIfFinished = async () => {
-            if (isFinished && exame && subjectId && typeof subjectId === "string") {
+            if (isFinished && exame && subjectId) {
                 const result = {
                     subjectId: subjectId,
                     score: score,
                     totalQuestions: quizzes.length,
                     type: exame,
                     date: new Date().toISOString(),
-                    questions: quizzes.map((quiz, index) => ({
+                    questions: quizzes.map((quiz) => ({
                         questionId: quiz.id,
-                        selectedAnswer: index < currentQuestion ? quizzes[index].answer : null,
+                        selectedAnswer: quiz.answers,
                     })),
                 };
 
@@ -67,21 +68,39 @@ export default function QuizPage() {
         saveQuizIfFinished();
     }, [isFinished]);
 
-    const handleAnswer = (selectedOption: string) => {
-        setSelectedAnswer(selectedOption);
-        if (selectedOption === quizzes[currentQuestion].answer) {
-            setScore((prevScore) => prevScore + 1);
-        }
+    const handleSelectOption = (optionIndex: number) => {
+        setSelectedAnswers((prev) =>
+            prev.includes(optionIndex)
+                ? prev.filter((idx) => idx !== optionIndex)
+                : [...prev, optionIndex]
+        );
     };
 
     const handleNextQuestion = () => {
-        const nextQuestion = currentQuestion + 1;
-        if (nextQuestion < quizzes.length) {
-            setCurrentQuestion(nextQuestion);
-            setSelectedAnswer(null);
-        } else {
-            setIsFinished(true);
-        }
+        const currentQuiz = quizzes[currentQuestion];
+        const correctAnswers = currentQuiz.answers as number[];
+
+        setShowFeedback(true);
+
+        // Após 1.5s, avança para a próxima questão
+        setTimeout(() => {
+            const sameSize = selectedAnswers.length === correctAnswers.length;
+            const allIncluded = selectedAnswers.every((idx) => correctAnswers.includes(idx));
+            const isSymmetric = correctAnswers.every((idx) => selectedAnswers.includes(idx));
+
+            if (sameSize && allIncluded && isSymmetric) {
+                setScore((prevScore) => prevScore + 1);
+            }
+
+            const nextQuestion = currentQuestion + 1;
+            if (nextQuestion < quizzes.length) {
+                setCurrentQuestion(nextQuestion);
+                setSelectedAnswers([]);
+                setShowFeedback(false);
+            } else {
+                setIsFinished(true);
+            }
+        }, 1500);
     };
 
     if (!quizzes.length && !isFinished) {
@@ -116,7 +135,7 @@ export default function QuizPage() {
                         <Button
                             width="full"
                             mt={6}
-                            colorScheme="blue"
+                            colorPalette="blue"
                             onClick={() => navigate("/quizz")}
                         >
                             Retour aux Quiz
@@ -127,49 +146,52 @@ export default function QuizPage() {
         );
     }
 
-    // Lógica para a pergunta atual
     const currentQuiz = quizzes[currentQuestion];
     const progress = (currentQuestion / quizzes.length) * 100;
 
     return (
-        <Box minH="100vh" bg="gray.50" display="flex" alignItems="center" justifyContent="center" p={4}>
+        <Box
+            minH="100vh"
+            bg="gray.50"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            p={4}
+        >
             <Card.Root maxW="lg" w="full" boxShadow="lg" position="relative">
                 <Card.Header>
                     <Heading as="h3" size="md" textAlign="center">
                         {currentQuiz.question}
                     </Heading>
-                    <Badge
-                        colorPalette="blue"
-                        position="absolute"
-                        top={2}
-                        right={4}
-                        fontSize="0.7em"
-                    >
+                    <Badge colorPalette="blue" position="absolute" top={2} right={4} fontSize="0.7em">
                         niveau: {currentQuiz.level}
                     </Badge>
                 </Card.Header>
+
                 <Card.Body>
                     <Stack gap={4}>
                         {currentQuiz.options.map((option, index) => {
-                            // Define a cor do botão conforme a resposta selecionada
-                            let colorScheme: string = "gray";
-                            if (selectedAnswer) {
-                                if (option === currentQuiz.answer) {
-                                    colorScheme = "green";
-                                } else if (option === selectedAnswer) {
-                                    colorScheme = "red";
-                                }
+                            const isCorrect = currentQuiz.answers.includes(index);
+                            const isSelected = selectedAnswers.includes(index);
+
+                            // Aplicar cores com base no feedback
+                            let colorPalette = "gray";
+                            if (showFeedback) {
+                                if (isCorrect) colorPalette = "green";
+                                else if (isSelected && !isCorrect) colorPalette = "red";
+                            } else if (isSelected) {
+                                colorPalette = "blue";
                             }
 
                             return (
                                 <Button
                                     key={index}
-                                    colorPalette={colorScheme}
-                                    disabled={!!selectedAnswer}
-                                    onClick={() => handleAnswer(option)}
+                                    colorPalette={colorPalette}
+                                    onClick={() => handleSelectOption(index)}
                                     textAlign="left"
                                     whiteSpace="normal"
                                     wordBreak="break-word"
+                                    disabled={showFeedback} // Desabilitar durante feedback
                                 >
                                     {option}
                                 </Button>
@@ -183,20 +205,13 @@ export default function QuizPage() {
                             <Text fontSize="sm">100%</Text>
                         </Box>
                         <ProgressRoot value={progress}>
-                            <ProgressBar colorScheme="blue" borderRadius="md" />
+                            <ProgressBar colorPalette="blue" borderRadius="md" />
                         </ProgressRoot>
                     </Box>
 
-                    {selectedAnswer && (
-                        <Button
-                            mt={4}
-                            w="full"
-                            colorScheme="blue"
-                            onClick={handleNextQuestion}
-                        >
-                            Question suivante
-                        </Button>
-                    )}
+                    <Button mt={4} w="full" colorPalette="blue" onClick={handleNextQuestion} disabled={showFeedback}>
+                        Question suivante
+                    </Button>
                 </Card.Body>
             </Card.Root>
         </Box>

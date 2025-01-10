@@ -1,51 +1,202 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 
 type Question = {
   question: string;
-  answer: string;
+  options: string[];
+  answers: number[];
+  level: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  date?: any;    
 };
 
-type Quiz = {
-  questions: Question[];
-};
-
-const quizzes: Quiz[] = [
+const questions: Question[] = [
   {
-    questions: [
-      { question: "Mixité autorisée dans le primaire", answer: "1933" },
-      { question: "Rétablissement de la gratuité scolaire", answer: "1945" },
-      { question: "Plan Langevin-Wallon", answer: "1947" },
-      { question: "Réforme Berthoin", answer: "6 juin 1959" },
-      { question: "Réforme Capelle-Fouchet", answer: "3 août 1963" },
-      { question: "Loi Haby", answer: "11 juillet 1975" },
-      { question: "Réforme Savary", answer: "2 juin 1982" },
-      { question: "Rapport Legrand", answer: "Décembre 1982" },
-      { question: "Commissions horizontales et verticales", answer: "1983" },
-      { question: "Loi Avice", answer: "16 juillet 1984" },
-      { question: "Commission Bourdieu-Gros", answer: "1988" },
-      { question: "Loi Jospin", answer: "10 juillet 1989" },
-      { question: "Charte des programmes", answer: "20 février 1992" },
-      { question: "Nouveau contrat pour l’école, Bayrou", answer: "1er septembre 1994" },
-      { question: "Réforme des lycées", answer: "27 mai 1999" },
-      { question: "Collège de l’an 2000", answer: "10 juillet 1999" },
-      { question: "Rapport Thélot", answer: "1er octobre 2004" },
-      { question: "Loi Fillon", answer: "23 avril 2005" },
-      { question: "Création des réseaux d’éducation prioritaire", answer: "2006" },
-      { question: "Réforme du lycée (Sarkozy)", answer: "2010" },
-      {
-        question:
-          "Loi d’orientation et de programmation pour la refondation de l’école de la république",
-        answer: "8 juillet 2013",
-      },
-      { question: "Réforme du collège", answer: "20 mai 2015" },
-      { question: "Réforme du lycée et du baccalauréat", answer: "2019" },
-      {
-        question: "Loi pour une école de la confiance (Loi Blanquer)",
-        answer: "28 juillet 2019",
-      },
+    "question": "« La mixité sexuée à l’école c’est : »",
+    "options": [
+      "« Éduquer les filles et les garçons ensemble »",
+      "« Ne pas reconnaitre de différence entre les filles et les garçons dans l’enseignement »",
+      "« Dispenser un enseignement séparé pour les filles et les garçons »",
+      "« Dispenser un enseignement commun en reconnaissant les différences de chacun »",
     ],
+    "answers": [0, 3],
+    "level": 1,
   },
+  {
+    "question": "« Le genre c’est : »",
+    "options": [
+      "« La mixité »",
+      "« Le sexe »",
+      "« Une construction sociale »",
+      "« Une expression de la féminité ou la masculinité »",
+    ],
+    "answers": [2, 3],
+    "level": 1,
+  },
+  {
+    "question":
+      "« Selon Boigey, « la femme n’est point construite pour lutter mais pour …… » (Boigey, Manuel scientifique d’EP, 1922) »",
+    "options": ["« Enfanter »", "« Cuisiner »", "« Procréer »", "« Nettoyer »"],
+    "answers": [2],
+    "level": 1,
+  },
+  {
+    "question": "Quels acteurs de l’EP considèrent la femme comme inférieure à l’homme ?",
+    "options": ["Boigey", "Jeudon", "Morisson", "Bellin du Cotteau"],
+    "answers": [0, 1, 2, 3],
+    "level": 1
+  },
+  {
+    "question": "Dans les IO de 1945 :",
+    "options": [
+      "Les objectifs sont les mêmes pour les filles et les garçons",
+      "Les activités support sont les mêmes pour les filles et les garçons",
+      "Les objectifs sont différents pour les filles et les garçons",
+      "Les activités support différentes pour les filles et les garçons"
+    ],
+    "answers": [2, 3],
+    "level": 1
+  },
+  {
+    "question": "En 1945 au bac, tandis que les garçons font du lancer de poids, les filles font :",
+    "options": [
+      "Du lancer de ballon",
+      "Du lancer de javelot",
+      "Du lancer de disque",
+      "Du lancer de pommes"
+    ],
+    "answers": [0],
+    "level": 1
+  },
+  {
+    "question": "Quels acteurs sont en faveur d’une égalité filles-garçons en termes de contenus ?",
+    "options": ["Parlebas", "Pujade Renaud", "Bellin du Cotteau", "Jeudon"],
+    "answers": [0, 1],
+    "level": 1
+  },
+  {
+    "question": "La différenciation entre sexe et genre repose sur le fait que :",
+    "options": [
+      "Le sexe est biologique, le genre est social",
+      "Le sexe est social, le genre est biologique",
+      "Le sexe est culturel, le genre est scientifique",
+      "Le sexe est scientifique, le genre est culturel"
+    ],
+    "answers": [0],
+    "level": 1
+  },
+  {
+    "question": "Quelle(s) réforme(s) encourage(nt) la mixité à l’école ?",
+    "options": ["Capelle-Fouchet", "Berthoin", "Haby", "Jopsin"],
+    "answers": [2],
+    "level": 1
+  },
+  {
+    "question": "Quelles IO entérinent les différences entre les sexes :",
+    "options": ["1959", "1962", "1967", "1985"],
+    "answers": [2],
+    "level": 1
+  },
+  {
+    "question": "Selon Pujade-Renaud, une piste pour tendre vers une égalité filles garçons en EPS serait :",
+    "options": [
+      "Développer la dimension expressive",
+      "Donner des avantages aux filles lors des compétitions sportives",
+      "Différencier le barème de notation",
+      "Développer la dimension compétitive"
+    ],
+    "answers": [0],
+    "level": 1
+  },
+  {
+    "question": "L’EP dans les années 30 a pour objectif de former des filles :",
+    "options": [
+      "Fortes et courageuses",
+      "Gracieuses et féminines",
+      "Futures mères et épouses",
+      "Sportives et ambitieuses"
+    ],
+    "answers": [1, 2],
+    "level": 1
+  },
+  {
+    "question": "Dans les années 30, les principales parties du corps à développer chez les filles en EP sont :",
+    "options": ["Les bras", "Les hanches", "Les abdominaux", "Le dos"],
+    "answers": [1, 3],
+    "level": 1
+  },
+  {
+    "question": "La Loi Jospin de 1989 a introduit dans l'éducation :",
+    "options": [
+      "La séparation des sexes",
+      "La coéducation dans le primaire",
+      "Le respect des différences de chacun",
+      "La ségrégation par niveau scolaire"
+    ],
+    "answers": [2],
+    "level": 1
+  },
+  {
+    "question": "Dans les IO de 1985, on parle de :",
+    "options": [
+      "Filles et garçons",
+      "D’élèves",
+      "De fillettes et de garçons",
+      "D’hommes et de femmes"
+    ],
+    "answers": [1],
+    "level": 1
+  },
+  {
+    "question": "La loi Haby impose la mixité dans :",
+    "options": [
+      "Les lycées seulement",
+      "Les établissements privés uniquement",
+      "Les universités",
+      "Les écoles, collèges et lycées"
+    ],
+    "answers": [3],
+    "level": 1
+  },
+  {
+    "question": "La mixité favorise :",
+    "options": [
+      "L’apprentissage du vivre-ensemble",
+      "Les stéréotypes genrés",
+      "La violence",
+      "L’instruction à distance"
+    ],
+    "answers": [0],
+    "level": 1
+  },
+  {
+    "question": "Jusqu’en 1925, les écoles françaises étaient :",
+    "options": [
+      "Mixtes",
+      "Séparées pour les filles et les garçons",
+      "Ouvertes aux garçons uniquement",
+      "Ouvertes aux filles uniquement"
+    ],
+    "answers": [1],
+    "level": 1
+  },
+  {
+    "question": "La séparation des sexes dans les établissements scolaires au 19ème siècle répondait à des principes :",
+    "options": ["Moraux et religieux", "Scientifiques", "De santé", "D’effectifs"],
+    "answers": [0],
+    "level": 1
+  },
+  {
+    "question": "La danse en EPS dans les années 60 est :",
+    "options": [
+      "Recommandée pour les garçons",
+      "Principalement recommandée pour les filles",
+      "Obligatoire pour tous les élèves",
+      "Interdite dans les écoles publiques"
+    ],
+    "answers": [1],
+    "level": 1
+  }
 ];
 
 
@@ -53,17 +204,25 @@ const quizzes: Quiz[] = [
  * Add multiple quizzes to the Firestore database
  * @param quizzes - Array of quiz data to add
  */
-export const addMultipleQuizzesToFirestore = async () => {
+export const addQuestionsToFirestore = async () => {
   try {
-    const quizzesRef = collection(db, "flashcards", "mutations-systeme-educatif", "questions"); // Reference to the 'quizzes' collection
+    const questionsRef = collection(
+      db,
+      "ecrit-1",
+      "la-mixite-sexuee",
+      "quizzes"
+    );
 
-    for (const quiz of quizzes) {
-      for (const question of quiz.questions) {
-        await addDoc(quizzesRef, question);
-      }
+    for (const question of questions) {
+      await addDoc(questionsRef, {
+        ...question,
+        date: serverTimestamp(), // Adiciona a data como timestamp do servidor
+      });
     }
+    console.log("Todas as perguntas foram adicionadas com sucesso!");
   } catch (error) {
-    console.error("Error adding quizzes:", error);
+    console.error("Erro ao adicionar perguntas:", error);
   }
 };
+
 

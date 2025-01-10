@@ -8,7 +8,7 @@ export const saveUserQuiz = async (uid : string, quizResult: {
   totalQuestions: number;
   type: string;
   date: string;
-  questions: { questionId: string; selectedAnswer: string | null }[];
+  questions: { questionId: string; selectedAnswer: number[] }[];
 }) => {
   try {
     const userQuizRef = collection(db, "users", uid, "quizzes");
