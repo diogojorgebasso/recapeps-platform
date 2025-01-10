@@ -6,6 +6,7 @@ export const saveUserQuiz = async (uid : string, quizResult: {
   subjectId: string;
   score: number;
   totalQuestions: number;
+  type: string;
   date: string;
   questions: { questionId: string; selectedAnswer: string | null }[];
 }) => {

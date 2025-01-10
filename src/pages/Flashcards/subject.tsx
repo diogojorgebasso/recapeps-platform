@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/utils/firebase";
-import { Card } from "@chakra-ui/react";
-import { Button } from "@/components/ui/button";
+import {
+    Box,
+    Button,
+    Card,
+    Center,
+    Heading,
+    Text,
+    VStack,
+} from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router";
 
 type Flashcard = {
@@ -11,15 +18,15 @@ type Flashcard = {
     question: string;
 };
 
-
 export default function FlashcardsSubject() {
     const { subjectId } = useParams();
     const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
-    const [showExplanation, setShowExplanation] = useState(false);
+    const [isFlipped, setIsFlipped] = useState(false);
 
     const navigate = useNavigate();
+
     useEffect(() => {
         const fetchFlashcards = async () => {
             if (!subjectId) return;
@@ -42,122 +49,172 @@ export default function FlashcardsSubject() {
         fetchFlashcards();
     }, [subjectId]);
 
-
-
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">Chargement...</div>;
+        return (
+            <Center h="100vh">
+                <Text>Chargement...</Text>
+            </Center>
+        );
     }
 
     if (!flashcards.length) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <p>Aucun flashcard trouvé pour ce sujet.</p>
-            </div>
+            <Center h="100vh">
+                <Text>Aucun flashcard trouvé pour ce sujet.</Text>
+            </Center>
         );
     }
 
     if (currentPage === flashcards.length) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <Card.Root className="border p-6 max-w-md w-full">
+            <Center h="100vh">
+                <Card.Root w="md" p="6" textAlign="center">
                     <Card.Header>
-                        Félicitations!
+                        <Heading>Félicitations!</Heading>
                     </Card.Header>
                     <Card.Body>
-                        <p className="text-center text-xl text-white">
+                        <Text fontSize="xl" mb="4">
                             Vous avez terminé toutes les flashcards.
-                        </p>
+                        </Text>
                         <Button
                             onClick={() => navigate("/flashcards")}
-                            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white"
+                            colorScheme="blue"
+                            w="full"
                         >
-                            Retour à tout les sujets
+                            Retour à tous les sujets
                         </Button>
                     </Card.Body>
                 </Card.Root>
-            </div>
+            </Center>
         );
     }
+
     const currentFlashcard = flashcards[currentPage];
 
     const handleNext = () => {
         if (currentPage < flashcards.length) {
             setCurrentPage(currentPage + 1);
         }
-        setShowExplanation(false);
+        setIsFlipped(false);
     };
 
     const handlePrevious = () => {
         if (currentPage > 0) {
             setCurrentPage(currentPage - 1);
         }
-        setShowExplanation(false)
+        setIsFlipped(false);
     };
 
     return (
-        <div className="container mx-auto py-8">
-            <h1 className="text-3xl font-bold text-center mb-8">Flashcards</h1>
-            <div className="flex justify-center items-center">
-                {currentFlashcard && (
-                    <Flashcard
-                        word={currentFlashcard.question}
-                        explanation={currentFlashcard.answer}
-                        showExplanation={showExplanation}
-                        setShowExplanation={setShowExplanation}
-                    />
-                )}
-            </div>
-            <div className="flex justify-center items-center mt-8 space-x-4">
+        <Box p="8">
+            <Center>
+                <VStack>
+                    <Heading as="h1" textAlign="center" mb="8">
+                        Flashcards
+                    </Heading>
+                    <Text maxW="9/12">Les flashcards sont un outil simple et efficace pour apprendre rapidement.
+                        Idéales pour mémoriser des notions clés, elles rendent l’apprentissage interactif et pratique, où que vous soyez.
+                    </Text>
+                    {currentFlashcard && (
+                        <Flashcard
+                            word={currentFlashcard.question}
+                            explanation={currentFlashcard.answer}
+                            isFlipped={isFlipped}
+                            setIsFlipped={setIsFlipped}
+                        />
+                    )}
+                </VStack>
+            </Center>
+            <Center mt="8">
                 <Button
                     onClick={handlePrevious}
                     disabled={currentPage === 0}
-                    className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded"
+                    colorScheme="gray"
+                    mr="4"
                 >
                     Précédent
                 </Button>
-                <span className="text-lg">
+                <Text>
                     {currentPage + 1} / {flashcards.length}
-                </span>
+                </Text>
                 <Button
                     onClick={handleNext}
                     disabled={currentPage === flashcards.length}
-                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                    colorScheme="blue"
+                    ml="4"
                 >
                     Suivant
                 </Button>
-            </div>
-        </div>
+            </Center>
+        </Box>
     );
 }
 
-function Flashcard({ word, explanation, showExplanation,
-    setShowExplanation }: {
-        word: string;
-        explanation: string,
-        showExplanation: boolean;
-        setShowExplanation: React.Dispatch<React.SetStateAction<boolean>>;
-    }) {
-
+function Flashcard({
+    word,
+    explanation,
+    isFlipped,
+    setIsFlipped,
+}: {
+    word: string;
+    explanation: string;
+    isFlipped: boolean;
+    setIsFlipped: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
     return (
-        <Card.Root className="border p-6 max-w-md w-full">
-            <Card.Header>
-                ]{word}
-            </Card.Header>
-            <Card.Body>
-                {showExplanation ? (
-                    <p className="text-center text-xl text-white">{explanation}</p>
-                ) : (
-                    <p className="text-center text-gray-500">
-                        Cliquez pour révéler l'explication
-                    </p>
-                )}
-                <Button
-                    onClick={() => setShowExplanation(!showExplanation)}
-                    className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white"
+        <Box
+            w="80%"
+            h="200px"
+            perspective="1000px"
+            onClick={() => setIsFlipped(!isFlipped)}
+        >
+            <Box
+                w="100%"
+                h="100%"
+                position="relative"
+                transform={isFlipped ? "rotateY(180deg)" : "rotateY(0deg)"}
+                transformStyle="preserve-3d"
+                transition="transform 0.6s"
+            >
+                {/* Front Side */}
+                <Card.Root
+                    position="absolute"
+                    w="100%"
+                    h="100%"
+                    backfaceVisibility="hidden"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    bg="blue.500"
+                    color="white"
                 >
-                    {showExplanation ? "Cacher l'explication" : "Montrer l'explication"}
-                </Button>
-            </Card.Body>
-        </Card.Root>
+                    <Card.Body>
+                        <Text textStyle="6xl">
+                            {word}
+                        </Text>
+                    </Card.Body>
+                </Card.Root>
+
+                {/* Back Side */}
+                <Card.Root
+                    position="absolute"
+                    w="100%"
+                    h="100%"
+                    backfaceVisibility="hidden"
+                    transform="rotateY(180deg)"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    bg="green.500"
+                    color="white"
+                >
+                    <Card.Body>
+                        <Text textStyle="6xl">
+                            {explanation}
+                        </Text>
+                    </Card.Body>
+                </Card.Root>
+            </Box>
+        </Box>
     );
 }

@@ -6,7 +6,6 @@ export default function Notes() {
     return (
         <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg border border-gray-200">
             <Tabs.Root defaultValue="exam1" className="w-full">
-                {/* Tabs List */}
                 <Tabs.List className="flex bg-gray-100 rounded-t-lg border-b border-gray-200">
                     <Tabs.Trigger
                         value="exam1"

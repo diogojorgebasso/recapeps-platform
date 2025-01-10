@@ -24,7 +24,6 @@ export default function QuizPage() {
     useEffect(() => {
         const loadQuiz = async () => {
             if (subjectId && exame && typeof subjectId === "string") {
-                console.log("Loading quiz for subject:", subjectId);
                 const quizzes = await fetchQuizzesBySubject(exame, subjectId);
                 setQuizzes(quizzes);
             }
@@ -34,18 +33,18 @@ export default function QuizPage() {
 
     useEffect(() => {
         const saveQuizIfFinished = async () => {
-            if (isFinished && subjectId && typeof subjectId === "string") {
+            if (isFinished && exame && subjectId && typeof subjectId === "string") {
                 const result = {
                     subjectId: subjectId,
                     score: score,
                     totalQuestions: quizzes.length,
+                    type: exame,
                     date: new Date().toISOString(),
                     questions: quizzes.map((quiz, index) => ({
                         questionId: quiz.id,
                         selectedAnswer: index < currentQuestion ? quizzes[index].answer : null,
                     })),
                 };
-                console.log("Quiz result:", result);
 
                 try {
                     await saveUserQuiz(uid, result);

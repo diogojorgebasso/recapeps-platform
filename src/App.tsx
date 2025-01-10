@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router";
 import { AuthProvider } from "@/context/AuthContext";
 import { CookieProvider } from "./context/CookieContext";
 import { Provider } from "@/components/ui/provider"
+import { SectionProvider } from "./context/SectionContext";
 
 export default function App() {
   return (
@@ -11,7 +12,9 @@ export default function App() {
       <Provider>
         <BrowserRouter>
           <CookieProvider>
-            <Routes />
+            <SectionProvider>
+              <Routes />
+            </SectionProvider>
           </CookieProvider>
         </BrowserRouter>
       </Provider>
