@@ -69,38 +69,39 @@ export default function QuizPage() {
     }, [isFinished]);
 
     const handleSelectOption = (optionIndex: number) => {
-        setSelectedAnswers((prev) =>
-            prev.includes(optionIndex)
-                ? prev.filter((idx) => idx !== optionIndex)
-                : [...prev, optionIndex]
-        );
+        if (!showFeedback) {
+            setSelectedAnswers((prev) =>
+                prev.includes(optionIndex)
+                    ? prev.filter((idx) => idx !== optionIndex)
+                    : [...prev, optionIndex]
+            );
+        }
+    };
+
+    const handleValidation = () => {
+        setShowFeedback(true);
     };
 
     const handleNextQuestion = () => {
         const currentQuiz = quizzes[currentQuestion];
         const correctAnswers = currentQuiz.answers as number[];
 
-        setShowFeedback(true);
+        const sameSize = selectedAnswers.length === correctAnswers.length;
+        const allIncluded = selectedAnswers.every((idx) => correctAnswers.includes(idx));
+        const isSymmetric = correctAnswers.every((idx) => selectedAnswers.includes(idx));
 
-        // Após 1.5s, avança para a próxima questão
-        setTimeout(() => {
-            const sameSize = selectedAnswers.length === correctAnswers.length;
-            const allIncluded = selectedAnswers.every((idx) => correctAnswers.includes(idx));
-            const isSymmetric = correctAnswers.every((idx) => selectedAnswers.includes(idx));
+        if (sameSize && allIncluded && isSymmetric) {
+            setScore((prevScore) => prevScore + 1);
+        }
 
-            if (sameSize && allIncluded && isSymmetric) {
-                setScore((prevScore) => prevScore + 1);
-            }
-
-            const nextQuestion = currentQuestion + 1;
-            if (nextQuestion < quizzes.length) {
-                setCurrentQuestion(nextQuestion);
-                setSelectedAnswers([]);
-                setShowFeedback(false);
-            } else {
-                setIsFinished(true);
-            }
-        }, 1500);
+        const nextQuestion = currentQuestion + 1;
+        if (nextQuestion < quizzes.length) {
+            setCurrentQuestion(nextQuestion);
+            setSelectedAnswers([]);
+            setShowFeedback(false);
+        } else {
+            setIsFinished(true);
+        }
     };
 
     if (!quizzes.length && !isFinished) {
@@ -174,7 +175,6 @@ export default function QuizPage() {
                             const isCorrect = currentQuiz.answers.includes(index);
                             const isSelected = selectedAnswers.includes(index);
 
-                            // Aplicar cores com base no feedback
                             let colorPalette = "gray";
                             if (showFeedback) {
                                 if (isCorrect) colorPalette = "green";
@@ -209,8 +209,14 @@ export default function QuizPage() {
                         </ProgressRoot>
                     </Box>
 
-                    <Button mt={4} w="full" colorPalette="blue" onClick={handleNextQuestion} disabled={showFeedback}>
-                        Question suivante
+                    <Button
+                        mt={4}
+                        w="full"
+                        colorPalette="blue"
+                        disabled={selectedAnswers.length === 0}
+                        onClick={showFeedback ? handleNextQuestion : handleValidation}
+                    >
+                        {showFeedback ? "Question Suivant" : "Validation"}
                     </Button>
                 </Card.Body>
             </Card.Root>
