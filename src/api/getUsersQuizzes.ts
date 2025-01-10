@@ -15,9 +15,10 @@ export const fetchUserQuizzes = async (userId: string) => {
 
     const quizzes = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      score: doc.data().score, // Fetch the score
-      quizName: doc.data().subjectId, // Use subjectId as the quiz name
-      timestamp: doc.data().date, // Use date as the timestamp
+      score: doc.data().score, 
+      quizName: doc.data().subjectId,
+      type: doc.data().type,
+      timestamp: doc.data().date,
     }));
 
     return quizzes.reverse();

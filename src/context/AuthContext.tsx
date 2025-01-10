@@ -50,12 +50,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setCurrentUser(user);
                 setUid(user.uid);
                 setEmail(user.email!);
-                await fetchUserData(user.uid)
-                setIsLoadedAuth(true);
+
+                if (!isLoadedAuth) {
+                    await fetchUserData(user.uid);
+                    setIsLoadedAuth(true);
+                }
+            } else {
+                setCurrentUser(undefined);
+                setUid("");
+                setEmail("");
+                setIsLoadedAuth(false);
             }
         });
         return unsubscribe;
-    }, [currentUser]);
+    }, []);
 
     const deleteUserAccount = async (currentPassword: string) => {
         console.log("Deleting user account...");
@@ -69,9 +77,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.error("Error deleting user account:", error);
         }
     }
+
     const fetchUserData = async (uid: string) => {
+        console.log("Fetching user data...");
         try {
-            if (currentUser?.uid === uid && firstName && role) {
+            if (isLoadedAuth) {
                 console.log("Dados do usuário já carregados");
                 return;
             }

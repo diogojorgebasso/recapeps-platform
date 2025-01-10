@@ -1,63 +1,115 @@
-import { useState } from "react"
-import { useAuth } from "@/hooks/useAuth"
-import { Outlet, useLocation, useNavigate } from "react-router"
-import { Separator, Box, IconButton, Flex, HStack } from "@chakra-ui/react"
+import { useState, useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router";
+import {
+  Box,
+  Flex,
+  IconButton,
+  HStack,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 
-import { BreadcrumbCurrentLink, BreadcrumbRoot } from "@/components/ui/breadcrumb"
+import SidebarMobile from "@/components/sidebar/sidebarMobile";
 
-import Sidebar from "@/components/sidebar/sidebar"
-import { useEffect } from "react"
+import {
+  DrawerBackdrop,
+  DrawerBody,
+  DrawerCloseTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerRoot,
+  DrawerTitle,
+} from "@/components/ui/drawer"
+
 import { LuPanelLeftClose } from "react-icons/lu";
+import { FiMenu } from "react-icons/fi";
+
+import { useAuth } from "@/hooks/useAuth";
+import { BreadcrumbCurrentLink, BreadcrumbRoot } from "@/components/ui/breadcrumb";
+import { Separator } from "@chakra-ui/react"
+import Sidebar from "@/components/sidebar/sidebar";
 
 export default function AuthenticatedClientLayout() {
   const navigate = useNavigate();
   const { isAuthenticated, isLoadedAuth } = useAuth();
+
+  // Desktop collapse/expand state
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
+  const [open, onOpen] = useState(false);
+  const onClose = () => onOpen(false);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
-  // TODO : ESSE COMPORTAMENTO ESTÁ ESTRANHO.
+  // Auth check (your existing logic)
   useEffect(() => {
     if (isLoadedAuth && !isAuthenticated) {
       navigate("/login");
     }
-  }, []);
+  }, [isLoadedAuth, isAuthenticated, navigate]);
 
-  const { pathname } = useLocation()
+  // Breadcrumb logic
+  const { pathname } = useLocation();
   const pathnames = pathname.split("/").filter((x) => x);
-
   function capitalizeFirstLetter(word: string) {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
 
+
   return (
     <Flex h="100vh">
-      <Sidebar isSidebarOpen={isSidebarOpen} path={pathnames} />
+      {/* RENDER SIDEBAR DIFFERENTLY BASED ON SCREEN SIZE */}
+      {isMobile ? (
+        <DrawerRoot open={open} onOpenChange={(e) => onOpen(e.open)} placement="top">
+          <DrawerBackdrop />
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Menu</DrawerTitle>
+            </DrawerHeader>
+            <DrawerBody>
+              <SidebarMobile onClose={onClose} />
+            </DrawerBody>
+            <DrawerCloseTrigger />
+          </DrawerContent>
+        </DrawerRoot>
+      ) : (
+        <Sidebar isSidebarOpen={isSidebarOpen} path={pathnames} />
+      )}
+
       <Box flex="1" overflowY="auto">
         <main>
-          <Box position="sticky" bg={{ base: "white", _dark: "black" }} top="0" as="header">
-            <HStack>
+          {/* STICKY HEADER */}
+          <Box
+            position="sticky"
+            top="0"
+            bg={{ base: "white", _dark: "black" }}
+            zIndex="sticky"
+            as="header"
+          >
+            <HStack gap={2}>
+              {/* SHOW COLLAPSE BUTTON ON DESKTOP */}
               <IconButton
                 aria-label="Toggle Sidebar"
-                onClick={toggleSidebar}
+                onClick={isMobile ? () => onOpen(true) : toggleSidebar} // On mobile, open drawer; on desktop, collapse
                 variant="ghost"
-                size="sm">
-                <LuPanelLeftClose />
+                size="sm"
+              >
+                {isMobile ? <FiMenu /> : <LuPanelLeftClose />}
               </IconButton>
+
               <BreadcrumbRoot>
                 {pathnames.map((name, index) => (
-                  <BreadcrumbCurrentLink key={index}>&ge;	{capitalizeFirstLetter(name)}
+                  <BreadcrumbCurrentLink key={index}>
+                    {capitalizeFirstLetter(name)}
                   </BreadcrumbCurrentLink>
                 ))}
               </BreadcrumbRoot>
             </HStack>
+
             <Separator />
           </Box>
           <Outlet />
         </main>
-      </Box >
-    </Flex >
-  )
+      </Box>
+    </Flex>
+  );
 }

@@ -8,7 +8,6 @@ exports.saveRoleToFirestore = functions.auth.user().onCreate(async (user) => {
     try {
         const { uid, email, displayName, photoURL } = user;
 
-        // Determine the role based on the email domain
         const role = email && email.endsWith("@recapeps.com") ? "admin" : "user";
 
         const userData = {
