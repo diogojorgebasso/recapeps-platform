@@ -1,3 +1,6 @@
+src/api/boilerPlateQuizzes.ts
+src/api/boilerPlateFlashcards.ts
+
 # Logs
 logs
 *.log
