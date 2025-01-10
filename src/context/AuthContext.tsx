@@ -92,7 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setIsEmailNotificationEnabled(userData.emailNotifications);
                     setfirstName(userData.firstName);
                     setsecondName(userData.secondName);
-                    setPhotoURL(userData.photoURL);
+                    if (userData.photoURL != null) {
+                        setPhotoURL(userData.photoURL);
+                    }
                     setRole(userData.role);
                     await checkUserSubscription(uid);
                 }
