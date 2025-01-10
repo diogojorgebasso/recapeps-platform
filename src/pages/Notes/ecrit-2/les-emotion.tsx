@@ -4,35 +4,18 @@ import {
     Text,
     List,
     Stack,
-    VStack,
-    Center,
-    Button
 } from "@chakra-ui/react";
 import { CTA, Section, Sommaire } from "../formatter";
-import { Link } from "react-router";
+import { HeaderNotes } from "../formatter";
 
 export default function LesEmotions() {
     return (
         <Box>
-            <Box
-                as="header"
-                bgGradient="to-r" gradientFrom="blue.500" gradientTo="red.400"
-                p={6}
-                color="white"
-                display="flex"
-                alignItems="center"
-            >
-                <Box>
-                    <Heading as="h1" size="xl" fontWeight="bold">
-                        Les Émotions
-                    </Heading>
-                    <Text as="span" textDecoration="underline">
-                        Sujet
-                    </Text>{" "}
-                    : La place des émotions en EPS
-                    <Text>ITEM : Comprendre, s’exprimer et apprendre à transmettre</Text>
-                </Box>
-            </Box>
+            <HeaderNotes
+                title="Les émotions"
+                exam="Ecrit 2"
+                item="Comprendre, s'expr"
+            />
 
             <Sommaire />
             <Box mx="auto" mt={8} >

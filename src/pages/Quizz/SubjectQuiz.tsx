@@ -1,13 +1,22 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { fetchQuizzesBySubject } from "@/api/getQuizzesFromFirebase";
 import { Quiz } from "@/types/Quizz";
-import { Button } from "@/components/ui/button";
-import { ProgressBar, ProgressRoot } from "@/components/ui/progress";
 import { saveUserQuiz } from "@/api/saveQuizToFirebase";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router";
-import { Card } from "@chakra-ui/react";
+import { ProgressBar, ProgressRoot } from "@/components/ui/progress"
+
+import {
+    Box,
+    Button,
+    Card,
+    Heading,
+    Text,
+    Badge,
+    Stack,
+    Center,
+} from "@chakra-ui/react";
+
 
 export default function QuizPage() {
     const router = useParams();
@@ -24,8 +33,8 @@ export default function QuizPage() {
     useEffect(() => {
         const loadQuiz = async () => {
             if (subjectId && exame && typeof subjectId === "string") {
-                const quizzes = await fetchQuizzesBySubject(exame, subjectId);
-                setQuizzes(quizzes);
+                const fetchedQuizzes = await fetchQuizzesBySubject(exame, subjectId);
+                setQuizzes(fetchedQuizzes);
             }
         };
         loadQuiz();
@@ -48,9 +57,9 @@ export default function QuizPage() {
 
                 try {
                     await saveUserQuiz(uid, result);
-                    console.log("Quiz saved successfully!");
+                    console.log("Quiz salvo com sucesso!");
                 } catch (error) {
-                    console.error("Error saving the quiz:", error);
+                    console.error("Erro ao salvar o quiz:", error);
                 }
             }
         };
@@ -77,9 +86,9 @@ export default function QuizPage() {
 
     if (!quizzes.length && !isFinished) {
         return (
-            <div className="flex h-screen items-center justify-center">
-                <p>Carregando Quiz...</p>
-            </div>
+            <Center w="100%" h="100vh">
+                <Text fontSize="lg">Carregando Quiz...</Text>
+            </Center>
         );
     }
 
@@ -88,81 +97,101 @@ export default function QuizPage() {
             score / quizzes.length >= 0.7
                 ? "Félicitations ! Vous avez bien réussi ce quiz ! Continuez à briller ! 🎉"
                 : "Ne vous découragez pas ! Chaque erreur est une opportunité d'apprendre. Vous pouvez le faire ! 💪";
+
         return (
-            <div className="flex h-screen items-center justify-center">
-                <Card.Root className="max-w-md w-full bg-white shadow-lg">
+            <Center w="100%" h="100vh" p={4}>
+                <Card.Root maxW="md" w="full" p={4} boxShadow="lg">
                     <Card.Header>
-                        <Card.Title className="text-2xl text-center">Quiz Terminé !</Card.Title>
+                        <Heading as="h2" textAlign="center" size="md">
+                            Quiz Terminé !
+                        </Heading>
                     </Card.Header>
                     <Card.Body>
-                        <p className="text-center">
+                        <Text textAlign="center" fontSize="lg" mb={4}>
                             Votre Note: <strong>{score}</strong> / {quizzes.length}
-                        </p>
-                        <p className="text-center mt-4 text-white-700">{performanceMessage}</p>
+                        </Text>
+                        <Text textAlign="center" color="gray.600">
+                            {performanceMessage}
+                        </Text>
                         <Button
-                            className="w-full mt-4 bg-blue-500 text-white hover:bg-blue-600 transition"
+                            width="full"
+                            mt={6}
+                            colorScheme="blue"
                             onClick={() => navigate("/quizz")}
                         >
                             Retour aux Quiz
                         </Button>
                     </Card.Body>
                 </Card.Root>
-            </div>
+            </Center>
         );
     }
 
+    // Lógica para a pergunta atual
     const currentQuiz = quizzes[currentQuestion];
     const progress = (currentQuestion / quizzes.length) * 100;
 
     return (
-        <div className="h-screen flex flex-col items-center justify-center bg-gray-50">
-            <Card.Root className="max-w-lg w-full shadow-lg relative">
+        <Box minH="100vh" bg="gray.50" display="flex" alignItems="center" justifyContent="center" p={4}>
+            <Card.Root maxW="lg" w="full" boxShadow="lg" position="relative">
                 <Card.Header>
-                    <Card.Title className="text-xl text-center">{currentQuiz.question}</Card.Title>
-                    <div className="absolute top-0 right-2">
-                        <span className="bg-blue-500 text-white text-xs font-semibold px-2 rounded">
-                            niveau: {currentQuiz.level}
-                        </span>
-                    </div>
+                    <Heading as="h3" size="md" textAlign="center">
+                        {currentQuiz.question}
+                    </Heading>
+                    <Badge
+                        colorPalette="blue"
+                        position="absolute"
+                        top={2}
+                        right={4}
+                        fontSize="0.7em"
+                    >
+                        niveau: {currentQuiz.level}
+                    </Badge>
                 </Card.Header>
                 <Card.Body>
-                    <ul className="space-y-4">
-                        {currentQuiz.options.map((option, index) => (
-                            <li key={index}>
+                    <Stack gap={4}>
+                        {currentQuiz.options.map((option, index) => {
+                            // Define a cor do botão conforme a resposta selecionada
+                            let colorScheme: string = "gray";
+                            if (selectedAnswer) {
+                                if (option === currentQuiz.answer) {
+                                    colorScheme = "green";
+                                } else if (option === selectedAnswer) {
+                                    colorScheme = "red";
+                                }
+                            }
+
+                            return (
                                 <Button
-                                    colorPalette={
-                                        selectedAnswer
-                                            ? option === currentQuiz.answer
-                                                ? "success"
-                                                : option === selectedAnswer
-                                                    ? "destructive"
-                                                    : "outline"
-                                            : "outline"
-                                    } className="w-full rounded-lg py-2 text-white shadow-md transition break-words"
-                                    style={{
-                                        whiteSpace: "normal", // Permite quebras de linha
-                                        wordBreak: "break-word", // Quebra palavras longas
-                                        lineHeight: "1.5rem", // Espaçamento entre as linhas
-                                        height: "auto", // Permite que o botão ajuste sua altura
-                                    }}
+                                    key={index}
+                                    colorPalette={colorScheme}
                                     disabled={!!selectedAnswer}
                                     onClick={() => handleAnswer(option)}
+                                    textAlign="left"
+                                    whiteSpace="normal"
+                                    wordBreak="break-word"
                                 >
                                     {option}
                                 </Button>
-                            </li>
-                        ))}
-                    </ul>
-                    <div className="mt-2 flex">
-                        <span>{progress.toFixed(0)}%</span>
-                        <ProgressRoot value={progress} maxW="240px" striped animated>
-                            <ProgressBar />
+                            );
+                        })}
+                    </Stack>
+
+                    <Box mt={4}>
+                        <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                            <Text fontSize="sm">{`${progress.toFixed(0)}%`}</Text>
+                            <Text fontSize="sm">100%</Text>
+                        </Box>
+                        <ProgressRoot value={progress}>
+                            <ProgressBar colorScheme="blue" borderRadius="md" />
                         </ProgressRoot>
-                        <span>100%</span>
-                    </div>
+                    </Box>
+
                     {selectedAnswer && (
                         <Button
-                            className="w-full mt-4 bg-blue-500 text-white hover:bg-blue-600 transition"
+                            mt={4}
+                            w="full"
+                            colorScheme="blue"
                             onClick={handleNextQuestion}
                         >
                             Question suivante
@@ -170,6 +199,6 @@ export default function QuizPage() {
                     )}
                 </Card.Body>
             </Card.Root>
-        </div>
+        </Box>
     );
 }

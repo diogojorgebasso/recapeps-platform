@@ -1,53 +1,104 @@
-import { NavLink } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Tabs } from "@chakra-ui/react"
+import {
+    Box,
+    Button,
+    Card,
+    Heading,
+    Input,
+    SimpleGrid,
+    VStack,
+    Image,
+} from "@chakra-ui/react";
+import { SearchIcon } from "lucide-react";
+import { InputGroup } from "@/components/ui/input-group"
+import { Rating } from "@/components/ui/rating"
+import { Link } from "react-router";
 
-export default function Notes() {
+export default function SearchAndCardsPage() {
+    const examsEcrit1 = [
+        { title: "La Mixité Sexuée", note: 4, image: "/ecrit-1-mixite_sexuee.jpg", description: "Description pour Examen A", link: "ecrit-1/la-mixite-sexuee" },
+        { title: "Evaluation", note: 5, image: "ecrit-1-evaluation.jpg", description: "Description pour Examen B", link: "ecrit-1/evaluation" },
+        { title: "Sciences", note: 3.5, image: "ecrit-1-science.jpg", description: "Description pour Examen C", link: "ecrit-1/sciences" },
+        { title: "La Santé", note: 4, image: "ecrit-1-sante.png", description: "Description pour Examen C", link: "ecrit-1/la-sante" },
+        { title: "Les techniques", note: 4, image: "ecrit-1-technique.jpg", description: "Description pour Examen C", link: "ecrit-1/les-techniques" },
+        { title: "Sport Scolaire", note: 3.5, image: "ecrit-1-sport-scolaire.jpg", description: "Description pour Examen C", link: "ecrit-1/sport-scolaire" }
+    ];
+
+    const examsEcrit2 = [
+        { title: "Usages du Numeriqe", note: 5, image: "https://via.placeholder.com/150", description: "Description pour Examen X", link: "ecrit-2/usages-du-numerique" },
+        { title: "Apprentissages", note: 4.5, image: "https://via.placeholder.com/150", description: "Description pour Examen Y", link: "ecrit-2/apprentissages" },
+        { title: "Compétition et performance", note: 5, image: "https://via.placeholder.com/150", description: "Description pour Examen Y", link: "ecrit-2/competition-et-performance" },
+        { title: "Réussite - échec - erreur", note: 4, image: "https://via.placeholder.com/150", description: "Description pour Examen Y", link: "ecrit-2/reussite-echec-erreur" },
+        { title: "Les Émotions", note: 3, image: "https://via.placeholder.com/150", description: 'Elle explore des définitions multidimensionnelles des émotions, soulignant leur rôle central dans la prise de décision (Damasio, 1995) et leur impact sur l’engagement scolaire. ', link: "ecrit-2/les-emotions" }
+    ];
+
     return (
-        <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg border border-gray-200">
-            <Tabs.Root defaultValue="exam1" className="w-full">
-                <Tabs.List className="flex bg-gray-100 rounded-t-lg border-b border-gray-200">
-                    <Tabs.Trigger
-                        value="exam1"
-                        className="flex-1 text-center py-3 font-medium text-gray-700 hover:text-blue-600 focus:text-blue-600 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
-                    >
-                        Écrit 1
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value="exam2"
-                        className="flex-1 text-center py-3 font-medium text-gray-700 hover:text-blue-600 focus:text-blue-600 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
-                    >
-                        Écrit 2
-                    </Tabs.Trigger>
-                </Tabs.List>
+        <Box minH="100vh">
+            <Box py="8" px="6" shadow="md" mb="12">
+                <VStack gap="6" textAlign="center">
+                    <Heading size="2xl" color="blue.500">
+                        Recherchez un sujet, un examen ou un domaine d'étude.
+                    </Heading>
+                    <InputGroup flex="1" endElement={<SearchIcon size="24" />}>
+                        <Input placeholder="Tapez votre recherche ici..." />
+                    </InputGroup>
+                </VStack>
+            </Box>
 
-                {/* Tab Content */}
-                <Tabs.Content
-                    value="exam1"
-                    className="p-4 text-gray-800 space-y-2"
-                >
-                    <NavLink to="/notes/ecrit-1/mixite-sexuee">
-                        <Button
-                            className="text-blue-600 hover:underline"
-                        >
-                            Mixité Sexuée
-                        </Button>
-                    </NavLink>
+            {/* Seção Écrit 1 */}
+            <Box p="4" mb="12">
+                <Heading size="xl" mb="4" color="blue.600">
+                    Écrit 1
+                </Heading>
+                <SimpleGrid columns={[1, 2, 3]} gap="6">
+                    {examsEcrit1.map((exam, index) => (
+                        <ExamCard key={index} link={exam.link} title={exam.title} image={exam.image} description={exam.description} note={exam.note} />
+                    ))}
+                </SimpleGrid>
+            </Box>
 
-                </Tabs.Content>
-
-                <Tabs.Content
-                    value="exam2"
-                    className="p-4 text-gray-800 space-y-2"
-                >
-                    <NavLink to="/notes/ecrit-2/les-emotion" >
-                        <Button>
-                            Les Emotion
-                        </Button>
-                    </NavLink>
-                </Tabs.Content>
-            </Tabs.Root>
-        </div>
+            <Box>
+                <Heading size="xl" mb="4" color="blue.600">
+                    Écrit 2
+                </Heading>
+                <SimpleGrid columns={[1, 2, 3]} gap="6">
+                    {examsEcrit2.map((exam, index) => (
+                        <ExamCard key={index} link={exam.link} title={exam.title} image={exam.image} description={exam.description} note={exam.note} />
+                    ))}
+                </SimpleGrid>
+            </Box>
+        </Box>
     );
-};
+}
 
+// Componente de card para os exames
+function ExamCard({
+    title,
+    image,
+    description,
+    note,
+    link
+}: {
+    title: string;
+    image: string;
+    description: string;
+    note: number;
+    link: string;
+}) {
+    return (
+        <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
+            <Image src={image} alt={title} h="200px" w="400px" />
+            <Card.Body gap="2" p="4">
+                <Card.Title>{title}</Card.Title>
+                <Rating allowHalf readOnly defaultValue={note} size="md" />
+                <Card.Description>{description}</Card.Description>
+            </Card.Body>
+            <Card.Footer gap="2" p="4">
+                <Button variant="solid" colorScheme="blue">
+                    <Link to={link}>
+                        Voir plus
+                    </Link>
+                </Button>
+            </Card.Footer>
+        </Card.Root>
+    );
+}

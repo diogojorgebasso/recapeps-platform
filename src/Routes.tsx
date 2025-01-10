@@ -25,7 +25,7 @@ import Support from "./pages/Support";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import TermesCondition from "./pages/Termes-Condition";
 import PaymentPage from "./pages/Checkout/Payment";
-import Mixite from "./pages/Notes/ecrit-1/Mixite";
+import Mixite from "./pages/Notes/ecrit-1/mixite-sexuee";
 import LesEmotion from "./pages/Notes/ecrit-2/les-emotion";
 import ForgottenPassword from "./pages/Auth/ForgotPassword";
 

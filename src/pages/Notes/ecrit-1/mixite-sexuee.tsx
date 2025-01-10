@@ -7,7 +7,7 @@ import {
 
 import { HeaderNotes, Section, Sommaire } from "../formatter";
 
-export default function Mixite() {
+export default function mixiteSexuee() {
     return (
         <Box>
             <HeaderNotes

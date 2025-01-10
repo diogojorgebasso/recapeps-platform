@@ -7,11 +7,11 @@ interface HeaderProps {
     title: string;
     exam: string;
     item: string;
-    gradientFrom: string;
-    gradientTo: string;
+    gradientFrom?: string;
+    gradientTo?: string;
 }
 
-export function HeaderNotes({ title, exam, item, gradientFrom, gradientTo }: HeaderProps) {
+export function HeaderNotes({ title, exam, item, gradientFrom = "blue.500", gradientTo = "red.400" }: HeaderProps) {
     return (
         <Box
             bgGradient="to-r" gradientFrom={gradientFrom} gradientTo={gradientTo}
@@ -31,7 +31,6 @@ export function HeaderNotes({ title, exam, item, gradientFrom, gradientTo }: Hea
         </Box>
     );
 }
-
 
 interface SectionProps {
     title: string;
@@ -66,7 +65,6 @@ export function Section({ title, children, bgColor = "blue.400" }: SectionProps)
         </Box>
     );
 }
-
 
 export function Sommaire() {
     const { sections } = useSectionContext();
