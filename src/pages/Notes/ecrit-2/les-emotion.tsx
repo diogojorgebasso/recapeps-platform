@@ -4,8 +4,12 @@ import {
     Text,
     List,
     Stack,
+    VStack,
+    Center,
+    Button
 } from "@chakra-ui/react";
-import { Section, Sommaire } from "../formatter";
+import { CTA, Section, Sommaire } from "../formatter";
+import { Link } from "react-router";
 
 export default function LesEmotions() {
     return (
@@ -123,7 +127,11 @@ export default function LesEmotions() {
                         </Text>
                     </Section>
 
-                    <Section title="Bloc de définition" bgColor="blue.500">
+                    <Section title="VI. Liens avec d’autres thèmes">
+                        <Text></Text>
+                    </Section>
+
+                    <Section title="VII. Bloc de définition" bgColor="blue.500">
                         <Text>
                             « Les émotions sont un état affectif multidimensionnel (...).
                             L’élève les ressent et les exprime dans ses comportements et
@@ -134,29 +142,34 @@ export default function LesEmotions() {
                         </Text>
                     </Section>
 
-                    <Section title="Bloc argumentaire : Empathie" bgColor="blue.600">
+                    <Section title="VIII. Bloc argumentaire : Empathie" bgColor="blue.600">
                         <Text>
-                            « Les élèves ne sont pas fraternels, ils ont des relations
-                            difficiles et ont du mal à se comprendre. »
-                            <Text as="i" display="block">
-                                (J. Méard, 2015)
-                            </Text>
+                            Pour ouvrir nos propos nous partons d’un constat formulé par J.Méard. L’auteur nous révèle que « les élèves ne sont pas fraternels » ils ont des relations difficiles, et ont du mal à se comprendre ».
+                            (Méard, les compétences sociales en EPS « faut-il didactiser la fraternité », revue EPS n°364, 2015).
+                            Or les relations entre pairs font partie intégrante de l’environnement des enfants et adolescents à l’école.
+                            Celles-ci influencent leur apprentissages et leur réussite scolaire (Dejaiffe et Espinosa, 2013)
+                            et constituent un des facteurs du bien-être social de l’élève à l’école (Christophe Marsollier, Le bien-être des enfants à l’école : fondements et enjeux, 2019).
                         </Text>
                         <Text>
-                            Une démarche empathique par le corps favorise la compréhension et
-                            la bienveillance envers autrui, tout en développant l’intelligence
-                            relationnelle.
-                            <Text as="i" display="block">
-                                (Goleman, 2009)
-                            </Text>
+                            Pour être acteur du climat scolaire / favoriser les apprentissages des élèves, dans l’établissement X, nous décidons d’agir sur l’amélioration des relations entre pairs, en mettant en œuvre une démarche d’éducation à l’empathie par le corps, dans la mesure où « la relation à autrui s’établit d’abord et avant tout dans et par le corps qui est à la fois expression et langage » (BRUNEL, M-L. & COSNIER, J., L’empathie : un sixième sens, PUL, 2012, p. 13). De plus, l’entrée dans une démarche empathique par le corps va permettre à l’élève de développer à la fois la compréhension et la bienveillance envers les autres, tout autant que son « intelligence relationnelle » (GOLEMAN, D., Cultiver l’intelligence relationnelle, 2009), condition nécessaire à la réussite personnelle et professionnelle. Le climat scolaire, tout comme les apprentissages s’en trouvent ainsi renforcés.
                         </Text>
                         <Text>
-                            Exemple pratique : Utilisation du « jeu des mousquetaires » pour
-                            renforcer les capacités d’observation, de coopération, et de
-                            bienveillance dans une équipe.
+                            A titre d’exemple, nous nous inscrivons dans la classe de X, dans la séquence de X.
                         </Text>
+                        <Text>
+                            Nous prenons appui sur la situation du « jeu des mousquetaires », (Canvel et al, santé, le bien-être et le climat scolaire,2018), en opérant un traitement pédagogique et didactique propre à notre environnement.
+                            Pour cela nous formons 5 équipes. Les élèves sont volontairement répartis avec des niveaux hétérogènes, et les groupements affinitaires habituels sont partiellement séparés, afin de permettre aux élèves en léger conflit ou avec peu d’affinité d’entrer dans une démarche de compréhension et d’ouverture à l’autre.
+
+                            Dans chaque équipe, 4 élèves sont placés dans une position de renforcement spécifique située dans la marge haute de leur zone proximale de développement, afin que l’exercice les mette légèrement en difficulté. En effet, le 5èmeélève devra pendant ce temps là X (faire une traversée, réaliser des gammes, faire un parcours gymnique…), jusqu’à ce qu’un des élèves en position de renforcement veuille échanger sa place avec lui. Le but étant pour l’équipe de 5 élève de tenir le plus longtemps possible dans les positions données. Les élèves statiques peuvent interpeller le dernier membre de leur équipe par la voix ou un signal corporel. Mais l’élève en situation dynamique se doit également d’être attentif aux expressions faciales, signaux corporels de fatigue (tremblements, affaissement…) afin de pouvoir échanger volontairement sa place afin de ne pas perdre le défi. Les élèves regroupés dans la même équipe ont également tout intérêt à discuter entre eux, dans la mesure où un seul élève à la fois peut échanger sa place. Nous incitons par cette pratique les comportements bienveillants (« vas-y d’abord, j’irais ensuite ») ainsi que les capacités d’observations et d’écoute de l’autre.
+                            Cette mise en œuvre s’inscrit ainsi parfaitement dans le cadre du domaine 1 du socle « les langages pour penser et communiquer ».
+                            Nous pouvons complexifier cette situation en interdisant la communication par la parole, ce qui impliquera un travail davantage axé sur la lecture et communication corporelle, et ainsi de s’axer encore davantage dans la compétence « apprendre à s’exprimer en utilisant son corps » (compétence travaillée cycle 2,3,4).
+                        </Text>
+
                     </Section>
+
+                    <CTA linkTo="/quizz/ecrit-1/mixité-sexuée" />
                 </Stack>
+
             </Box>
         </Box>
     );

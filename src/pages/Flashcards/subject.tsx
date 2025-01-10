@@ -163,7 +163,7 @@ function Flashcard({
 }) {
     return (
         <Box
-            w="80%"
+            w="50%"
             h="200px"
             perspective="1000px"
             onClick={() => setIsFlipped(!isFlipped)}
@@ -189,7 +189,7 @@ function Flashcard({
                     color="white"
                 >
                     <Card.Body>
-                        <Text textStyle="6xl">
+                        <Text textStyle="5xl">
                             {word}
                         </Text>
                     </Card.Body>
@@ -209,7 +209,7 @@ function Flashcard({
                     color="white"
                 >
                     <Card.Body>
-                        <Text textStyle="6xl">
+                        <Text textStyle="5xl">
                             {explanation}
                         </Text>
                     </Card.Body>
