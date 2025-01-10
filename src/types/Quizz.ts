@@ -1,6 +1,9 @@
 export interface Subject {
     id: string;
     name: string;
+    image: string;
+    description: string;
+    note: number;
   }
   
   export interface Quiz {
