@@ -31,7 +31,7 @@ import ForgottenPassword from "./pages/Auth/ForgotPassword";
 
 export function Routes() {
 
-    const { role } = useAuth();
+    const { currentUser } = useAuth();
 
     const adminRoutes = (
         <>
@@ -48,8 +48,8 @@ export function Routes() {
             <Route path="chatbot" element={<ChatBot />} />
             <Route path="notes">
                 <Route index element={<Notes />} />
-                <Route path="ecrit-1/mixite-sexuee" element={<Mixite />} />
-                <Route path="ecrit-2/les-emotion" element={<LesEmotion />} />
+                <Route path="ecrit-1/la-mixite-sexuee" element={<Mixite />} />
+                <Route path="ecrit-2/les-emotions" element={<LesEmotion />} />
             </Route>
             <Route path="profil" element={<Profil />} />
             <Route path="flashcards" element={<FlashcardsPage />} />
@@ -72,8 +72,8 @@ export function Routes() {
             <Route path="register" element={<SignUp />} />
             <Route path="forgot-password" element={<ForgottenPassword />} />
             <Route element={<AuthenticatedClientLayout />}>
-                {role === "admin" && adminRoutes}
-                {role === "user" && userRoutes}
+                {currentUser.role === "admin" && adminRoutes}
+                {currentUser.role === "user" && userRoutes}
             </Route>
             <Route path="*" element={<NotFoundPage />} />
         </ReactRouterRoutes >

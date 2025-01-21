@@ -6,17 +6,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Avatar } from "@/components/ui/avatar";
 import { defineStyle, MenuItemGroup } from "@chakra-ui/react"
 
-import {
-    Cloud,
-    CreditCard,
-    Keyboard,
-    LifeBuoy,
-    LogOut,
-    Plus,
-    Settings,
-    User,
-    Users,
-} from "lucide-react"
+import { FaUser, FaCreditCard, FaKeyboard, FaLifeRing, FaSignOutAlt, FaPlus, FaCog, FaUsers } from "react-icons/fa";
+
 
 import {
     MenuContent,
@@ -66,14 +57,14 @@ export default function ContextualAvatar() {
                     <MenuItemGroup title="Mon Compte">
                         <MenuItem value="profil" asChild>
                             <Link to="/profil">
-                                <User />
+                                <FaUser />
                                 Profil
                                 <MenuItemCommand>⇧⌘P</MenuItemCommand>
                             </Link>
                         </MenuItem>
                         <MenuItem value="settings" asChild>
                             <Link to="profile">
-                                <Settings />
+                                <FaCog />
                                 Settings
                                 <MenuItemCommand>⌘S</MenuItemCommand>
                             </Link>
@@ -82,25 +73,25 @@ export default function ContextualAvatar() {
                     <MenuSeparator />
                     <MenuItem value="checkout" asChild>
                         <Link to="checkout">
-                            <CreditCard />
+                            <FaCreditCard />
                             Passez à Recap'eps Pro
                             <MenuItemCommand>⌘B</MenuItemCommand>
                         </Link>
                     </MenuItem>
                     <MenuItem value="keyboard">
-                        <Keyboard />
+                        <FaKeyboard />
                         Keyboard shortcuts
                         <MenuItemCommand>⌘K</MenuItemCommand>
                     </MenuItem>
                     <MenuItem value="team" asChild>
                         <Link to="team">
-                            <Users />
+                            <FaUsers />
                             Team
                         </Link>
                     </MenuItem>
                     <MenuItem value="team" asChild>
                         <Link to="team">
-                            <Plus />
+                            <FaPlus />
                             New Team
                             <MenuItemCommand>⌘+T</MenuItemCommand>
                         </Link>
@@ -108,19 +99,15 @@ export default function ContextualAvatar() {
                     <MenuSeparator />
                     <MenuItem value="support" asChild>
                         <Link to="support">
-                            <LifeBuoy />
+                            <FaLifeRing />
                             Support
                         </Link>
-                    </MenuItem>
-                    <MenuItem value="api" disabled>
-                        <Cloud />
-                        API
                     </MenuItem>
                     <MenuSeparator />
                     <DialogRoot>
                         <DialogTrigger asChild>
                             <MenuItem value="logOut">
-                                <LogOut />
+                                <FaSignOutAlt />
                                 Log out
                                 <MenuItemCommand>⇧⌘Q</MenuItemCommand>
                             </MenuItem>

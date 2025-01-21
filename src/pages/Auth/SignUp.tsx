@@ -16,10 +16,9 @@ export default function SignUp() {
         if (isAuthenticated) {
             navigate("/dashboard");
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated]);
 
     const handleSignUp = async () => {
-
         try {
             await signUpWithEmailAndPassword(email, password);
             console.log("Inscription réussie !");

@@ -150,7 +150,7 @@ export default function LesEmotions() {
 
                     </Section>
 
-                    <CTA linkTo="/quizz/ecrit-1/mixité-sexuée" />
+                    <CTA linkTo="/quizz/ecrit-1/la-mixite-sexuee" />
                 </Stack>
 
             </Box>

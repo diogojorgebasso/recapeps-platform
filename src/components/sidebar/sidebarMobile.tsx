@@ -1,28 +1,31 @@
-import { VStack } from "@chakra-ui/react";
+import {
+    DrawerRoot,
+    DrawerBody,
+    DrawerContent,
+    DrawerBackdrop,
+    VStack,
+} from "@chakra-ui/react";
 import { Link } from "react-router";
+import { SidebarItems } from "./SidebarItems"
+import { Tooltip } from "../ui/tooltip";
 
-export default function SidebarMobile({
-    onClose,
-}: {
-    onClose: () => void;
-}) {
+export const SidebarMobile = ({ isOpen, onOpen }: { isOpen: any, onOpen: any }) => {
     return (
-        <VStack gap={4}>
-            <Link to="/dashboard" onClick={onClose}>
-                Tableau de bord
-            </Link>
-            <Link to="/quizz" onClick={onClose}>
-                Quizz
-            </Link>
-            <Link to="/flashcards" onClick={onClose}>
-                Flashcards
-            </Link>
-            <Link to="/chatbot" onClick={onClose}>
-                Chatbot
-            </Link>
-            <Link to="/notes" onClick={onClose}>
-                Fiches de révision
-            </Link>
-        </VStack>)
-
-}
+        <DrawerRoot open={isOpen} placement="top" onOpenChange={(e) => onOpen(e.open)}>
+            <DrawerBackdrop />
+            <DrawerContent bg="orange.400">
+                <DrawerBody>
+                    <VStack gap={4} align="center" py={4}>
+                        {SidebarItems.map((item, index) => (
+                            <Tooltip key={index} content={item.label} positioning={{ placement: "right-end" }}>
+                                <Link to={item.path}>
+                                    {item.label}
+                                </Link>
+                            </Tooltip>
+                        ))}
+                    </VStack>
+                </DrawerBody>
+            </DrawerContent>
+        </DrawerRoot>
+    );
+};

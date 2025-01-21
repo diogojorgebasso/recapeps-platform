@@ -15,9 +15,9 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    Legend,
+    Legend
 } from "recharts";
-import { fetchUserQuizzes } from "@/api/getUsersQuizzes";
+import { getUserQuizzes } from "@/api/getUsersQuizzes";
 import { useAuth } from "@/hooks/useAuth";
 
 type QuizData = {
@@ -32,18 +32,16 @@ export default function Dashboard() {
     const { uid, isLoadedAuth } = useAuth();
     const [quizData, setQuizData] = useState<QuizData[]>([]);
 
-    const loadData = async () => {
-        if (uid) {
-            const data = await fetchUserQuizzes(uid);
-            setQuizData(data);
-        }
-    };
 
     useEffect(() => {
+        const loadData = async () => {
+            if (!uid) return
+            console.log("fiz uma requisição")
+            const data = await getUserQuizzes(uid);
+            setQuizData(data);
+        };
         loadData();
-    }, [uid, isLoadedAuth]);
-
-    console.log(quizData);
+    }, [uid]);
 
     const groupedByType = quizData.reduce((acc, quiz) => {
         const type = quiz.type
@@ -98,7 +96,7 @@ export default function Dashboard() {
 
     const tableData = Object.entries(groupedByType).flatMap(([type, quizzes]) =>
         Object.entries(quizzes).map(([quizName, stats]) => ({
-            type, // Inclui o tipo no registro da tabela
+            type,
             quizName,
             attempts: stats.attempts,
             highestScore: stats.highestScore,
@@ -186,34 +184,30 @@ export default function Dashboard() {
                 <Heading size="lg" textAlign="center" mb={6}>
                     Vos résultats des quizzes
                 </Heading>
-                <Box overflowX="auto">
-                    <Table.Root colorScheme="gray" size="sm">
-                        <Table.Header>
-                            <Table.Header>
-                                <Table.ColumnHeader>Matière</Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="center">Tentatives</Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="center">Meilleure Note</Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="center">Date Dernière Tentative</Table.ColumnHeader>
-                            </Table.Header>
-                        </Table.Header>
-                        <Table.Body>
-                            {tableData.map((row, index) => (
-                                <Table.Row key={index}>
-                                    <Table.Cell>{row.quizName}</Table.Cell>
-                                    <Table.Cell textAlign="center">{row.attempts}</Table.Cell>
-                                    <Table.Cell textAlign="center">{row.highestScore}</Table.Cell>
-                                    <Table.Cell textAlign="center">
-                                        {new Date(row.lastAttemptDate).toLocaleDateString("fr-FR", {
-                                            year: "numeric",
-                                            month: "long",
-                                            day: "numeric",
-                                        })}
-                                    </Table.Cell>
-                                </Table.Row>
-                            ))}
-                        </Table.Body>
-                    </Table.Root>
-                </Box>
+                <Table.Root colorScheme="gray" size="sm">
+                    <Table.Header>
+                        <Table.ColumnHeader >Matière</Table.ColumnHeader>
+                        <Table.ColumnHeader >Tentatives</Table.ColumnHeader>
+                        <Table.ColumnHeader >Meilleure Note</Table.ColumnHeader>
+                        <Table.ColumnHeader >Tentative</Table.ColumnHeader>
+                    </Table.Header>
+                    <Table.Body>
+                        {tableData.map((row, index) => (
+                            <Table.Row key={index}>
+                                <Table.Cell>{row.quizName}</Table.Cell>
+                                <Table.Cell >{row.attempts}</Table.Cell>
+                                <Table.Cell >{row.highestScore}</Table.Cell>
+                                <Table.Cell >
+                                    {new Date(row.lastAttemptDate).toLocaleDateString("fr-FR", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}
+                                </Table.Cell>
+                            </Table.Row>
+                        ))}
+                    </Table.Body>
+                </Table.Root>
             </Box>
         </div >
     )

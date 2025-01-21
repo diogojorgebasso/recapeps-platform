@@ -8,7 +8,7 @@ import {
     VStack,
     Image,
 } from "@chakra-ui/react";
-import { SearchIcon } from "lucide-react";
+import { FaSearch } from "react-icons/fa";
 import { InputGroup } from "@/components/ui/input-group"
 import { Rating } from "@/components/ui/rating"
 import { Link } from "react-router";
@@ -38,7 +38,7 @@ export default function SearchAndCardsPage() {
                     <Heading size="2xl" color="blue.500">
                         Recherchez un sujet, un examen ou un domaine d'étude.
                     </Heading>
-                    <InputGroup flex="1" endElement={<SearchIcon size="24" />}>
+                    <InputGroup flex="1" endElement={<FaSearch size="24" />}>
                         <Input placeholder="Tapez votre recherche ici..." />
                     </InputGroup>
                 </VStack>

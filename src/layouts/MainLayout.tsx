@@ -5,11 +5,11 @@ import Footer from "@/components/Footer";
 
 export default function MainLayout() {
     return (
-        <>
+        <div>
             <Menu />
             <Outlet />
             <Footer />
             <CookieBanner />
-        </>
+        </div>
     );
 };

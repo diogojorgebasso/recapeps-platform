@@ -6,7 +6,7 @@ import { db } from "@/utils/firebase";
  * @param userId - The user's ID
  * @returns Array with quiz data
  */
-export const fetchUserQuizzes = async (userId: string) => {
+export const getUserQuizzes = async (userId: string) => {
   try {
     const quizzesRef = collection(db, "users", userId, "quizzes");
     const quizzesQuery = query(quizzesRef, orderBy("date", "desc"), limit(10)); // Sort by date
@@ -15,7 +15,7 @@ export const fetchUserQuizzes = async (userId: string) => {
 
     const quizzes = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      score: doc.data().score, 
+      score: doc.data().score,
       quizName: doc.data().subjectId,
       type: doc.data().type,
       timestamp: doc.data().date,

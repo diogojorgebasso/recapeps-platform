@@ -3,38 +3,24 @@ import { Button } from "@/components/ui/button";
 import { Card, Input, Link as ChakraLink } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Link } from "react-router";
+
 export default function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const schema = z.object({
-        email: z.string().email({ message: "Email inválido" }),
-        password: z.string().min(6, { message: "A senha deve ter pelo menos 6 caracteres" }),
-    });
-
-    const { register, handleSubmit } = useForm({
-        resolver: zodResolver(schema),
-        mode: "onBlur",
-        defaultValues: {
-            email: "",
-            password: "",
-        },
-    });
-
-    const { loginWithGoogle, isAuthenticated, loginWithEmailAndPassword } = useAuth();
+    const { loginWithGoogle, isAuthenticated, upgradeFromAnonymous } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
         if (isAuthenticated) {
             navigate("/dashboard");
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated]);
 
     const handleGoogleLogin = async () => {
         setErrorMessage(null);
@@ -51,11 +37,12 @@ export default function Login() {
         }
     };
 
-    const handleLogin = async (data: { email: string; password: string }) => {
+    const handleLogin = async (event: React.FormEvent) => {
+        event.preventDefault(); // Previne o comportamento padrão do formulário
         setErrorMessage(null);
         setIsSubmitting(true);
         try {
-            await loginWithEmailAndPassword(data.email, data.password);
+            await upgradeFromAnonymous(email, password);
             console.log("Connexion réussie !");
             navigate("/dashboard");
         } catch (error) {
@@ -82,24 +69,24 @@ export default function Login() {
                 </Card.Description>
             </Card.Header>
             <Card.Body>
-                <form onSubmit={handleSubmit(handleLogin)}>
+                <form onSubmit={handleLogin}>
                     <Field label="Email">
-                        <Input autoComplete="email" placeholder="exemple@email.com" {...register("email")} />
+                        <Input
+                            autoComplete="email"
+                            placeholder="exemple@email.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)} // Atualiza o estado do email
+                        />
                     </Field>
-                    <ChakraLink variant="underline" asChild >
-                        <Link to="/forgot-password">
-                            Mot de passe oublié ?
-                        </Link>
+                    <ChakraLink variant="underline" asChild>
+                        <Link to="/forgot-password">Mot de passe oublié ?</Link>
                     </ChakraLink>
-                    <PasswordInput {...register("password")} />
-                    {errorMessage && (
-                        <p className="text-red-500 text-sm">{errorMessage}</p>
-                    )}
-                    <Button
-                        disabled={isSubmitting}
-                        type="submit"
-                        className="w-full"
-                    >
+                    <PasswordInput
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)} // Atualiza o estado da senha
+                    />
+                    {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+                    <Button disabled={isSubmitting} type="submit" className="w-full">
                         {isSubmitting ? "Connexion..." : "Connexion"}
                     </Button>
                     <Button
@@ -112,10 +99,8 @@ export default function Login() {
                     </Button>
                     <div className="mt-4 text-center text-sm">
                         Vous n&apos;avez pas encore de compte ?{" "}
-                        <ChakraLink variant="underline" asChild >
-                            <Link to="/register" >
-                                Inscrivez-vous
-                            </Link>
+                        <ChakraLink variant="underline" asChild>
+                            <Link to="/register">Inscrivez-vous</Link>
                         </ChakraLink>
                     </div>
                 </form>

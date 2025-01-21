@@ -1,75 +1,114 @@
 /* eslint-disable react-refresh/only-export-components */
 import {
-    getIdToken,
-    onAuthStateChanged,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signOut,
     signInWithPopup,
-    createUserWithEmailAndPassword,
     GoogleAuthProvider,
-    User,
     updateEmail,
     verifyBeforeUpdateEmail,
     reauthenticateWithCredential,
     EmailAuthProvider,
     deleteUser,
+    linkWithCredential,
+    signInAnonymously,
+    onAuthStateChanged,
+    User
 } from "firebase/auth";
-import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { ReactNode } from "react";
 import { auth } from "@/utils/firebase";
-import { doc, setDoc, getDoc, collection, getDocs, query, where, orderBy, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
-import { AuthContextProps } from "@/types/Auth";
+import { AbsoluteCenter, Spinner } from "@chakra-ui/react";
 
-export const AuthContext = createContext({} as AuthContextProps);
+interface AuthContextProps {
+    currentUser: User | null;
+    loginWithEmailAndPassword: (email: string, password: string) => Promise<void>;
+    loginWithGoogle: () => Promise<void>;
+    signUpWithEmailAndPassword: (
+        email: string,
+        password: string
+    ) => Promise<void>;
+    signOut: () => Promise<void>;
+    getUserToken: () => Promise<string>;
+    handleRecoverPassword: (email: string) => Promise<void>;
+    updatePhotoURLInContext: (newPhotoURL: string) => void;
+    sendPasswordReset: (email: string) => Promise<void>;
+    handleEmailChange: (currentPassword: string, email: string) => Promise<void>;
+    updateUserName: (firstName: string, secondName: string) => Promise<void>;
+    updateEmailNotificationPreference: (preference: boolean) => Promise<void>;
+    deleteUserAccount: (currentPassword: string) => Promise<void>;
+    upgradeFromAnonymous: (email: string, password: string) => Promise<User>;
+};
+
+
+export const AuthContext = createContext<AuthContextProps | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [firstName, setfirstName] = useState("Étudiant");
-    const [secondName, setsecondName] = useState("Votre Prénom");
-    const [uid, setUid] = useState("");
-    const [email, setEmail] = useState("");
-    const [isLoadedAuth, setIsLoadedAuth] = useState(false);
-    const [photoURL, setPhotoURL] = useState("/avatar.svg");
-    const [role, setRole] = useState("user");
-    const [subscribed, setSubscribed] = useState(false);
-    const [currentUser, setCurrentUser] = useState<User>();
-    const [isEmailNotificationEnabled, setIsEmailNotificationEnabled] = useState(true);
-
-    const sendPasswordReset = useCallback(async (email: string) => {
-        try {
-            await sendPasswordResetEmail(auth, email);
-        } catch (error) {
-            console.error("Error sending password reset email:", error);
-        }
-    }, []);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user && user.uid) {
+            if (user) {
                 setCurrentUser(user);
-                setUid(user.uid);
-                setEmail(user.email!);
-
-                if (!isLoadedAuth) {
-                    await fetchUserData(user.uid);
-                    setIsLoadedAuth(true);
-                }
+                setLoading(false);
             } else {
-                setCurrentUser(undefined);
-                setUid("");
-                setEmail("");
-                setIsLoadedAuth(false);
+                // Caso não tenha user, faz login anônimo
+                try {
+                    await signInAnonymously(auth);
+                } catch (err) {
+                    console.error('Erro ao fazer login anônimo:', err);
+                } finally {
+                    setLoading(false);
+                }
             }
         });
-        return unsubscribe;
+
+        // Cleanup
+        return () => unsubscribe();
+    }, []);
+
+    async function upgradeFromAnonymous(email: string, password: string) {
+        // user atual (possivelmente anônimo)
+        const user = auth.currentUser;
+
+        if (!user) {
+            throw new Error("Nenhum usuário autenticado para fazer upgrade.");
+        }
+
+        // Cria credenciais
+        const credential = EmailAuthProvider.credential(email, password);
+
+        // Faz o link
+        const result = await linkWithCredential(user, credential);
+        // Agora o user não é mais anônimo
+        setCurrentUser(result.user);
+
+        return result.user;
+    }
+
+    const signUpWithEmailAndPassword = useCallback(async (email: string, password: string) => {
+        try {
+            const currentUser = auth.currentUser;
+
+            if (currentUser?.isAnonymous) {
+                const credential = EmailAuthProvider.credential(email, password);
+                const linked = await linkWithCredential(currentUser, credential);
+                console.log("Anonymous account linked successfully!", linked);
+            }
+        } catch (error) {
+            console.error("Error during sign-up:", error);
+            throw error;
+        }
     }, []);
 
     const deleteUserAccount = async (currentPassword: string) => {
         console.log("Deleting user account...");
         try {
             if (currentUser) {
-                const credential = EmailAuthProvider.credential(email, currentPassword);
+                const credential = EmailAuthProvider.credential(user.email, currentPassword);
                 await reauthenticateWithCredential(currentUser, credential);
                 await deleteUser(currentUser);
             }
@@ -78,63 +117,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    const fetchUserData = async (uid: string) => {
-        console.log("Fetching user data...");
-        try {
-            if (isLoadedAuth) {
-                console.log("Dados do usuário já carregados");
-                return;
-            }
-            const userDoc = await getDoc(doc(db, "users", uid));
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                if (userData) {
-                    setIsEmailNotificationEnabled(userData.emailNotifications);
-                    setfirstName(userData.firstName);
-                    setsecondName(userData.secondName);
-                    if (userData.photoURL != null) {
-                        setPhotoURL(userData.photoURL);
-                    }
-                    setRole(userData.role);
-                    await checkUserSubscription(uid);
-                }
-            }
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        }
-    }
-
-    const checkUserSubscription = useCallback(async (userId: string) => {
-        try {
-            const paymentsRef = collection(db, `users/${userId}/payments`);
-
-            const q = query(
-                paymentsRef,
-                where("status", "==", "active"),
-                orderBy("createdAt", "desc")
-            );
-
-            const querySnapshot = await getDocs(q);
-
-            console.log(querySnapshot)
-
-            if (!querySnapshot.empty) {
-                console.log("Active subscription found");
-                setSubscribed(true); // Subscription exists
-            } else {
-                console.log("No active subscription found");
-                setSubscribed(false); // No active subscription
-            }
-        } catch (error) {
-            console.error("Error checking user subscription:", error);
-            setSubscribed(false); // Assume no subscription on error
-        }
-    }, []);
-
     const handleEmailChange = async (currentPassword: string, newEmail: string) => {
         if (currentUser) {
             try {
-                const credential = EmailAuthProvider.credential(email, currentPassword);
+                const credential = EmailAuthProvider.credential(user.email, currentPassword);
                 await reauthenticateWithCredential(currentUser, credential);
                 await verifyBeforeUpdateEmail(currentUser, newEmail);
                 await updateEmail(currentUser, newEmail);
@@ -149,17 +135,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             try {
                 const userDocRef = doc(db, "users", currentUser.uid);
                 await setDoc(userDocRef, { firstName, secondName }, { merge: true });
-                setfirstName(firstName);
-                setsecondName(secondName);
             } catch (error) {
                 console.error("Error updating user name:", error);
             }
         }
     };
 
-    const updatePhotoURLInContext = (newPhotoURL: string) => {
-        setPhotoURL(newPhotoURL);
-    };
 
     const loginWithEmailAndPassword = useCallback(async (email: string, password: string) => {
         await signInWithEmailAndPassword(auth, email, password);
@@ -172,32 +153,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const updateEmailNotificationPreference = async (preference: boolean) => {
         try {
-            const userRef = doc(db, "users", uid);
+            const userRef = doc(db, "users", user.uid);
             await updateDoc(userRef, { emailNotifications: preference });
             console.log("Preferência de notificação atualizada com sucesso.");
         } catch (error) {
             console.error("Erro ao atualizar preferência de notificação:", error);
         }
     };
-
-    const signUpWithEmailAndPassword = useCallback(async (email: string, password: string) => {
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const { user } = userCredential;
-
-            await setDoc(doc(db, "users", user.uid), {
-                uid: user.uid,
-                email: user.email,
-                firstName: user.displayName || null,
-                photoURL: user.photoURL || null,
-                emailNotifications: true,
-                createdAt: new Date().toISOString(),
-            });
-        } catch (error) {
-            console.error("Error during sign-up:", error);
-            throw error;
-        }
-    }, []);
 
     const signOutFn = useCallback(async () => {
         await signOut(auth);
@@ -208,44 +170,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await sendPasswordResetEmail(auth, email);
     }, []);
 
-    const getUserToken = useCallback(async () => {
-        if (auth.currentUser) {
-            return await getIdToken(auth.currentUser);
+    const sendPasswordReset = useCallback(async (email: string) => {
+        try {
+            await sendPasswordResetEmail(auth, email);
+        } catch (error) {
+            console.error("Error sending password reset email:", error);
         }
-        return "";
     }, []);
 
-    const isAuthenticated = useMemo(() => Boolean(uid), [uid]);
+    const value = {
+        currentUser,
+        loginWithEmailAndPassword,
+        loginWithGoogle,
+        signUpWithEmailAndPassword,
+        signOut: signOutFn,
+        handleRecoverPassword,
+        sendPasswordReset,
+        handleEmailChange,
+        updateUserName,
+        updateEmailNotificationPreference,
+        deleteUserAccount,
+        upgradeFromAnonymous
+    };
 
     return (
-        <AuthContext.Provider
-            value={{
-                firstName,
-                secondName,
-                uid,
-                subscribed,
-                isAuthenticated,
-                isLoadedAuth,
-                email,
-                photoURL,
-                currentUser: auth.currentUser,
-                role,
-                loginWithEmailAndPassword,
-                loginWithGoogle,
-                signUpWithEmailAndPassword,
-                signOut: signOutFn,
-                getUserToken,
-                handleRecoverPassword,
-                updatePhotoURLInContext,
-                sendPasswordReset,
-                handleEmailChange,
-                updateUserName,
-                updateEmailNotificationPreference,
-                isEmailNotificationEnabled,
-                deleteUserAccount,
-            }}
-        >
-            {children}
+        <AuthContext.Provider value={value}>
+            {!loading ? children : <AbsoluteCenter><Spinner>Loading...</Spinner></AbsoluteCenter>}
         </AuthContext.Provider>
     );
 }

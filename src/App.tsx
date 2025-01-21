@@ -8,8 +8,8 @@ import { SectionProvider } from "./context/SectionContext";
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Provider>
+    <Provider>
+      <AuthProvider>
         <BrowserRouter>
           <CookieProvider>
             <SectionProvider>
@@ -17,7 +17,8 @@ export default function App() {
             </SectionProvider>
           </CookieProvider>
         </BrowserRouter>
-      </Provider>
-    </AuthProvider>
+      </AuthProvider>
+    </Provider>
+
   );
 }

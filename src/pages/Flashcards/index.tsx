@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
-import { db } from "@/utils/firebase";
 import { Link } from "react-router";
-
-type Subject = {
-    id: string;
-    name: string;
-};
-
+import { getSubjects } from "@/api/getSubjects";
+import { Subject } from "@/types/Subject";
 
 export default function FlashcardsSubject() {
     const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -16,11 +10,7 @@ export default function FlashcardsSubject() {
     useEffect(() => {
         const fetchSubjects = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, "flashcards"));
-                const subjectsList = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    name: doc.data().name,
-                })) as Subject[];
+                const querySnapshot = await getSubjects();
                 setSubjects(subjectsList);
             } catch (error) {
                 console.error("Error fetching subjects:", error);
