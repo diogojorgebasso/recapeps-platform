@@ -9,6 +9,7 @@
     "logs": "firebase functions:log"
   },
   "main": "index.js",
+  "type": "module",
   "dependencies": {
     "@genkit-ai/firebase": "^0.9.12",
     "@genkit-ai/googleai": "^0.9.12",
