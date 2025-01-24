@@ -10,7 +10,6 @@ import {
 import { Link } from "react-router";
 import { Toaster, toaster } from "@/components/ui/toaster"
 import { getSubjectsFlashcards } from "@/api/getSubjectsFlashcards";
-import { addFlashcardsToFirestore } from "@/api/boilerPlateFlashcard";
 
 export default function Home() {
     const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -36,7 +35,6 @@ export default function Home() {
         <Box>
             <Toaster />
             <Box mb="12">
-                <Button onClick={() => addFlashcardsToFirestore()} />
                 <SimpleGrid columns={[1, 2, 3]} gap="6">
                     {subjects.map(({ id, name, image, premium }) => (
                         <ExamCard
