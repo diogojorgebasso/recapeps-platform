@@ -190,7 +190,7 @@ function Flashcard({
                     color="white"
                 >
                     <Card.Body>
-                        <Text textStyle="4xl">
+                        <Text textStyle={{ base: "sm", md: "3xl" }}>
                             {word}
                         </Text>
                     </Card.Body>
