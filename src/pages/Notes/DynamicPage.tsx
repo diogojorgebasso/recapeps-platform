@@ -3,7 +3,6 @@ import { Box, Text, Heading, Table } from "@chakra-ui/react";
 import { HeaderNotes, Section, Sommaire, CTA } from "./formatter";
 import { getBlogPage } from "@/api/getBlogPage";
 import { useParams } from "react-router";
-import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function DynamicPage() {
     const { subject } = useParams();
