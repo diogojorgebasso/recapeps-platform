@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { FiBookOpen, FiHelpCircle, FiMail } from "react-icons/fi";
+import { FiBookOpen, FiHelpCircle } from "react-icons/fi";
 import { LuInbox, LuNotebookPen, LuListTodo, LuBot } from "react-icons/lu";
 
 interface Item {

@@ -37,9 +37,7 @@ export default function Dashboard() {
     useEffect(() => {
         const loadData = async () => {
             if (!currentUser) return;
-            console.log("Fazendo requisição");
             const data = await getUserQuizzes(currentUser.uid);
-            setQuizData(data);
             console.log(data);
         };
         loadData();
