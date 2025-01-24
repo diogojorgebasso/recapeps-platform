@@ -14,7 +14,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar } from "../ui/avatar";
 export const SidebarDesktop = () => {
-  const { firstName, photoURL, signOut } = useAuth();
+  const { currentUser, signOut } = useAuth();
 
   return (
     <VStack
@@ -22,11 +22,12 @@ export const SidebarDesktop = () => {
       position="fixed"
       bg="orange.400"
       gap={4}
-      align="center"
+      borderRadius="0 0 16px 0"
+
     >
       <MenuRoot positioning={{ placement: "right-start" }}>
         <MenuTrigger>
-          <Avatar src={photoURL} name={firstName} className="h-8 w-8 rounded-lg" />
+          <Avatar src={currentUser?.photoURL || "/avatar.svg"} name={currentUser?.displayName || "Étudiant"} mt="4" size="2xl" className="h-8 w-8 rounded-lg" />
         </MenuTrigger>
 
         <MenuContent className="min-w-56 rounded-lg" alignContent="end">
@@ -63,19 +64,22 @@ export const SidebarDesktop = () => {
           </MenuItem>
         </MenuContent>
       </MenuRoot>
-      {SidebarItems.map((item, index) => (
-        <Tooltip key={index} content={item.label} positioning={{ placement: "right-end" }}>
-          <Link to={item.path}>
-            <IconButton
-              aria-label={item.label}
-              variant="ghost"
-              size="lg"
-              color="white"
-              _hover={{ bg: "orange.500" }}
-            >{item.icon}</IconButton>
-          </Link>
-        </Tooltip>
-      ))}
+      <VStack as="ul" gap="6" align="center" mt="4">
+        {SidebarItems.map((item, index) => (
+          <Tooltip key={index} content={item.label} positioning={{ placement: "right-end" }}>
+            <Link to={item.path}>
+              <IconButton
+                as="li"
+                aria-label={item.label}
+                variant="ghost"
+                size="2xl"
+                color="white"
+                _hover={{ bg: "orange.500" }}
+              >{item.icon}</IconButton>
+            </Link>
+          </Tooltip>
+        ))}
+      </VStack>
     </VStack>
   );
 };

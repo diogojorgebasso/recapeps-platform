@@ -1,86 +1,147 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input, Card } from "@chakra-ui/react";
-import { Field } from "@/components/ui/field";
+import {
+    Flex,
+    Card,
+    Heading,
+    Text,
+    Stack,
+    Input,
+    Link as ChakraLink,
+    Fieldset
+} from "@chakra-ui/react";
+import { FaGoogle } from "react-icons/fa";
+import { useNavigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
-import { Link, useNavigate } from "react-router";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { Field } from "@/components/ui/field";
+import { PasswordInput, PasswordStrengthMeter } from "@/components/ui/password-input";
+import { Button } from "@/components/ui/button";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
-    const { signUpWithEmailAndPassword, isAuthenticated } = useAuth();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const {
+        upgradeFromAnonymous,
+        loginWithGoogle,
+        isAuthenticated
+    } = useAuth();
+
     const navigate = useNavigate();
 
     useEffect(() => {
         if (isAuthenticated) {
             navigate("/dashboard");
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, navigate]);
 
     const handleSignUp = async () => {
+        setError(null);
+        setIsSubmitting(true);
         try {
-            await signUpWithEmailAndPassword(email, password);
+            await upgradeFromAnonymous(email, password);
             console.log("Inscription réussie !");
             navigate("/dashboard");
         } catch (error) {
             setError((error as Error).message);
             console.error("Erreur lors de l'inscription :", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleGoogleSignUp = async () => {
+        setError(null);
+        setIsSubmitting(true);
+        try {
+            await loginWithGoogle();
+            console.log("Connexion avec Google réussie !");
+            navigate("/dashboard");
+        } catch (error) {
+            setError("Erreur lors de la connexion avec Google. Veuillez réessayer.");
+            console.error("Erreur lors de la connexion avec Google :", (error as Error).message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="flex h-screen w-full items-center">
-            <Card.Root className="mx-auto max-w-sm">
-                <Card.Header>
-                    <Card.Title className="text-2xl">Inscription</Card.Title>
-                    <Card.Description>
+        <Flex
+            height="100vh"
+            alignItems="center"
+            justifyContent="center"
+            bg={useColorModeValue("gray.50", "gray.800")}
+            p={4}
+        >
+            <Card.Root width="sm" shadow="md">
+                <Card.Header textAlign="center">
+                    <Heading as="h2" size="lg">
+                        Inscription
+                    </Heading>
+                    <Text mt={2} fontSize="sm" color="gray.600">
                         Créez un compte en remplissant les informations ci-dessous.
-                    </Card.Description>
+                    </Text>
                 </Card.Header>
+
                 <Card.Body>
-                    <div className="grid gap-4">
-                        <div className="grid gap-2">
+                    <Stack gap={4}>
+                        <Fieldset.Root>
                             <Field label="Email">
                                 <Input
-                                    name="email"
                                     type="email"
                                     placeholder="exemple@email.com"
-                                    required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </Field>
-                        </div>
-                        <div className="grid gap-2">
-                            <Field label="Mot de passe">
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="Entrez votre mot de passe"
                                     required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                             </Field>
-                            {error && <div className="text-red-500">{error}</div>}
-                        </div>
+                            <PasswordInput
+                                placeholder="Entrez votre mot de passe"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <PasswordStrengthMeter value={(password.length / 4) + 1} />
+
+                        </Fieldset.Root>
+
+                        {error && <Text color="red.500">{error}</Text>}
+
+
                         <Button
-                            type="button"
-                            className="w-full"
+                            colorScheme="blue"
+                            w="full"
                             onClick={handleSignUp}
+                            loading={isSubmitting}
                         >
                             S&apos;inscrire
                         </Button>
-                    </div>
-                    <div className="mt-4 text-center text-sm">
+
+
+                        <Button
+                            variant="outline"
+                            colorScheme="red"
+                            w="full"
+                            onClick={handleGoogleSignUp}
+                        >
+                            <FaGoogle /> S&apos;inscrire avec Google
+                        </Button>
+                    </Stack>
+
+                    <Text mt={4} fontSize="sm" textAlign="center">
                         Vous avez déjà un compte ?{" "}
-                        <Link to="/login" className="underline">
+                        <ChakraLink
+                            href="/login"
+                            color="blue.500"
+                            textDecoration="underline"
+                        >
                             Connectez-vous
-                        </Link>
-                    </div>
+                        </ChakraLink>
+                    </Text>
                 </Card.Body>
             </Card.Root>
-        </div >
+        </Flex>
     );
 }

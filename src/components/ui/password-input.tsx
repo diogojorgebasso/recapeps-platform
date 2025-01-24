@@ -58,6 +58,9 @@ export const PasswordInput = React.forwardRef<
     <InputGroup
       width="full"
       align="center"
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
       endElement={
         <VisibilityTrigger
           disabled={rest.disabled}
@@ -76,6 +79,11 @@ export const PasswordInput = React.forwardRef<
       <Field label="Mot de Passe">
         <Input
           {...rest}
+          css={{
+            "::-ms-reveal": {
+              display: "none", // Oculta o botão de revelação de senha no IE/Edge
+            },
+          }}
           ref={mergeRefs(ref, inputRef)}
           autoComplete="new-password"
           type={visible ? "text" : "password"}

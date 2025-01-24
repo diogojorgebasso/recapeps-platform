@@ -39,16 +39,15 @@ const ringCss = defineStyle({
 
 export default function ContextualAvatar() {
 
-    const { photoURL, currentUser, signOut, firstName } = useAuth();
+    const { currentUser, isAuthenticated, signOut } = useAuth();
 
-    if (currentUser) {
-
+    if (isAuthenticated) {
         return (
             <MenuRoot>
                 <MenuTrigger>
                     <Avatar
-                        src={photoURL}
-                        name={firstName}
+                        src={currentUser?.photoURL || "/avatar.svg"}
+                        name={currentUser?.displayName || "Étudiant"}
                         css={ringCss}
                     >
                     </Avatar>
@@ -105,7 +104,7 @@ export default function ContextualAvatar() {
                     </MenuItem>
                     <MenuSeparator />
                     <DialogRoot>
-                        <DialogTrigger asChild>
+                        <DialogTrigger>
                             <MenuItem value="logOut">
                                 <FaSignOutAlt />
                                 Log out
@@ -113,9 +112,9 @@ export default function ContextualAvatar() {
                             </MenuItem>
                         </DialogTrigger>
                         <DialogContent>
-                            <DialogCloseTrigger />
                             <DialogHeader>
                                 <DialogTitle>Dialog Title</DialogTitle>
+                                <DialogCloseTrigger />
                             </DialogHeader>
                             <DialogBody>
                                 Voulez-vous bien vous déconnecter ?

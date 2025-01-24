@@ -1,40 +1,98 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
 import { getSubjects } from "@/api/getSubjects";
 import { Subject } from "@/types/Subject";
+import {
+    Box,
+    Card,
+    Heading,
+    SimpleGrid,
+    Image,
+    Button,
+} from "@chakra-ui/react";
+import { Link } from "react-router";
+import { Toaster, toaster } from "@/components/ui/toaster"
 
-export default function FlashcardsSubject() {
-    const [subjects, setSubjects] = useState<Subject[]>([]);
+export default function Home() {
+    const [subjects1, setSubjects1] = useState<Subject[]>([]);
+    const [subjects2, setSubjects2] = useState<Subject[]>([]);
 
     useEffect(() => {
-        const fetchSubjects = async () => {
-            try {
-                const querySnapshot = await getSubjects();
-                setSubjects(subjectsList);
-            } catch (error) {
-                console.error("Error fetching subjects:", error);
+        const loadSubjects = async () => {
+            const allSubjects = await getSubjects();
+            console.log(allSubjects)
+            setSubjects1(allSubjects.filter((subject) => subject.evaluation === 1));
+            setSubjects2(allSubjects.filter((subject) => subject.evaluation === 2));
+            if (allSubjects.length == 0) {
+                toaster.create({
+                    title: "Erreur innatendue",
+                    description: "Nous rencontrons des difficultés avec notre serveur, veuillez recharger la page",
+                    type: "error"
+                })
             }
-        };
-        fetchSubjects();
+        }
+        loadSubjects();
+
     }, []);
 
-    return (
-        <div className="container mx-auto py-8">
-            <h1 className="text-3xl font-bold text-center mb-8">Choisissez un sujet</h1>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {subjects.map((subject) => (
-                    <Link key={subject.id} to={`/flashcards/${subject.name}`}>
-                        <Button
-                            key={subject.id}
-                            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                        >
-                            {subject.name}
-                        </Button>
-                    </Link>
-                ))}
-            </div>
-        </div>
-    );
 
+    return (
+        <Box>
+            <Toaster />
+            <Box mb="12">
+                <Heading size="xl" mb="4" color="blue.600">
+                    Écrit 1
+                </Heading>
+                <SimpleGrid columns={[1, 2, 3]} gap="6">
+                    {subjects1.map(({ id, name, image }) => (
+                        <ExamCard
+                            key={id}
+                            id={id}
+                            name={name}
+                            image={image}
+                        />
+                    ))}
+                </SimpleGrid>
+            </Box>
+
+            <Box>
+                <Heading size="xl" mb="4" color="blue.600">
+                    Écrit 2
+                </Heading>
+                <SimpleGrid columns={[1, 2, 3]} gap="6">
+                    {subjects2.map(({ id, name, image }) => (
+                        <ExamCard
+                            key={id}
+                            id={id}
+                            name={name}
+                            image={image}
+                        />
+                    ))}
+                </SimpleGrid>
+            </Box>
+        </Box >
+    );
+}
+
+function ExamCard({
+    id,
+    name,
+    image,
+}: {
+    id: string;
+    name: string;
+    image: string;
+}) {
+    return (
+        <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
+            <Image src={image} alt={name} h="200px" w="full" />
+            <Card.Body gap="2" p="4">
+                <Card.Title>{name}</Card.Title>
+            </Card.Body>
+            <Card.Footer gap="2" p="4">
+                <Button variant="solid" colorScheme="blue">
+                    <Link to={`/flashcards/${id}`}>Voir plus</Link>
+                </Button>
+            </Card.Footer>
+        </Card.Root>
+    );
 }

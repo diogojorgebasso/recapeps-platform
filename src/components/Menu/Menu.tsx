@@ -6,7 +6,7 @@ import {
     SimpleGrid,
     VStack,
     useBreakpointValue,
-    IconButton
+    DrawerHeader
 } from "@chakra-ui/react";
 import { Link } from "react-router";
 import { Button } from "../ui/button";
@@ -16,13 +16,10 @@ import { ColorModeButton } from "../ui/color-mode";
 import { FaChevronDown } from "react-icons/fa";
 
 import {
-    DrawerActionTrigger,
     DrawerBackdrop,
     DrawerBody,
     DrawerCloseTrigger,
     DrawerContent,
-    DrawerFooter,
-    DrawerHeader,
     DrawerRoot,
     DrawerTitle,
     DrawerTrigger,
@@ -42,8 +39,11 @@ export default function Menu() {
                 </DrawerTrigger>
                 <DrawerContent>
                     <DrawerCloseTrigger />
+                    <DrawerHeader>
+                        <DrawerTitle>Menu</DrawerTitle>
+                    </DrawerHeader>
                     <DrawerBody>
-                        <VStack gap={4} mt={8} align="stretch">
+                        <VStack gap={4} mt={8} align="center">
                             <Link to="/dashboard" >
                                 <Text fontSize="lg" fontWeight="bold">
                                     Tableau de Bord

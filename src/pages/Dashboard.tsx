@@ -1,12 +1,12 @@
-
 import { useEffect, useState } from "react";
 import {
     Box,
     Heading,
-    HStack,
     Table,
+    HStack,
 } from "@chakra-ui/react";
-
+import { Button } from "@chakra-ui/react";
+import { HiColorSwatch } from "react-icons/hi";
 import {
     LineChart,
     Line,
@@ -15,10 +15,12 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    Legend
+    Legend,
 } from "recharts";
 import { getUserQuizzes } from "@/api/getUsersQuizzes";
 import { useAuth } from "@/hooks/useAuth";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Link } from "react-router";
 
 type QuizData = {
     id: string;
@@ -29,25 +31,24 @@ type QuizData = {
 };
 
 export default function Dashboard() {
-    const { uid, isLoadedAuth } = useAuth();
+    const { currentUser } = useAuth();
     const [quizData, setQuizData] = useState<QuizData[]>([]);
-
 
     useEffect(() => {
         const loadData = async () => {
-            if (!uid) return
-            console.log("fiz uma requisição")
-            const data = await getUserQuizzes(uid);
+            if (!currentUser) return;
+            console.log("Fazendo requisição");
+            const data = await getUserQuizzes(currentUser.uid);
             setQuizData(data);
+            console.log(data);
         };
         loadData();
-    }, [uid]);
+    }, [currentUser]);
 
+    // Organizar dados por tipo e quiz
     const groupedByType = quizData.reduce((acc, quiz) => {
-        const type = quiz.type
-        if (!acc[type]) {
-            acc[type] = {};
-        }
+        const type = quiz.type;
+        if (!acc[type]) acc[type] = {};
 
         if (!acc[type][quiz.quizName]) {
             acc[type][quiz.quizName] = {
@@ -57,10 +58,7 @@ export default function Dashboard() {
             };
         }
 
-        // Incrementa o número de tentativas
         acc[type][quiz.quizName].attempts += 1;
-
-        // Atualiza o maior score
         acc[type][quiz.quizName].highestScore = Math.max(
             acc[type][quiz.quizName].highestScore,
             quiz.score
@@ -76,24 +74,7 @@ export default function Dashboard() {
         return acc;
     }, {} as Record<string, Record<string, { attempts: number; highestScore: number; lastAttemptDate: string }>>);
 
-
-    const ecrit1Data = groupedByType["ecrit-1"] || {};
-    const ecrit2Data = groupedByType["ecrit-2"] || {};
-
-    const ecrit1ChartData = Object.entries(ecrit1Data).map(([quizName, data]) => ({
-        quizName,
-        attempts: data.attempts,
-        highestScore: data.highestScore,
-        lastAttemptDate: data.lastAttemptDate,
-    }));
-
-    const ecrit2ChartData = Object.entries(ecrit2Data).map(([quizName, data]) => ({
-        quizName,
-        attempts: data.attempts,
-        highestScore: data.highestScore,
-        lastAttemptDate: data.lastAttemptDate,
-    }));
-
+    // Dados para tabela
     const tableData = Object.entries(groupedByType).flatMap(([type, quizzes]) =>
         Object.entries(quizzes).map(([quizName, stats]) => ({
             type,
@@ -104,100 +85,80 @@ export default function Dashboard() {
         }))
     );
 
+    // Dados para gráfico
+    const ChartData = quizData.map((quiz) => ({
+        quizName: quiz.quizName,
+        score: quiz.score,
+        timestamp: new Date(quiz.timestamp).toLocaleDateString("fr-FR", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        }),
+    }));
+
+    if (quizData.length === 0) {
+        return (
+            <EmptyState
+                icon={<HiColorSwatch />}
+                title="Aucun résultat disponible"
+                description="Commencez par faire un quiz pour voir vos résultats ici."
+            >
+                <HStack>
+                    <Link to="/quizz">
+                        <Button>Faire un quiz</Button>
+                    </Link>
+                    <Link to="/notes">
+                        <Button variant="outline">Regarder les notes</Button>
+                    </Link>
+                </HStack>
+            </EmptyState>
+        );
+    }
 
     return (
-        <div>
+        <Box>
+            {/* Gráfico */}
             <Heading size="md" textAlign="center" mb={4}>
                 Vos derniers résultats
             </Heading>
+            <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={ChartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="quizName" label={{ position: "insideBottom", offset: -5 }} />
+                    <YAxis label={{ value: "Score", angle: -90, position: "insideLeft" }} />
+                    <Tooltip contentStyle={{ borderRadius: "5px" }} />
+                    <Legend />
+                    <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#4caf50"
+                        strokeWidth={2}
+                        dot={{ r: 4 }}
+                    />
+                </LineChart>
+            </ResponsiveContainer>
 
-            <HStack>
-                <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={ecrit1ChartData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="quizName"
-                            label={{
-                                position: "insideBottom",
-                                offset: -5,
-                            }}
-                        />
-                        <YAxis
-                            label={{
-                                value: "Score",
-                                angle: -90,
-                                position: "insideLeft",
-                            }}
-                        />
-                        <Tooltip
-                            contentStyle={{
-                                borderRadius: "5px",
-                            }}
-                        />
-                        <Legend />
-                        <Line
-                            type="monotone"
-                            dataKey="score"
-                            stroke="#4caf50"
-                            strokeWidth={2}
-                            dot={{ r: 4 }}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
-                <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={ecrit2ChartData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="quizName"
-                            label={{
-                                position: "insideBottom",
-                                offset: -5,
-                            }}
-                        />
-                        <YAxis
-                            label={{
-                                value: "Score",
-                                angle: -90,
-                                position: "insideLeft",
-                            }}
-                        />
-                        <Tooltip
-                            contentStyle={{
-                                borderRadius: "5px",
-                                border: "none",
-                            }}
-                        />
-                        <Legend />
-                        <Line
-                            type="monotone"
-                            dataKey="score"
-                            stroke="#4caf50"
-                            strokeWidth={2}
-                            dot={{ r: 4 }}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
-            </HStack>
-
-
+            {/* Tabela */}
             <Box maxWidth="800px" mx="auto" py={8}>
                 <Heading size="lg" textAlign="center" mb={6}>
                     Vos résultats des quizzes
                 </Heading>
                 <Table.Root colorScheme="gray" size="sm">
                     <Table.Header>
-                        <Table.ColumnHeader >Matière</Table.ColumnHeader>
-                        <Table.ColumnHeader >Tentatives</Table.ColumnHeader>
-                        <Table.ColumnHeader >Meilleure Note</Table.ColumnHeader>
-                        <Table.ColumnHeader >Tentative</Table.ColumnHeader>
+                        <Table.Row>
+                            <Table.ColumnHeader>Matière</Table.ColumnHeader>
+                            <Table.ColumnHeader>Tentatives</Table.ColumnHeader>
+                            <Table.ColumnHeader>Meilleure Note</Table.ColumnHeader>
+                            <Table.ColumnHeader>Dernière Tentative</Table.ColumnHeader>
+                        </Table.Row>
                     </Table.Header>
                     <Table.Body>
                         {tableData.map((row, index) => (
                             <Table.Row key={index}>
                                 <Table.Cell>{row.quizName}</Table.Cell>
-                                <Table.Cell >{row.attempts}</Table.Cell>
-                                <Table.Cell >{row.highestScore}</Table.Cell>
-                                <Table.Cell >
+                                <Table.Cell>{row.attempts}</Table.Cell>
+                                <Table.Cell>{row.highestScore}</Table.Cell>
+                                <Table.Cell>
                                     {new Date(row.lastAttemptDate).toLocaleDateString("fr-FR", {
                                         year: "numeric",
                                         month: "long",
@@ -209,6 +170,6 @@ export default function Dashboard() {
                     </Table.Body>
                 </Table.Root>
             </Box>
-        </div >
-    )
+        </Box>
+    );
 }

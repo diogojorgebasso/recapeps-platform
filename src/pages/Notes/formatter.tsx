@@ -40,7 +40,7 @@ interface SectionProps {
 
 export function Section({ title, children, bgColor = "blue.400" }: SectionProps) {
     const { registerSection } = useSectionContext();
-    const sectionRef = useRef<HTMLDivElement>(null);
+    const sectionRef = useRef<HTMLDivElement>(null!);
 
     useEffect(() => {
         registerSection(title, title, sectionRef);

@@ -15,5 +15,4 @@ export const SidebarItems: Item[] = [
   { label: "Chatbot", icon: <LuBot />, path: "/chatbot" },
   { label: "Fiches de révision", icon: <LuNotebookPen />, path: "/notes" },
   { label: "Support", icon: <FiHelpCircle />, path: "/support" },
-  { label: "LuBot", icon: <FiMail />, path: "/feedback" },
 ];

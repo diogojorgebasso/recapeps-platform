@@ -6,13 +6,9 @@ import {
   Card,
   Heading,
   SimpleGrid,
-  VStack,
   Image,
-  Input,
   Button,
 } from "@chakra-ui/react";
-import { InputGroup } from "@/components/ui/input-group";
-import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router";
 import { Toaster, toaster } from "@/components/ui/toaster"
 
@@ -23,6 +19,7 @@ export default function Home() {
   useEffect(() => {
     const loadSubjects = async () => {
       const allSubjects = await getSubjects();
+      console.log(allSubjects)
       setSubjects1(allSubjects.filter((subject) => subject.evaluation === 1));
       setSubjects2(allSubjects.filter((subject) => subject.evaluation === 2));
       if (allSubjects.length == 0) {
@@ -39,16 +36,8 @@ export default function Home() {
 
 
   return (
-    <Box minH="100vh" py="8" px="6">
+    <Box>
       <Toaster />
-      <VStack gap="6" textAlign="center" mb="12">
-        <Heading size="2xl" color="blue.500">
-          Recherchez un sujet, un examen ou un domaine d'étude.
-        </Heading>
-        <InputGroup flex="1" endElement={<FaSearch size="24" />}>
-          <Input placeholder="Tapez votre recherche ici..." />
-        </InputGroup>
-      </VStack>
 
       <Box mb="12">
         <Heading size="xl" mb="4" color="blue.600">

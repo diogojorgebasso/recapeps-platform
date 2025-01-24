@@ -21,14 +21,22 @@ export default function AuthenticatedClientLayout() {
             zIndex="1000"
             bg="orange.400"
             color="white"
-          ><FiMenu /></IconButton>
+          >
+            <FiMenu />
+          </IconButton>
           <SidebarMobile isOpen={isMobileOpen} onOpen={setMobileOpen} />
         </>
       ) : (
         <SidebarDesktop />
       )}
-      <Outlet />
+      <Box
+        ml={{ base: 0, md: "100px" }} // Ajusta o espaço conforme o dispositivo
+        p="4" // Adiciona padding ao conteúdo principal
+      >
+        <Outlet />
+      </Box>
     </Box>
+
   );
 }
 

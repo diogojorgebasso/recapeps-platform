@@ -20,7 +20,7 @@ import {
 export default function QuizPage() {
     const router = useParams();
     const navigate = useNavigate();
-    const { subjectId, exame } = router;
+    const { subjectId } = router;
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -29,26 +29,25 @@ export default function QuizPage() {
     const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
     const [showFeedback, setShowFeedback] = useState(false);
 
-    const { uid } = useAuth();
+    const { currentUser } = useAuth();
 
     useEffect(() => {
         const loadQuiz = async () => {
-            if (subjectId && exame && typeof subjectId === "string") {
-                const fetchedQuizzes = await fetchQuizzesBySubject(exame, subjectId);
+            if (subjectId) {
+                const fetchedQuizzes = await fetchQuizzesBySubject(subjectId, 1);
                 setQuizzes(fetchedQuizzes);
             }
         };
         loadQuiz();
-    }, [subjectId, exame]);
+    }, [subjectId]);
 
     useEffect(() => {
         const saveQuizIfFinished = async () => {
-            if (isFinished && exame && subjectId) {
+            if (isFinished && subjectId) {
                 const result = {
                     subjectId: subjectId,
                     score: score,
                     totalQuestions: quizzes.length,
-                    type: exame,
                     date: new Date().toISOString(),
                     questions: quizzes.map((quiz) => ({
                         questionId: quiz.id,
@@ -57,7 +56,11 @@ export default function QuizPage() {
                 };
 
                 try {
-                    await saveUserQuiz(uid, result);
+                    if (currentUser) {
+                        await saveUserQuiz(currentUser.uid, result);
+                    } else {
+                        console.error("User is not authenticated.");
+                    }
                     console.log("Quiz salvo com sucesso!");
                 } catch (error) {
                     console.error("Erro ao salvar o quiz:", error);
@@ -149,7 +152,6 @@ export default function QuizPage() {
 
     const currentQuiz = quizzes[currentQuestion];
     const progress = (currentQuestion / quizzes.length) * 100;
-
     return (
         <Box
             minH="100vh"

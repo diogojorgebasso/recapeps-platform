@@ -8,7 +8,7 @@ const CheckoutForm = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
-    const { uid } = useAuth();
+    const { currentUser } = useAuth();
     interface CheckoutItem {
         name: string;
         amount: number;
@@ -23,7 +23,7 @@ const CheckoutForm = () => {
         const response = await fetch("/createStripeCheckoutSession", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items, userId: uid }), // Replace USER_ID dynamically
+            body: JSON.stringify({ items, userId: currentUser?.uid || "" }),
         });
 
         if (!response.ok) {

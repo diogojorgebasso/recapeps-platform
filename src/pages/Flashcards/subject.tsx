@@ -33,13 +33,14 @@ export default function FlashcardsSubject() {
             setLoading(true);
             try {
                 const querySnapshot = await getDocs(
-                    collection(db, "flashcards", subjectId, "questions")
+                    collection(db, "subjects", subjectId, "flashcards")
                 );
-                const cards = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                })) as Flashcard[];
-                setFlashcards(cards);
+                const questions = querySnapshot.docs[0].data().questions
+                const flashcards = questions.map((questionObj: any, index: number) => ({
+                    id: `question-${index}`,
+                    ...questionObj,
+                }));
+                setFlashcards(flashcards);
             } catch (error) {
                 console.error("Error fetching flashcards:", error);
             } finally {
@@ -189,7 +190,7 @@ function Flashcard({
                     color="white"
                 >
                     <Card.Body>
-                        <Text textStyle="5xl">
+                        <Text textStyle="4xl">
                             {word}
                         </Text>
                     </Card.Body>
@@ -209,7 +210,7 @@ function Flashcard({
                     color="white"
                 >
                     <Card.Body>
-                        <Text textStyle="5xl">
+                        <Text textStyle="4xl">
                             {explanation}
                         </Text>
                     </Card.Body>

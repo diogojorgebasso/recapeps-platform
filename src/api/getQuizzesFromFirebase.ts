@@ -1,18 +1,45 @@
 import { db } from "@/utils/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { Quiz, Subject } from "@/types/Quizz";
+import { doc, getDoc } from "firebase/firestore";
+import { Quiz } from "@/types/Quizz";
 
-// Função para buscar quizzes de uma matéria específica
+// Function to fetch quizzes of a specific subject and level
 export const fetchQuizzesBySubject = async (
-  prova: string,
-  subjectId: string
+  subjectId: string,
+  level: number
 ): Promise<Quiz[]> => {
-  const quizzesRef = collection(db, `${prova}/${subjectId}/quizzes`);
-  const querySnapshot = await getDocs(quizzesRef);
-  const allQuizzes = querySnapshot.docs.map((doc) => ({
-    ...(doc.data() as Quiz),
-    id: doc.id,
-  }));
-  const shuffledQuizzes = allQuizzes.sort(() => Math.random() - 0.5); // Embaralhamento
-  return shuffledQuizzes.slice(0, 10); // Seleciona os 10 primeiros
+  try {
+    // Reference the specific level document
+    const levelDocRef = doc(
+      db,
+      "subjects",
+      subjectId,
+      "quizz",
+      `level-${level}`
+    );
+
+    // Fetch the level document
+    const levelDocSnapshot = await getDoc(levelDocRef);
+
+    if (!levelDocSnapshot.exists()) {
+      console.error(`No data found for subject ${subjectId} at level ${level}`);
+      return [];
+    }
+
+    // Extract questions data
+    const levelData = levelDocSnapshot.data();
+    const questions = Object.keys(levelData.questions || {}).map((key) => ({
+      id: key,
+      ...levelData.questions[key],
+      level, // Add the level parameter to each question
+    }));
+
+    // Shuffle the questions
+    const shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+
+    // Return the first 10 shuffled quizzes
+    return shuffledQuestions.slice(0, 10) as Quiz[];
+  } catch (error) {
+    console.error("Error fetching quizzes:", error);
+    return [];
+  }
 };

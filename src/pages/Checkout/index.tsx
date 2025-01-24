@@ -43,7 +43,6 @@ const CheckoutPage: React.FC = () => {
     const [selectedPlan, setSelectedPlan] = useState<string>("basic");
     const navigate = useNavigate();
     const { getUserToken } = useAuth();
-
     const plans: Plan[] = [
         {
             id: "basic",

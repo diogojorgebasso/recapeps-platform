@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import {
     Box,
-    Center,
     Container,
     Heading,
     Text,
@@ -12,7 +11,9 @@ import {
     Card,
     HStack,
     Icon,
-    Highlight
+    Highlight,
+    LinkBox,
+    LinkOverlay
 } from "@chakra-ui/react";
 import { LuNotebookPen, LuListTodo } from "react-icons/lu";
 import { FiBookOpen } from "react-icons/fi"
@@ -53,52 +54,64 @@ export default function Home() {
             </VStack>
 
             <SimpleGrid p={4} minChildWidth="sm" gap="8">
-                <Card.Root size="lg" variant="elevated" border="1px" borderColor="gray.200">
-                    <Card.Header>
-                        <Icon fontSize="40px">
-                            <LuNotebookPen />
-                        </Icon>
-                    </Card.Header>
-                    <Card.Body gap={4}>
-                        <Card.Title color="orange.500">FlashCards</Card.Title>
-                        <Text>
-                            Créez et organisez vos notes de manière efficace.
-                        </Text>
-                    </Card.Body>
-                </Card.Root>
+                <LinkBox>
+                    <Card.Root size="lg" variant="elevated" border="1px" borderColor="gray.200">
+                        <Card.Header>
+                            <Icon fontSize="40px">
+                                <LinkOverlay href="/flashcards">
+                                    <LuNotebookPen />
+                                </LinkOverlay>
+                            </Icon>
+                        </Card.Header>
+                        <Card.Body gap={4}>
+                            <Card.Title color="orange.500">FlashCards</Card.Title>
+                            <Text>
+                                Créez et organisez vos notes de manière efficace.
+                            </Text>
+                        </Card.Body>
+                    </Card.Root>
+                </LinkBox>
 
-                <Card.Root size="lg" variant="elevated" border="1px" borderColor="gray.200">
-                    <Card.Header>
-                        <Icon fontSize="40px">
-                            <FiBookOpen />
-                        </Icon>
-                    </Card.Header>
-                    <Card.Body gap={4}>
-                        <Card.Title color="orange.500">
-                            Organisez vos notes
-                        </Card.Title>
-                        <Text>
-                            Gardez vos idées organisées et facilement accessibles pour
-                            une étude plus efficace.
-                        </Text>
-                    </Card.Body>
-                </Card.Root>
+                <LinkBox>
+                    <Card.Root size="lg" variant="elevated" border="1px" borderColor="gray.200">
+                        <Card.Header>
+                            <Icon fontSize="40px">
+                                <LinkOverlay href="/notes">
+                                    <FiBookOpen />
+                                </LinkOverlay>
+                            </Icon>
+                        </Card.Header>
+                        <Card.Body gap={4}>
+                            <Card.Title color="orange.500">
+                                Organisez vos notes
+                            </Card.Title>
+                            <Text>
+                                Gardez vos idées organisées et facilement accessibles pour
+                                une étude plus efficace.
+                            </Text>
+                        </Card.Body>
+                    </Card.Root>
+                </LinkBox>
 
-                <Card.Root size="lg" variant="elevated" border="1px" borderColor="gray.200">
-                    <Card.Header>
-                        <Icon fontSize="40px">
-                            <LuListTodo />
-                        </Icon>
-                    </Card.Header>
-                    <Card.Body gap={4}>
-                        <Card.Title color="orange.500">
-                            Quizz
-                        </Card.Title>
-                        <Text>
-                            Testez vos connaiscances avec des quiz personnalisés.
-                        </Text>
-                    </Card.Body>
-                </Card.Root>
+                <LinkBox>
+                    <Card.Root size="lg" variant="elevated" border="1px" borderColor="gray.200">
+                        <Card.Header>
+                            <Icon fontSize="40px">
+                                <LinkOverlay href="/quizz">
+                                    <LuListTodo />
+                                </LinkOverlay>
+                            </Icon>
+                        </Card.Header>
+                        <Card.Body gap={4}>
+                            <Card.Title color="orange.500">
+                                Quizz
+                            </Card.Title>
+                            <Text>
+                                Testez vos connaiscances avec des quiz personnalisés.
+                            </Text>
+                        </Card.Body>
+                    </Card.Root>
+                </LinkBox>
 
             </SimpleGrid>
             <Box bg="orange.500" py="12" color="white">

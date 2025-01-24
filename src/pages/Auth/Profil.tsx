@@ -38,10 +38,8 @@ import { HiUpload } from "react-icons/hi";
 import { PasswordInput } from "@/components/ui/password-input";
 
 export default function Profil() {
-    const { photoURL, firstName, secondName,
-        updatePhotoURLInContext, uid, subscribed, email,
-        handleEmailChange, updateUserName, deleteUserAccount,
-        isEmailNotificationEnabled, updateEmailNotificationPreference } = useAuth();
+    const { handleEmailChange, updateUserName, deleteUserAccount,
+        isEmailNotificationEnabled, updateEmailNotificationPreference, currentUser } = useAuth();
     const [newEmailNotification, setNewEmailNotification] = useState(isEmailNotificationEnabled);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -49,10 +47,11 @@ export default function Profil() {
     const [zoom, setZoom] = useState(1);
     const [isUploading, setIsUploading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false)
-    const [newEmail, setNewEmail] = useState(email);
-    const [newFirstName, setNewFirstName] = useState(firstName)
-    const [newSecondName, setNewSecondName] = useState(secondName)
+    const [newEmail, setNewEmail] = useState(currentUser?.email);
+    const [newFirstName, setNewFirstName] = useState(currentUser?.displayName || "Prenom")
+    const [newSecondName, setNewSecondName] = useState(currentUser?.displayName || "Nom")
     const [currentPassword, setCurrentPassword] = useState("")
+    const subscribed = false; // or set this based on your logic
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -102,13 +101,17 @@ export default function Profil() {
         }
 
         const storage = getStorage();
-        const storageRef = ref(storage, `user/${uid}/profile.jpg`);
+        const storageRef = ref(storage, `user/${currentUser?.uid}/profile.jpg`);
 
         await uploadBytes(storageRef, blob);
         const downloadURL = await getDownloadURL(storageRef);
 
         const firestore = getFirestore();
-        const userRef = doc(firestore, "users", uid);
+        if (!currentUser?.uid) {
+            alert("User ID is not available.");
+            return;
+        }
+        const userRef = doc(firestore, "users", currentUser.uid);
         await updateDoc(userRef, { photoURL: downloadURL });
 
         await updatePhotoURLInContext(downloadURL);
@@ -125,8 +128,10 @@ export default function Profil() {
         setIsUploading(true);
         await updateUserName(newFirstName, newSecondName);
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (newEmail != email && emailRegex.test(newEmail)) {
-            await handleEmailChange(currentPassword, email);
+        if (newEmail && currentUser && newEmail !== currentUser.email && emailRegex.test(newEmail)) {
+            if (currentUser?.email) {
+                await handleEmailChange(currentPassword, currentUser.email);
+            }
         }
         setIsUploading(false);
         toaster.create({
@@ -145,7 +150,7 @@ export default function Profil() {
             <Flex gap={10}>
                 <VStack gap={4} >
                     <Box w="200px" h="200px">
-                        <Avatar size="full" name="Profile Photo" src={photoURL} />
+                        <Avatar size="full" name="Profile Photo" src={currentUser?.photoURL || "/avatar.svg"} />
                     </Box>
                     <FileUploadRoot onChange={handleFileChange}>
                         <FileUploadTrigger>
@@ -202,7 +207,7 @@ export default function Profil() {
                             </HStack>
                             <PasswordInput onChange={e => setCurrentPassword(e.target.value)} value={currentPassword} />
                             <Field errorText="Vous besoin de ecrire ton mot de passe actuel" label="Adresse Email">
-                                <Input onChange={(e) => setNewEmail(e.target.value)} value={newEmail} />
+                                <Input onChange={(e) => setNewEmail(e.target.value)} value={newEmail || ''} />
                             </Field>
                             <Field label="Nouveau Mot de Passe">
                                 <Input autoComplete="new-password" type="password" placeholder="Nouveau mot de passe" />
@@ -294,3 +299,16 @@ export default function Profil() {
         </Box >
     );
 }
+
+function updatePhotoURLInContext(downloadURL: string) {
+    const { setCurrentUser } = useAuth();
+    setCurrentUser((prevUser) => {
+        if (!prevUser) return null;
+        return {
+            ...prevUser,
+            photoURL: downloadURL,
+            emailVerified: prevUser.emailVerified,
+        };
+    });
+}
+

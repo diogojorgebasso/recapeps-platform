@@ -7,7 +7,6 @@ import {
     Input,
     Textarea,
     Text,
-    VStack,
     Fieldset,
 } from "@chakra-ui/react";
 import { Field } from "@/components/ui/field";

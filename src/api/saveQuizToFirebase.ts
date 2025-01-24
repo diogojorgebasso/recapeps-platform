@@ -2,14 +2,16 @@
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 
-export const saveUserQuiz = async (uid : string, quizResult: {
-  subjectId: string;
-  score: number;
-  totalQuestions: number;
-  type: string;
-  date: string;
-  questions: { questionId: string; selectedAnswer: number[] }[];
-}) => {
+export const saveUserQuiz = async (
+  uid: string,
+  quizResult: {
+    subjectId: string;
+    score: number;
+    totalQuestions: number;
+    date: string;
+    questions: { questionId: string; selectedAnswer: number[] }[];
+  }
+) => {
   try {
     const userQuizRef = collection(db, "users", uid, "quizzes");
     await addDoc(userQuizRef, quizResult);

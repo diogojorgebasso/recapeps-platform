@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, Input, Link as ChakraLink } from "@chakra-ui/react";
-import { useAuth } from "@/hooks/useAuth";
+import {
+    Flex,
+    Card,
+    Heading,
+    Text,
+    Input,
+    Link as ChakraLink,
+    Fieldset,
+} from "@chakra-ui/react";
+import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
-import { Link } from "react-router";
+import { useAuth } from "@/hooks/useAuth";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { Field } from "@/components/ui/field";
+import { Button } from "@/components/ui/button";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -13,7 +22,7 @@ export default function Login() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { loginWithGoogle, isAuthenticated, upgradeFromAnonymous } = useAuth();
+    const { isAuthenticated, simpleLogin, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,89 +31,133 @@ export default function Login() {
         }
     }, [isAuthenticated]);
 
-    const handleGoogleLogin = async () => {
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setErrorMessage(null);
+        console.log("entrei no handleLogin")
         setIsSubmitting(true);
         try {
-            await loginWithGoogle();
-            console.log("Connexion avec Google réussie !");
+            await simpleLogin(email, password);
             navigate("/dashboard");
         } catch (error) {
-            setErrorMessage("Erreur lors de la connexion avec Google. Veuillez réessayer.");
-            console.error("Erreur lors de la connexion avec Google :", (error as Error).message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const handleLogin = async (event: React.FormEvent) => {
-        event.preventDefault(); // Previne o comportamento padrão do formulário
-        setErrorMessage(null);
-        setIsSubmitting(true);
-        try {
-            await upgradeFromAnonymous(email, password);
-            console.log("Connexion réussie !");
-            navigate("/dashboard");
-        } catch (error) {
-            const authError = error as { code: string; message: string };
+            const authError = error as { code?: string; message: string };
             if (authError.code === "auth/user-not-found") {
                 setErrorMessage("Utilisateur introuvable. Vérifiez votre email.");
             } else if (authError.code === "auth/wrong-password") {
                 setErrorMessage("Mot de passe incorrect. Veuillez réessayer.");
             } else {
                 setErrorMessage("Erreur lors de la connexion. Veuillez réessayer.");
+                console.error(error)
             }
-            console.error("Erreur lors de la connexion :", authError.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+
+
+    const handleGoogleLogin = async () => {
+        setErrorMessage(null);
+        setIsSubmitting(true);
+        try {
+            await loginWithGoogle();
+            navigate("/dashboard");
+        } catch (error) {
+            setErrorMessage("Erreur lors de la connexion avec Google. Veuillez réessayer.");
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <Card.Root>
-            <Card.Header>
-                <Card.Title className="text-2xl">Connexion</Card.Title>
-                <Card.Description>
-                    Entrez votre email ci-dessous pour accéder à votre compte.
-                </Card.Description>
-            </Card.Header>
-            <Card.Body>
-                <form onSubmit={handleLogin}>
-                    <Field label="Email">
-                        <Input
-                            autoComplete="email"
-                            placeholder="exemple@email.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)} // Atualiza o estado do email
-                        />
-                    </Field>
-                    <ChakraLink variant="underline" asChild>
-                        <Link to="/forgot-password">Mot de passe oublié ?</Link>
-                    </ChakraLink>
-                    <PasswordInput
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)} // Atualiza o estado da senha
-                    />
-                    {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-                    <Button disabled={isSubmitting} type="submit" className="w-full">
-                        {isSubmitting ? "Connexion..." : "Connexion"}
-                    </Button>
-                    <Button
-                        disabled={isSubmitting}
-                        variant="outline"
-                        className="w-full"
-                        onClick={handleGoogleLogin}
-                    >
-                        Connexion avec Google
-                    </Button>
-                    <div className="mt-4 text-center text-sm">
+        <Flex
+            height="100vh"
+            alignItems="center"
+            justifyContent="center"
+            bg={useColorModeValue("gray.50", "gray.800")}
+            p={4}
+        >
+            <Card.Root width="sm" shadow="md">
+                <Card.Header textAlign="center">
+                    <Heading as="h2" size="lg">
+                        Connexion
+                    </Heading>
+                    <Text mt={2} fontSize="sm" color="gray.600">
+                        Entrez votre email ci-dessous pour accéder à votre compte.
+                    </Text>
+                </Card.Header>
+
+                <Card.Body>
+                    <form onSubmit={handleLogin}>
+                        <Fieldset.Root>
+                            <Field label="Email">
+                                <Input
+                                    autoComplete="email"
+                                    type="email"
+                                    placeholder="exemple@email.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </Field>
+
+                            <ChakraLink
+                                href="/forgot-password"
+                                color="blue.600"
+                                textDecoration="underline"
+                                fontSize="sm"
+                            >
+                                Mot de passe oublié ?
+                            </ChakraLink>
+
+                            <PasswordInput
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+
+
+                            {errorMessage && (
+                                <Text color="red.500" fontSize="sm">
+                                    {errorMessage}
+                                </Text>
+                            )}
+                            {isSubmitting ?
+                                <Button
+                                    loading
+                                    colorPalette="orange.200"
+                                    w="full"
+                                    type="submit">
+                                    Connexion
+                                </Button>
+                                :
+                                <Button
+
+                                    colorPalette="orange.200"
+                                    w="full"
+                                    type="submit">
+                                    Connexion
+                                </Button>}
+
+
+                            <Button
+                                variant="outline"
+                                w="full"
+                                onClick={handleGoogleLogin}
+                            >
+                                <FaGoogle />Connexion avec Google
+                            </Button>
+                        </Fieldset.Root>
+                    </form>
+                    <Text mt={4} fontSize="sm" textAlign="center">
                         Vous n&apos;avez pas encore de compte ?{" "}
-                        <ChakraLink variant="underline" asChild>
-                            <Link to="/register">Inscrivez-vous</Link>
+                        <ChakraLink
+                            href="/register"
+                            color="blue.500"
+                            textDecoration="underline">
+                            Inscrivez-vous
                         </ChakraLink>
-                    </div>
-                </form>
-            </Card.Body>
-        </Card.Root>
+                    </Text>
+                </Card.Body>
+            </Card.Root>
+        </Flex >
     );
 }

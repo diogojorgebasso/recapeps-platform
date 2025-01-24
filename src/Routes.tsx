@@ -10,46 +10,33 @@ import NotFoundPage from "./pages/404";
 import Quizz from "./pages/Quizz";
 import SignUp from "./pages/Auth/SignUp";
 import ChatBot from "./pages/ChatBot";
-import AddQuestionForm from "./components/dashboard/add-quizz";
 import SubjectQuiz from "./pages/Quizz/SubjectQuiz";
 
 import Notes from "./pages/Notes";
 import Team from "./pages/Team";
 import Profil from "@/pages/Auth/Profil"
-import { useAuth } from "./hooks/useAuth";
 import ContactForm from "./pages/Contact";
 import About from "./pages/About";
 import FlashcardsPage from "./pages/Flashcards";
 import FlashcardsSubject from "./pages/Flashcards/subject";
 import Support from "./pages/Support";
-import DashboardAdmin from "./pages/DashboardAdmin";
 import TermesCondition from "./pages/Termes-Condition";
 import PaymentPage from "./pages/Checkout/Payment";
-import Mixite from "./pages/Notes/ecrit-1/mixite-sexuee";
-import LesEmotion from "./pages/Notes/ecrit-2/les-emotion";
+import DynamicPage from "./pages/Notes/DynamicPage";
 import ForgottenPassword from "./pages/Auth/ForgotPassword";
 
 export function Routes() {
 
-    const { currentUser } = useAuth();
-
-    const adminRoutes = (
-        <>
-            <Route path="add-quizz" element={<AddQuestionForm />} />
-            <Route path="dashboard" element={<DashboardAdmin />} />
-        </>
-    );
     const userRoutes = (
         <>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="team" element={<Team />} />
             <Route path="quizz" element={<Quizz />} />
-            <Route path="quizz/:exame/:subjectId" element={<SubjectQuiz />} />
+            <Route path="quizz/:subjectId" element={<SubjectQuiz />} />
             <Route path="chatbot" element={<ChatBot />} />
             <Route path="notes">
                 <Route index element={<Notes />} />
-                <Route path="ecrit-1/la-mixite-sexuee" element={<Mixite />} />
-                <Route path="ecrit-2/les-emotions" element={<LesEmotion />} />
+                <Route path=":subject" element={<DynamicPage />} />
             </Route>
             <Route path="profil" element={<Profil />} />
             <Route path="flashcards" element={<FlashcardsPage />} />
@@ -72,8 +59,7 @@ export function Routes() {
             <Route path="register" element={<SignUp />} />
             <Route path="forgot-password" element={<ForgottenPassword />} />
             <Route element={<AuthenticatedClientLayout />}>
-                {currentUser.role === "admin" && adminRoutes}
-                {currentUser.role === "user" && userRoutes}
+                {userRoutes}
             </Route>
             <Route path="*" element={<NotFoundPage />} />
         </ReactRouterRoutes >
