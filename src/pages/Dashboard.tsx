@@ -32,7 +32,7 @@ type QuizData = {
 
 export default function Dashboard() {
     const { currentUser } = useAuth();
-    const [quizData, setQuizData] = useState<QuizData[]>([]);
+    const [quizData] = useState<QuizData[]>([]);
 
     useEffect(() => {
         const loadData = async () => {
