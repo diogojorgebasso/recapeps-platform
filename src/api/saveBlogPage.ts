@@ -150,11 +150,65 @@ export async function saveBlogPage() {
     },
     ctaLink: "/quizz/ecrit-2/les-emotions",
   };
-  console.log(mixite_sexuee, les_emotions);
+
+  const acteur_de_l_eps = {
+    title: "L'acteur de l'EPS",
+    exam: "Écrit 2",
+    item: "Acteurs et rôles",
+    content: {
+      sections: [
+        {
+          title: "I. Introduction",
+          bgColor: "green.100",
+          content: [
+            {
+              text: "« L’acteur principal de l’EPS est l’élève, mais son apprentissage est guidé par un cadre pédagogique orchestré par l’enseignant. »",
+              citation: "Davisse & Louveau, L’EPS au prisme des acteurs, 2004",
+            },
+            {
+              text: "« L’enseignant d’EPS joue un rôle crucial dans la construction des compétences motrices et citoyennes de l’élève. »",
+              citation: "Parlebas, Éducation physique et sport, 2002",
+            },
+          ],
+        },
+        {
+          title: "II. Rôles et interactions",
+          bgColor: "green.200",
+          content: [
+            {
+              text: "« Les interactions entre élèves et enseignants sont au cœur de la transmission des savoirs en EPS. »",
+              citation: "Méard, Relations en milieu scolaire, 2015",
+            },
+            {
+              text: "« Le rôle de l’élève ne se limite pas à l’exécution : il devient un acteur de son propre apprentissage, avec une part d’autonomie croissante. »",
+              citation: "Pujade-Renaud, Corps et apprentissage, 1995",
+            },
+          ],
+        },
+        {
+          title: "III. L’évolution du rôle de l’enseignant",
+          bgColor: "green.300",
+          content: [
+            {
+              text: "« L’enseignant d’EPS est passé d’un rôle d’autorité et de transmission à celui de facilitateur d’apprentissages. »",
+              citation: "Parlebas, Sociologie des pratiques sportives, 1981",
+            },
+            {
+              text: "« Dans un contexte où l’EPS se diversifie, l’enseignant doit également adopter une posture réflexive pour répondre aux besoins des élèves. »",
+              citation: "Baquet, Enseigner l’EPS, 2010",
+            },
+          ],
+        },
+      ],
+    },
+    ctaLink: "/quizz/acteur-eps",
+  };
+
+  console.log(mixite_sexuee, les_emotions, sport_scolaire);
   try {
     const docRef = await addDoc(
-      collection(db, "subjects", "sport-scolaire", "notes"),
-      sport_scolaire
+      collection(db, "subjects", "acteurs-eps", "notes"),
+      acteur_de_l_eps
     );
     console.log("Página salva com ID: ", docRef.id);
   } catch (e) {

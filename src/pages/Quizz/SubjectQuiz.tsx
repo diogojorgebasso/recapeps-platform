@@ -110,7 +110,7 @@ export default function QuizPage() {
     if (!quizzes.length && !isFinished) {
         return (
             <Center w="100%" h="100vh">
-                <Text fontSize="lg">Carregando Quiz...</Text>
+                <Text fontSize="lg">Chargement...</Text>
             </Center>
         );
     }
@@ -160,7 +160,7 @@ export default function QuizPage() {
             justifyContent="center"
             p={4}
         >
-            <Card.Root maxW="lg" w="full" boxShadow="lg" position="relative">
+            <Card.Root maxW="2xl" w="full" boxShadow="lg" position="relative">
                 <Card.Header>
                     <Heading as="h3" size="md" textAlign="center">
                         {currentQuiz.question}
@@ -193,6 +193,8 @@ export default function QuizPage() {
                                     whiteSpace="normal"
                                     wordBreak="break-word"
                                     disabled={showFeedback} // Desabilitar durante feedback
+                                    width="100%"
+                                    minH={20}
                                 >
                                     {option}
                                 </Button>
