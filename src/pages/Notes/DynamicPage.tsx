@@ -47,7 +47,7 @@ export default function DynamicPage() {
 
             {/* Sections */}
             {pageData.content.sections.map((section: any, index: number) => (
-                <Section key={index} title={section.title} bgColor={section.bgColor || useColorModeValue("gray.100", "black.950")}>
+                <Section key={index} title={section.title}>
                     {/* Renderiza conteúdo da seção */}
                     {section.content.map((item: any, contentIndex: number) => {
                         if (item.points) {

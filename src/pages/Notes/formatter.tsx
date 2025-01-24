@@ -2,6 +2,7 @@ import { Box, Heading, Link, List, Text, VStack, Center, Button } from "@chakra-
 import { ReactNode, useEffect, useRef } from "react";
 import { useSectionContext } from "@/hooks/useSection";
 import { Link as LinkNavegation } from "react-router";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface HeaderProps {
     title: string;
@@ -75,7 +76,10 @@ export function Sommaire() {
     };
 
     return (
-        <Box as="nav" p={4} bg="gray.100" rounded="md" shadow="sm">
+        <Box as="nav" p={4} bg={useColorModeValue(
+            "gray.100",
+            "cyan.950"
+        )} rounded="md" shadow="sm">
             <Heading as="h3" fontSize="lg" mb={4}>
                 Sommaire
             </Heading>
