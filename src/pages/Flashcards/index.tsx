@@ -3,7 +3,6 @@ import { Subject } from "@/types/Subject";
 import {
     Box,
     Card,
-    Heading,
     SimpleGrid,
     Image,
     Button,
