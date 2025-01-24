@@ -273,21 +273,129 @@ const politique = {
   ],
 };
 
+const mutations_educatif = {
+  questions: [
+    {
+      question:
+        "En quelle année la mixité a-t-elle été autorisée dans le primaire ?",
+      answer: "1933",
+    },
+    {
+      question: "Que s'est-il passé en 1945 dans le système éducatif ?",
+      answer: "Rétablissement de la gratuité scolaire",
+    },
+    {
+      question: "Quel est le nom du plan éducatif établi en 1947 ?",
+      answer: "Plan Langevin-Wallon",
+    },
+    {
+      question: "Quelle réforme a été mise en place le 6 juin 1959 ?",
+      answer: "Réforme Berthoin",
+    },
+    {
+      question: "Quelle réforme a été promulguée le 3 août 1963 ?",
+      answer: "Réforme Capelle-Fouchet",
+    },
+    {
+      question: "Quelle loi a été promulguée le 11 juillet 1975 ?",
+      answer: "Loi Haby",
+    },
+    {
+      question: "Quelle réforme a été mise en place le 2 juin 1982 ?",
+      answer: "Réforme Savary",
+    },
+    {
+      question: "Quel rapport éducatif a été publié en décembre 1982 ?",
+      answer: "Rapport Legrand",
+    },
+    {
+      question: "Quelles commissions ont été créées en 1983 ?",
+      answer: "Commissions horizontales et verticales",
+    },
+    {
+      question: "Quelle loi éducative a été promulguée le 16 juillet 1984 ?",
+      answer: "Loi Avice",
+    },
+    {
+      question:
+        "Quelle commission a été créée en 1988 pour le système éducatif ?",
+      answer: "Commission Bourdieu-Gros",
+    },
+    {
+      question: "Quelle loi éducative a été mise en place le 10 juillet 1989 ?",
+      answer: "Loi Jospin",
+    },
+    {
+      question: "Quel document a été publié le 20 février 1992 ?",
+      answer: "Charte des programmes",
+    },
+    {
+      question: "Quel contrat éducatif a été lancé le 1er septembre 1994 ?",
+      answer: "Nouveau contrat pour l’école, Bayrou",
+    },
+    {
+      question: "Quelle réforme éducative a été mise en place le 27 mai 1999 ?",
+      answer: "Réforme des lycée",
+    },
+    {
+      question: "Quel projet éducatif a été annoncé le 10 juillet 1999 ?",
+      answer: "Collège de l’an 2000",
+    },
+    {
+      question: "Quel rapport a été publié le 1er octobre 2004 ?",
+      answer: "Rapport Thélot",
+    },
+    {
+      question: "Quelle loi éducative a été promulguée le 23 avril 2005 ?",
+      answer: "Loi Fillon",
+    },
+    {
+      question:
+        "Que signifient les réseaux d'éducation prioritaire créés en 2006 ?",
+      answer: "Éducation pour les zones prioritaires",
+    },
+    {
+      question: "Quelle réforme a été mise en place en 2010 sous Sarkozy ?",
+      answer: "Réforme du lycée",
+    },
+    {
+      question: "Quelle loi a été promulguée le 8 juillet 2013 ?",
+      answer:
+        "Loi d’orientation et de programmation pour la refondation de l’école de la république",
+    },
+    {
+      question: "Quelle réforme éducative a été introduite le 20 mai 2015 ?",
+      answer: "Réforme du collège",
+    },
+    {
+      question:
+        "Quelle réforme a été mise en place en 2019 pour le lycée et le baccalauréat ?",
+      answer: "Réforme du lycée et du baccalauréat",
+    },
+    {
+      question: "Quelle loi a été promulguée le 28 juillet 2019 ?",
+      answer: "Loi pour une école de la confiance (Loi Blanquer)",
+    },
+  ],
+};
+
+console.log(sport_scolaire);
+console.log(numerique);
+console.log(politique);
+
 export const addFlashcardsToFirestore = async () => {
   try {
-    console.log(sport_scolaire);
-    console.log(numerique);
     const levelRef = doc(
       db,
       "subjects",
-      "contexte-politique",
+      "mutations-educatif",
       "flashcards",
       "flashcardv1"
     );
 
     // Add the questions to the respective level document
     await setDoc(levelRef, {
-      questions: politique.questions,
+      questions: mutations_educatif.questions,
       date: serverTimestamp(),
     });
 

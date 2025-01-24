@@ -7,7 +7,7 @@ import { Subject } from "@/types/Subject";
  *
  * @returns {Promise<Subject[]>} A promise that resolves to an array of subjects. If an error occurs, returns an empty array.
  */
-export async function getSubjects() {
+export async function getSubjectsFlashcards() {
   try {
     const subjectsCollectionRef = collection(db, "subjects");
     const querySnapshot = await getDocs(subjectsCollectionRef);
@@ -15,13 +15,15 @@ export async function getSubjects() {
     const subjects: Subject[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      subjects.push({
-        id: doc.id,
-        name: data.name,
-        evaluation: data.evaluation,
-        image: data.image,
-        premium: data.premium,
-      });
+      if (data.flashcards) {
+        subjects.push({
+          id: doc.id,
+          name: data.name,
+          evaluation: data.evaluation,
+          image: data.image,
+          premium: data.premium,
+        });
+      }
     });
 
     return subjects;

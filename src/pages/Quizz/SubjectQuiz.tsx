@@ -133,7 +133,7 @@ export default function QuizPage() {
                         <Text textAlign="center" fontSize="lg" mb={4}>
                             Votre Note: <strong>{score}</strong> / {quizzes.length}
                         </Text>
-                        <Text textAlign="center" color="gray.600">
+                        <Text textAlign="center">
                             {performanceMessage}
                         </Text>
                         <Button
@@ -155,7 +155,6 @@ export default function QuizPage() {
     return (
         <Box
             minH="100vh"
-            bg="gray.50"
             display="flex"
             alignItems="center"
             justifyContent="center"
