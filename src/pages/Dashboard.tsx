@@ -96,14 +96,14 @@ export default function Dashboard() {
             <EmptyState
                 icon={<HiColorSwatch />}
                 title="Aucun résultat disponible"
-                description="Commencez par faire un quiz pour voir vos résultats ici."
+                description="Commencez par faire un quizz pour voir vos résultats ici."
             >
                 <HStack>
                     <Link to="/quizz">
-                        <Button>Faire un quiz</Button>
+                        <Button>Faire un quizz</Button>
                     </Link>
                     <Link to="/notes">
-                        <Button variant="outline">Regarder les notes</Button>
+                        <Button variant="outline">Explorer les fiches</Button>
                     </Link>
                 </HStack>
             </EmptyState>

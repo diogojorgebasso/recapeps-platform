@@ -13,7 +13,7 @@ export default function Support() {
         <Box minH="100vh" >
             <Container maxW="container.md" py={12}>
                 <VStack gap={4} textAlign="center" mb={8}>
-                    <Heading as="h2" size="lg" fontWeight="semibold">
+                    <Heading as="h2" size="2xl" fontWeight="semibold">
                         Comment pouvons-nous vous aider ?
                     </Heading>
                     <Text >
@@ -29,16 +29,16 @@ export default function Support() {
                         rounded="lg"
                         p={6}
                     >
-                        <Heading as="h3" size="md" mb={2} fontWeight="bold">
+                        <Heading color="orange.500" as="h3" size="xl" mb={2} fontWeight="bold">
                             Support Développeur
                         </Heading>
                         <Text color="gray.600" mb={4}>
                             Pour des questions techniques ou liées au développement,
-                            contactez Diogo.
+                            contactez M. Diogo.
                         </Text>
                         <Link
                             href="mailto:diogo.basso@depinfonancy.net"
-                            color="blue.600"
+                            color="orange.600"
                             fontWeight="medium"
                             _hover={{ textDecoration: "underline" }}
                         >
@@ -53,7 +53,7 @@ export default function Support() {
                         rounded="lg"
                         p={6}
                     >
-                        <Heading as="h3" size="md" mb={2} fontWeight="bold">
+                        <Heading color="orange.500" as="h3" size="xl" mb={2} fontWeight="bold">
                             Support Commercial
                         </Heading>
                         <Text color="gray.600" mb={4}>
@@ -61,7 +61,7 @@ export default function Support() {
                         </Text>
                         <Link
                             href="mailto:corentinfelder@gmail.com"
-                            color="blue.600"
+                            color="orange.600"
                             fontWeight="medium"
                             _hover={{ textDecoration: "underline" }}
                         >

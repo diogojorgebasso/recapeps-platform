@@ -99,7 +99,7 @@ export default function Menu() {
                                                 <Text fontSize="sm" fontWeight="bold">
                                                     Tableau de Bord
                                                 </Text>
-                                                <Text fontSize="xs" color="gray.500">
+                                                <Text color="gray.500">
                                                     Gérez vos activités et accédez rapidement à toutes vos
                                                     ressources éducatives.
                                                 </Text>
@@ -110,11 +110,10 @@ export default function Menu() {
                                         <Link to="/notes">
                                             <VStack align="start">
                                                 <Text fontSize="sm" fontWeight="bold">
-                                                    Notes
+                                                    Fiches de révision
                                                 </Text>
-                                                <Text fontSize="xs" color="gray.500">
-                                                    Créez, organisez et révisez vos notes efficacement dans un
-                                                    espace structuré.
+                                                <Text color="gray.500">
+                                                    Nous t'avons fait une synthèse de tous les grands thèmes que tu peux rencontrer au concours.
                                                 </Text>
                                             </VStack>
                                         </Link>
@@ -123,11 +122,10 @@ export default function Menu() {
                                         <Link to="/flashcards">
                                             <VStack align="start">
                                                 <Text fontSize="sm" fontWeight="bold">
-                                                    Cartes Mémoire
+                                                    Flashcards
                                                 </Text>
-                                                <Text fontSize="xs" color="gray.500">
-                                                    Mémorisez des concepts clés avec des cartes interactives et
-                                                    intuitives.
+                                                <Text color="gray.500">
+                                                    Retiens efficacement toutes les connaissances donc tu auras besoin pour les écrits.
                                                 </Text>
                                             </VStack>
                                         </Link>
@@ -138,8 +136,8 @@ export default function Menu() {
                                                 <Text fontSize="sm" fontWeight="bold">
                                                     Quizz
                                                 </Text>
-                                                <Text fontSize="xs" color="gray.500">
-                                                    Testez vos connaissances avec des quiz personnalisés.
+                                                <Text color="gray.500">
+                                                    Après avoir lu une fiche, fais des quizz associés pour voir si tu as bien compris et assimilé le cours !
                                                 </Text>
                                             </Link>
                                         </VStack>
