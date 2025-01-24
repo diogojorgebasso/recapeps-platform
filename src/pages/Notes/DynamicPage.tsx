@@ -3,6 +3,7 @@ import { Box, Text, Heading, Table } from "@chakra-ui/react";
 import { HeaderNotes, Section, Sommaire, CTA } from "./formatter";
 import { getBlogPage } from "@/api/getBlogPage";
 import { useParams } from "react-router";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function DynamicPage() {
     const { subject } = useParams();
@@ -46,11 +47,10 @@ export default function DynamicPage() {
 
             {/* Sections */}
             {pageData.content.sections.map((section: any, index: number) => (
-                <Section key={index} title={section.title} bgColor={section.bgColor || "gray.100"}>
+                <Section key={index} title={section.title} bgColor={section.bgColor || useColorModeValue("gray.100", "black.950")}>
                     {/* Renderiza conteúdo da seção */}
                     {section.content.map((item: any, contentIndex: number) => {
                         if (item.points) {
-                            // Renderiza lista de pontos
                             return (
                                 <Box key={contentIndex} mb={4}>
                                     {item.heading && (

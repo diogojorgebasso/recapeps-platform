@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { getSubjects } from "@/api/getSubjects";
 import { Subject } from "@/types/Subject";
 import {
     Box,
@@ -11,17 +10,16 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router";
 import { Toaster, toaster } from "@/components/ui/toaster"
+import { getSubjectsFlashcards } from "@/api/getSubjectsFlashcards";
+import { addFlashcardsToFirestore } from "@/api/boilerPlateFlashcard";
 
 export default function Home() {
-    const [subjects1, setSubjects1] = useState<Subject[]>([]);
-    const [subjects2, setSubjects2] = useState<Subject[]>([]);
+    const [subjects, setSubjects] = useState<Subject[]>([]);
 
     useEffect(() => {
         const loadSubjects = async () => {
-            const allSubjects = await getSubjects();
-            console.log(allSubjects)
-            setSubjects1(allSubjects.filter((subject) => subject.evaluation === 1));
-            setSubjects2(allSubjects.filter((subject) => subject.evaluation === 2));
+            const allSubjects = await getSubjectsFlashcards();
+            setSubjects(allSubjects)
             if (allSubjects.length == 0) {
                 toaster.create({
                     title: "Erreur innatendue",
@@ -39,32 +37,15 @@ export default function Home() {
         <Box>
             <Toaster />
             <Box mb="12">
-                <Heading size="xl" mb="4" color="blue.600">
-                    Écrit 1
-                </Heading>
+                <Button onClick={() => addFlashcardsToFirestore()} />
                 <SimpleGrid columns={[1, 2, 3]} gap="6">
-                    {subjects1.map(({ id, name, image }) => (
+                    {subjects.map(({ id, name, image, premium }) => (
                         <ExamCard
                             key={id}
                             id={id}
                             name={name}
                             image={image}
-                        />
-                    ))}
-                </SimpleGrid>
-            </Box>
-
-            <Box>
-                <Heading size="xl" mb="4" color="blue.600">
-                    Écrit 2
-                </Heading>
-                <SimpleGrid columns={[1, 2, 3]} gap="6">
-                    {subjects2.map(({ id, name, image }) => (
-                        <ExamCard
-                            key={id}
-                            id={id}
-                            name={name}
-                            image={image}
+                            premium={premium}
                         />
                     ))}
                 </SimpleGrid>
@@ -77,16 +58,18 @@ function ExamCard({
     id,
     name,
     image,
+    premium
 }: {
     id: string;
     name: string;
     image: string;
+    premium: boolean;
 }) {
     return (
         <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
             <Image src={image} alt={name} h="200px" w="full" />
             <Card.Body gap="2" p="4">
-                <Card.Title>{name}</Card.Title>
+                <Card.Title>{name} {premium ? "🔒" : ""}</Card.Title>
             </Card.Body>
             <Card.Footer gap="2" p="4">
                 <Button variant="solid" colorScheme="blue">
