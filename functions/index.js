@@ -77,15 +77,25 @@ exports.cleanUpAnonymousUsers = onSchedule(
 );
 
 exports.deleteUserDocument = functions.auth.user().onDelete(async (user) => {
+  console.log("Deleting user data:", user.uid);
   const userUid = user.uid;
   const userDocRef = db.collection("users").doc(userUid);
-  const userFolderRef = admin.storage().bucket().file(`user/${userUid}`);
 
   try {
-    await userDocRef.delete();
-    logger.info(`User ${userUid} deleted from Firestore successfully.`);
+    const docSnapshot = await userDocRef.get();
 
-    const [exists] = await userFolderRef.exists();
+    if (!docSnapshot.exists) {
+      logger.warn(`Document for user ${userUid} not found in Firestore.`);
+    } 
+    else {
+      // Deleta o documento
+      await userDocRef.delete();
+      logger.info(`User ${userUid} deleted from Firestore successfully.`);
+    }
+  
+  const userFolderRef = admin.storage().bucket().file(`user/${userUid}`);
+
+  const [exists] = await userFolderRef.exists();
 
     if (exists) {
       await userFolderRef.delete();
