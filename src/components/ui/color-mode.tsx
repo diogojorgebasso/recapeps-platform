@@ -67,3 +67,23 @@ export const ColorModeButton = React.forwardRef<
     </ClientOnly>
   )
 })
+
+export const SimpleColorModeButton = React.forwardRef<
+  HTMLButtonElement,
+  ColorModeButtonProps
+>(function SimpleColorModeButton(props, ref) {
+  const { toggleColorMode } = useColorMode()
+  return (
+    <ClientOnly fallback={<Skeleton boxSize="8" />}>
+      <IconButton
+        variant="ghost"
+        onClick={toggleColorMode}
+        aria-label="Toggle color mode"
+        ref={ref}
+        {...props}
+      >
+        <ColorModeIcon />
+      </IconButton>
+    </ClientOnly>
+  )
+})

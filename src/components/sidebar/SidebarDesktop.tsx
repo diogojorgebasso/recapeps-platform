@@ -13,6 +13,7 @@ import {
 
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar } from "../ui/avatar";
+import { SimpleColorModeButton } from "../ui/color-mode";
 export const SidebarDesktop = () => {
   const { currentUser, signOut } = useAuth();
 
@@ -23,7 +24,8 @@ export const SidebarDesktop = () => {
       bg="orange.400"
       gap={4}
       borderRadius="0 0 16px 0"
-
+      p={2}
+      shadow="lg"
     >
       <MenuRoot positioning={{ placement: "right-start" }}>
         <MenuTrigger>
@@ -67,7 +69,7 @@ export const SidebarDesktop = () => {
       <VStack as="ul" gap="6" align="center" mt="4">
         {SidebarItems.map((item, index) => (
           <Tooltip key={index} content={item.label} positioning={{ placement: "right-end" }}>
-            <Link to={item.path}>
+            <Link target={item.target} to={item.path}>
               <IconButton
                 as="li"
                 aria-label={item.label}
@@ -79,6 +81,7 @@ export const SidebarDesktop = () => {
             </Link>
           </Tooltip>
         ))}
+        <SimpleColorModeButton mb={5} />
       </VStack>
     </VStack>
   );

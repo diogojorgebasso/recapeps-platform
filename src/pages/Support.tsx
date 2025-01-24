@@ -10,13 +10,13 @@ import {
 
 export default function Support() {
     return (
-        <Box bg="gray.50" minH="100vh" color="gray.800">
+        <Box minH="100vh" >
             <Container maxW="container.md" py={12}>
                 <VStack gap={4} textAlign="center" mb={8}>
                     <Heading as="h2" size="lg" fontWeight="semibold">
                         Comment pouvons-nous vous aider ?
                     </Heading>
-                    <Text color="gray.600">
+                    <Text >
                         Si vous avez des questions, des problèmes ou besoin d’assistance,
                         n’hésitez pas à nous contacter. Nous sommes là pour vous aider !
                     </Text>
