@@ -26,7 +26,7 @@ export default function Home() {
     return (
         <Box>
             <VStack alignItems="center" py="8" bg={bg} width="100%" textAlign="center">
-                <Image src="/logo.svg" height="0.5" width="0.5" alt="Recapeps Logo" boxSize="150px" />
+                <Image height="220px" width="220px" alt="Recapeps Logo" src="/logo.svg" />
                 <Heading as="h1" size="5xl" letterSpacing="tight">
                     <Highlight query="RECAP'EPS" styles={{ color: "orange.600" }}>
                         Bienvenue sur RECAP'EPS
