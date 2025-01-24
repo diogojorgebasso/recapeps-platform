@@ -1,5 +1,5 @@
 src/api/boilerPlateQuizzes.ts
-src/api/boilerPlateFlashcards.ts
+src/api/boilerPlateFlashcard.ts
 
 # Logs
 logs
