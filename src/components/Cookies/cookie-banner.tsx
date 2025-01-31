@@ -1,10 +1,9 @@
 import { useCookie } from "@/hooks/useCookie";
-import { Button } from "../ui/button";
-import { Card } from "@chakra-ui/react"
+import { Button, Box, Text, Flex } from "@chakra-ui/react";
+import { useColorModeValue } from "../ui/color-mode";
 
 const CookieBanner = () => {
     const { setConsent, consentGiven } = useCookie();
-
     const handleConsent = (consent: boolean) => {
         setConsent(consent);
     };
@@ -12,24 +11,34 @@ const CookieBanner = () => {
     if (consentGiven != null) return null;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center p-4 bg-background shadow-lg">
-            <Card.Root className="max-w-md w-full">
-                <Card.Header>Enregistre le consentement dans les cookies</Card.Header>
-                <Card.Body className="text-center space-y-4">
-                    <p className="text-sm text-muted-foreground">
-                        Ce site utilise des cookies pour l'analyse et pour améliorer votre expérience. Acceptez-vous l'utilisation des cookies ?
-                    </p>
-                    <div className="flex justify-center gap-4">
-                        <Button onClick={() => handleConsent(false)} variant="outline">
-                            Je refuse
-                        </Button>
-                        <Button onClick={() => handleConsent(true)}>
-                            J'accepte
-                        </Button>
-                    </div>
-                </Card.Body>
-            </Card.Root>
-        </div>
+        <Box
+            position="fixed"
+            bottom="0"
+            width="100%"
+            py={4}
+            px={6}
+            zIndex={1000}
+            shadow="lg"
+            bg={useColorModeValue("white", "gray.800")}
+        >
+            <Flex
+                justify="space-between"
+                align="center"
+                direction={{ base: "column", md: "row" }}
+            >
+                <Text mb={{ base: 3, md: 0 }}>
+                    Ce site utilise des cookies pour l'analyse et pour améliorer votre expérience. Acceptez-vous l'utilisation des cookies ?
+                </Text>
+                <Flex gap={2}>
+                    <Button onClick={() => handleConsent(false)} variant="outline" colorScheme="red">
+                        Je refuse
+                    </Button>
+                    <Button onClick={() => handleConsent(true)} colorScheme="green">
+                        J'accepte
+                    </Button>
+                </Flex>
+            </Flex>
+        </Box>
     );
 };
 
