@@ -25,7 +25,6 @@ export const CookieProvider = ({ children }: { children: React.ReactNode }) => {
         if (consentGiven !== null) {
             const analytics = getAnalytics(app);
             setAnalyticsCollectionEnabled(analytics, consentGiven);
-            console.log(`Analytics ${consentGiven ? "enabled" : "disabled"}`);
         }
     }, [consentGiven]);
 
