@@ -5,6 +5,7 @@ import {
     Table,
     HStack,
     Button,
+
 } from "@chakra-ui/react";
 import { HiColorSwatch } from "react-icons/hi";
 import {
@@ -92,7 +93,8 @@ export default function Dashboard() {
     }));
 
     if (quizData.length === 0) {
-        return (
+        return (<>
+
             <EmptyState
                 icon={<HiColorSwatch />}
                 title="Aucun résultat disponible"
@@ -107,6 +109,7 @@ export default function Dashboard() {
                     </Link>
                 </HStack>
             </EmptyState>
+        </>
         );
     }
 
