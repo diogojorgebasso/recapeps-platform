@@ -1,22 +1,24 @@
-import { Button } from "@/components/ui/button";
+import { Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
 
 const NotFoundPage = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen text-center p-6">
-            <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
-            <h2 className="text-2xl font-semibold text-muted-foreground mb-6">
+        <Flex direction="column" align="center" justify="center" minH="100vh" textAlign="center" p={6}>
+            <Heading as="h1" size="4xl" color="primary" mb={4}>
+                404
+            </Heading>
+            <Heading as="h2" size="lg" color="gray.500" mb={6}>
                 Page non trouvée
-            </h2>
-            <p className="text-sm text-muted-foreground mb-8">
+            </Heading>
+            <Text fontSize="sm" color="gray.500" mb={8}>
                 Il semble que vous avez essayé d'accéder à une page qui n'existe pas. Retournez à un endroit sûr ?
-            </p>
-            <Button className="px-6 py-3" onClick={() => navigate("/")}>
-                Retour à la page d'accueil
+            </Text>
+            <Button px={6} py={3} onClick={() => navigate("/")}>
+                Retour à la page d&apos;accueil
             </Button>
-        </div>
+        </Flex>
     );
 };
 
