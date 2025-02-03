@@ -41,6 +41,8 @@ export function Routes() {
             <Route path="profil" element={<Profil />} />
             <Route path="flashcards" element={<FlashcardsPage />} />
             <Route path="flashcards/:subjectId" element={<FlashcardsSubject />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="payment" element={<PaymentPage />} />
         </>
     );
 
@@ -52,8 +54,6 @@ export function Routes() {
                 <Route path="about" element={<About />} />
                 <Route path="support" element={<Support />} />
                 <Route path="termes-et-condition" element={<TermesCondition />} />
-                <Route path="checkout" element={<Checkout />} />
-                <Route path="payment" element={<PaymentPage />} />
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<SignUp />} />

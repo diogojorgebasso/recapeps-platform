@@ -3,10 +3,10 @@ import {
   AspectRatio
 } from "@chakra-ui/react";
 import { Button } from "../ui/button";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { SidebarItems } from "./SidebarItems";
 import { MenuRoot, MenuTrigger, MenuContent, MenuSeparator, MenuItem, MenuItemGroup } from "../ui/menu";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   LuSparkles,
   LuBadge,
