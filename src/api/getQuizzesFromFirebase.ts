@@ -1,6 +1,6 @@
 import { db } from "@/utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { Quiz } from "@/types/Quizz";
+import { Quiz } from "@/types/Quiz";
 
 // Function to fetch quizzes of a specific subject and level
 export const fetchQuizzesBySubject = async (
@@ -37,7 +37,7 @@ export const fetchQuizzesBySubject = async (
     const shuffledQuestions = questions.sort(() => Math.random() - 0.5);
 
     // Return the first 10 shuffled quizzes
-    return shuffledQuestions.slice(0, 10) as Quiz[];
+    return shuffledQuestions.slice(0, 8) as Quiz[];
   } catch (error) {
     console.error("Error fetching quizzes:", error);
     return [];

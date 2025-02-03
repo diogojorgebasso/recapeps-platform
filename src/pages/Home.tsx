@@ -112,17 +112,17 @@ export default function Home() {
                     <Card.Root size="lg" variant="elevated" border="1px" borderColor="gray.200">
                         <Card.Header>
                             <Icon fontSize="40px">
-                                <LinkOverlay href="/quizz">
+                                <LinkOverlay href="/quiz">
                                     <LuListTodo />
                                 </LinkOverlay>
                             </Icon>
                         </Card.Header>
                         <Card.Body gap={4}>
                             <Card.Title fontSize="3xl" color="orange.500">
-                                Quizz
+                                Quiz
                             </Card.Title>
                             <Text fontSize="xl">
-                                Après avoir lu une fiche, fais des quizz associés pour voir si tu as bien compris et assimilé le cours !
+                                Après avoir lu une fiche, fais des quiz associés pour voir si tu as bien compris et assimilé le cours !
                             </Text>
                         </Card.Body>
                     </Card.Root>

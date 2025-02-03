@@ -59,9 +59,9 @@ export default function Menu() {
                                     Cartes Mémoire
                                 </Text>
                             </Link>
-                            <Link to="/quizz" >
+                            <Link to="/quiz" >
                                 <Text fontSize="lg" fontWeight="bold">
-                                    Quizz
+                                    Quiz
                                 </Text>
                             </Link>
                             <Link to="/contact" >
@@ -88,7 +88,7 @@ export default function Menu() {
                         <MenuRoot>
                             <MenuTrigger asChild>
                                 <Button variant="plain" fontWeight="bold">
-                                    Fonctionnalités <FaChevronDown />
+                                    <Text fontSize="16px">Fonctionnalités</Text> <FaChevronDown />
                                 </Button>
                             </MenuTrigger>
                             <MenuContent p={4} boxShadow="lg" borderRadius="md" maxW="lg">
@@ -130,14 +130,14 @@ export default function Menu() {
                                             </VStack>
                                         </Link>
                                     </MenuItem>
-                                    <MenuItem value="quizz" asChild>
+                                    <MenuItem value="quiz" asChild>
                                         <VStack align="start">
-                                            <Link to="/quizz">
+                                            <Link to="/quiz">
                                                 <Text fontSize="sm" fontWeight="bold">
-                                                    Quizz
+                                                    Quiz
                                                 </Text>
                                                 <Text color="gray.500">
-                                                    Après avoir lu une fiche, fais des quizz associés pour voir si tu as bien compris et assimilé le cours !
+                                                    Après avoir lu une fiche, fais des quiz associés pour voir si tu as bien compris et assimilé le cours !
                                                 </Text>
                                             </Link>
                                         </VStack>

@@ -62,7 +62,7 @@ export async function saveBlogPage() {
         },
       ],
     },
-    ctaLink: "/quizz/ecrit-1/sport-scolaire",
+    ctaLink: "/quiz/ecrit-1/sport-scolaire",
   };
 
   const mixite_sexuee = {
@@ -106,7 +106,7 @@ export async function saveBlogPage() {
         },
       ],
     },
-    ctaLink: "/quizz/ecrit-1/la-mixite-sexuee",
+    ctaLink: "/quiz/ecrit-1/la-mixite-sexuee",
   };
 
   const les_emotions = {
@@ -148,7 +148,7 @@ export async function saveBlogPage() {
         },
       ],
     },
-    ctaLink: "/quizz/ecrit-2/les-emotions",
+    ctaLink: "/quiz/ecrit-2/les-emotions",
   };
 
   const acteur_de_l_eps = {
@@ -201,7 +201,7 @@ export async function saveBlogPage() {
         },
       ],
     },
-    ctaLink: "/quizz/acteur-eps",
+    ctaLink: "/quiz/acteur-eps",
   };
 
   console.log(mixite_sexuee, les_emotions, sport_scolaire);

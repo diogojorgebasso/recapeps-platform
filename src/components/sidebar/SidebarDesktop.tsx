@@ -3,10 +3,10 @@ import {
   AspectRatio
 } from "@chakra-ui/react";
 import { Button } from "../ui/button";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { SidebarItems } from "./SidebarItems";
 import { MenuRoot, MenuTrigger, MenuContent, MenuSeparator, MenuItem, MenuItemGroup } from "../ui/menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LuSparkles,
   LuBadge,
@@ -49,11 +49,12 @@ import {
   DialogActionTrigger
 } from "@/components/ui/dialog"
 
-export const SidebarDesktop = () => {
+export default function SidebarDesktop() {
   const { currentUser, signOut } = useAuth();
   const [openPopover, setOpenPopover] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(true);
   const [currentStep, setCurrentStep] = useState<number>(0);
+
 
   const steps = [
     {
@@ -61,29 +62,29 @@ export const SidebarDesktop = () => {
       description: "Ici il y a ton profil, c’est ici que tu peux accéder à tes informations personnelles et te déconnecter du site",
     },
     {
-      title: "Accueil",
-      description: "Là, tu trouveras un récapitulatif de tes derniers quizz une fois que tu auras commencé tes révisions, ça te permettra de suivre ta progression et de cibler tes points faibles",
+      title: "Tableau de bord",
+      description: "Là, tu trouveras un récapitulatif de tes derniers quiz une fois que tu auras commencé tes révisions, ça te permettra de suivre ta progression et de cibler tes points faibles.",
     },
     {
       title: "Fiches",
-      description: "Mais avant de te lancer dans un quizz, lis la fiche de révision associé à chaque thème, elle te permettra de faire un résumé de toutes les connaissances dont tu auras besoin pour les différents écrits ",
+      description: "Mais avant de te lancer dans un quiz, lis la fiche de révision associé à chaque thème, elle te permettra de faire un résumé de toutes les connaissances dont tu auras besoin pour les différents écrits ",
     },
     {
-      title: "Quizz",
-      description: "Ça y est, tu viens de finir une fiche? Passe à un quizz pour vérifier que tu as bien compris le cours de manière ludique."
+      title: "Quiz",
+      description: "Ça y est, tu viens de finir une fiche? Passe à un quiz pour vérifier que tu as bien compris le cours de manière ludique."
     },
     {
       title: "Flashcards",
-      description: "Tu as des difficultés à retenir des informations? Les flashcards sont faites pour toi! Elles te permettront de réviser de manière plus ludique et plus efficace"
+      description: "Tu as des difficultés à retenir des informations? Les flashcards sont faites pour toi! Elles te permettront de réviser de manière plus ludique et plus efficace."
     },
     {
       title: "Support",
-      description: "Et voilà, maintenant que tu sais tout, tu peux commencer à explorer les différents thèmes et commencer tes révisions ! 🚀💥 Si tu as une question, n'hesitez pas pour accéder à notre support"
+      description: "Et voilà, maintenant que tu sais tout, tu peux commencer à explorer les différents thèmes et commencer tes révisions ! 🚀💥 Si tu as une question, n'hésites pas à nous contacter."
     }
   ];
 
   const handleOpenChange = (index: number, isOpen: boolean) => {
-    setOpenPopover(isOpen ? index : null); // Abre o Popover do índice atual ou fecha todos
+    setOpenPopover(isOpen ? index : null);
   };
 
   const startWizard = () => {
@@ -191,8 +192,11 @@ export const SidebarDesktop = () => {
                 <StepsPrevTrigger asChild>
                   <Button
                     onClick={() => {
-                      setOpenPopover(currentStep - 1)
-                      setCurrentStep(currentStep - 1)
+                      if (currentStep > 0) {
+                        console.log(currentStep)
+                        setCurrentStep(currentStep - 1)
+                        handleOpenChange(currentStep - 1, true)
+                      }
                     }}
                     variant="outline" size="sm">
                     Retour
@@ -202,7 +206,7 @@ export const SidebarDesktop = () => {
                   <Button
                     onClick={() => {
                       setOpenPopover(currentStep + 1)
-                      setCurrentStep(currentStep + 1)
+                      handleOpenChange(currentStep + 1, true)
                     }}
                     variant="outline" size="sm">
                     Suivant
@@ -250,12 +254,13 @@ export const SidebarDesktop = () => {
                     <StepsItem index={4} icon={<FiBookOpen />} />
                   </StepsList>
 
-                  <StepsCompletedContent>C'est tout bon!</StepsCompletedContent>
+                  <StepsCompletedContent>Allez va réviser maintenant!</StepsCompletedContent>
 
                   <Group>
                     <StepsPrevTrigger asChild>
                       <Button
                         onClick={() => {
+                          setCurrentStep(currentStep - 1)
                           setOpenPopover(currentStep - 1)
                         }}
                         variant="outline" size="sm">
@@ -266,6 +271,7 @@ export const SidebarDesktop = () => {
                       <Button
                         onClick={() => {
                           setOpenPopover(currentStep + 1)
+                          setCurrentStep(currentStep + 1)
                         }}
                         variant="outline" size="sm">
                         Suivant

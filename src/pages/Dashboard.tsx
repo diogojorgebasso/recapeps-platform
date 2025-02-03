@@ -101,7 +101,7 @@ export default function Dashboard() {
                 description="Commencez par faire un quizz pour voir vos résultats ici."
             >
                 <HStack>
-                    <Link to="/quizz">
+                    <Link to="/quiz">
                         <Button>Faire un quizz</Button>
                     </Link>
                     <Link to="/notes">
@@ -138,7 +138,7 @@ export default function Dashboard() {
             </Box>
             <Box maxWidth="800px" mx="auto" py={8}>
                 <Heading size="lg" textAlign="center" mb={6}>
-                    Vos résultats des quizzes
+                    Vos résultats de quiz
                 </Heading>
                 <Table.Root>
                     <Table.Header>

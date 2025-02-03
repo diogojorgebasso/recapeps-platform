@@ -95,7 +95,7 @@ function ExamCard({
       </Card.Body>
       <Card.Footer gap="2" p="4">
         <Button variant="solid" colorScheme="blue">
-          <Link to={`/quizz/${id}`}>Voir plus</Link>
+          <Link to={`/quiz/${id}`}>Voir plus</Link>
         </Button>
       </Card.Footer>
     </Card.Root>

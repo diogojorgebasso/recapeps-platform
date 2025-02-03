@@ -7,10 +7,10 @@ import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard";
 import NotFoundPage from "./pages/404";
-import Quizz from "./pages/Quizz";
+import Quiz from "./pages/Quiz";
 import SignUp from "./pages/Auth/SignUp";
 import ChatBot from "./pages/ChatBot";
-import SubjectQuiz from "./pages/Quizz/SubjectQuiz";
+import SubjectQuiz from "./pages/Quiz/SubjectQuiz";
 
 import Notes from "./pages/Notes";
 import Team from "./pages/Team";
@@ -31,8 +31,8 @@ export function Routes() {
         <>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="team" element={<Team />} />
-            <Route path="quizz" element={<Quizz />} />
-            <Route path="quizz/:subjectId" element={<SubjectQuiz />} />
+            <Route path="quiz" element={<Quiz />} />
+            <Route path="quiz/:subjectId" element={<SubjectQuiz />} />
             <Route path="chatbot" element={<ChatBot />} />
             <Route path="notes">
                 <Route index element={<Notes />} />

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { fetchQuizzesBySubject } from "@/api/getQuizzesFromFirebase";
-import { Quiz } from "@/types/Quizz";
+import { Quiz } from "@/types/Quiz";
 import { saveUserQuiz } from "@/api/saveQuizToFirebase";
 import { useAuth } from "@/hooks/useAuth";
 import { ProgressBar, ProgressRoot } from "@/components/ui/progress";
@@ -140,7 +140,7 @@ export default function QuizPage() {
                             width="full"
                             mt={6}
                             colorPalette="blue"
-                            onClick={() => navigate("/quizz")}
+                            onClick={() => navigate("/quiz")}
                         >
                             Retour aux Quiz
                         </Button>

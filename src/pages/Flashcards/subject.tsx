@@ -24,7 +24,7 @@ export default function FlashcardsSubject() {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
-
+    const [subjectName, setSubjectName] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,6 +36,7 @@ export default function FlashcardsSubject() {
                     collection(db, "subjects", subjectId, "flashcards")
                 );
                 const questions = querySnapshot.docs[0].data().questions
+                setSubjectName(querySnapshot.docs[0].data().name)
                 const flashcards = questions.map((questionObj: any, index: number) => ({
                     id: `question-${index}`,
                     ...questionObj,
@@ -106,16 +107,18 @@ export default function FlashcardsSubject() {
         setIsFlipped(false);
     };
 
+
+
     return (
         <Box p="8">
             <Center>
                 <VStack>
-                    <Heading as="h1" textAlign="center" mb="8">
-                        Flashcards
-                    </Heading>
-                    <Text maxW="9/12">Les flashcards sont un outil simple et efficace pour apprendre rapidement.
-                        Idéales pour mémoriser des notions clés, elles rendent l’apprentissage interactif et pratique, où que vous soyez.
-                    </Text>
+                    <Box>
+                        <Heading as="h1" textAlign="center" mb="8">
+                            {subjectName}
+                        </Heading>
+                        <Text>Retournes la carte pour vérifier tes connaissances.</Text>
+                    </Box>
                     {currentFlashcard && (
                         <Flashcard
                             word={currentFlashcard.question}
@@ -142,8 +145,7 @@ export default function FlashcardsSubject() {
                     onClick={handleNext}
                     disabled={currentPage === flashcards.length}
                     colorScheme="blue"
-                    ml="4"
-                >
+                    ml="4">
                     Suivant
                 </Button>
             </Center>
@@ -164,7 +166,7 @@ function Flashcard({
 }) {
     return (
         <Box
-            w="50%"
+            w="100%"
             h="200px"
             perspective="1000px"
             onClick={() => setIsFlipped(!isFlipped)}

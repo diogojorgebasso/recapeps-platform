@@ -12,7 +12,7 @@ interface Item {
 export const SidebarItems: Item[] = [
   { label: "Tableau de bord", icon: <LuInbox />, path: "/dashboard" },
   { label: "Fiches de révision", icon: <LuNotebookPen />, path: "/notes" },
-  { label: "Quizz", icon: <LuListTodo />, path: "/quizz" },
+  { label: "Quiz", icon: <LuListTodo />, path: "/quiz" },
   { label: "Flashcards", icon: <FiBookOpen />, path: "/flashcards" },
   { label: "Support", icon: <FiHelpCircle />, path: "/support", target: "_blank" },
 ];

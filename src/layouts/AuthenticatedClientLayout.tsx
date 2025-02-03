@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { FiMenu } from "react-icons/fi";
-import { SidebarDesktop } from "@/components/sidebar/SidebarDesktop";
+import SidebarDesktop from "@/components/sidebar/SidebarDesktop";
 import { SidebarMobile } from "@/components/sidebar/sidebarMobile";
 import { Outlet } from "react-router";
 
