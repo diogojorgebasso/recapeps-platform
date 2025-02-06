@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { HeaderNotes, Section, Sommaire, CTA } from "./formatter";
+import { CTA } from "./formatter";
 import { getBlogPage } from "@/api/getBlogPage";
 import { useParams } from "react-router";
 
@@ -41,16 +41,17 @@ export default function DynamicPage() {
                 boxShadow="0 2px 8px 0 rgba(63,69,81,0.16)"
                 overflow="hidden"
             >
-                <Box
-                    as="iframe"
-                    position="absolute"
-                    width="100%"
-                    height="100%"
-                    top="0"
-                    left="0"
-                    border="none"
-                    padding="0"
-                    margin="0"
+                <iframe
+                    style={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        top: "0",
+                        left: "0",
+                        border: "none",
+                        padding: "0",
+                        margin: "0"
+                    }}
                     src={pageData.canvaLien}
                     allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture"
                 />
