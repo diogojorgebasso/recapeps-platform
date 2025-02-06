@@ -1,0 +1,51 @@
+.cls-1 {
+    font-size: 78px;
+    font-family: 'Fredoka', sans-serif;
+    font-variation-settings: 'wght' 600, 'wdth' 100;
+    font-weight: 600;
+}
+
+.cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+    fill: #f07e1a;
+}
+
+.cls-2 {
+    font-size: 18px;
+}
+
+.cls-6, .cls-7, .cls-8, .cls-9 {
+    fill: #fff;
+}
+
+.cls-7, .cls-8, .cls-10, .cls-4, .cls-9, .cls-5 {
+    stroke: #fff;
+    stroke-miterlimit: 10;
+}
+
+.cls-7, .cls-5 {
+    stroke-width: 3px;
+}
+
+.cls-8 {
+    stroke-width: 6px;
+}
+
+.cls-11 {
+    fill: #fbd2bc;
+}
+
+.cls-10 {
+    stroke-width: 9px;
+}
+
+.cls-10, .cls-12 {
+    fill: #010101;
+}
+
+.cls-4 {
+    stroke-width: 5px;
+}
+
+.cls-9 {
+    stroke-width: 2px;
+}
