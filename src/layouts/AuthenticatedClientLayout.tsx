@@ -13,7 +13,7 @@ export default function AuthenticatedClientLayout() {
       {isMobile ? (
         <>
           <IconButton
-            aria-label="Open Menu"
+            title="Open Menu"
             onClick={() => setMobileOpen(true)}
             position="fixed"
             top="20px"
