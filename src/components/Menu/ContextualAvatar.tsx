@@ -62,7 +62,7 @@ export default function ContextualAvatar() {
                             </Link>
                         </MenuItem>
                         <MenuItem value="settings" asChild>
-                            <Link to="profile">
+                            <Link to="profil">
                                 <FaCog />
                                 Settings
                                 <MenuItemCommand>⌘S</MenuItemCommand>
@@ -81,19 +81,6 @@ export default function ContextualAvatar() {
                         <FaKeyboard />
                         Keyboard shortcuts
                         <MenuItemCommand>⌘K</MenuItemCommand>
-                    </MenuItem>
-                    <MenuItem value="team" asChild>
-                        <Link to="team">
-                            <FaUsers />
-                            Team
-                        </Link>
-                    </MenuItem>
-                    <MenuItem value="team" asChild>
-                        <Link to="team">
-                            <FaPlus />
-                            New Team
-                            <MenuItemCommand>⌘+T</MenuItemCommand>
-                        </Link>
                     </MenuItem>
                     <MenuSeparator />
                     <MenuItem value="support" asChild>

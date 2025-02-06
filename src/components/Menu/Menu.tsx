@@ -46,12 +46,12 @@ export default function Menu() {
                         <VStack gap={4} mt={8} align="center">
                             <Link to="/dashboard" >
                                 <Text fontSize="lg" fontWeight="bold">
-                                    Tableau de Bord
+                                    Tableau de bord
                                 </Text>
                             </Link>
                             <Link to="/notes" >
                                 <Text fontSize="lg" fontWeight="bold">
-                                    Notes
+                                    Fiches de révision
                                 </Text>
                             </Link>
                             <Link to="/flashcards" >
@@ -64,14 +64,19 @@ export default function Menu() {
                                     Quiz
                                 </Text>
                             </Link>
+                            <Link to="/about" >
+                                <Text fontSize="lg" fontWeight="bold">
+                                    L'équipe
+                                </Text>
+                            </Link>
+                            <Link to="/support" >
+                                <Text fontSize="lg" fontWeight="bold">
+                                    Support
+                                </Text>
+                            </Link>
                             <Link to="/contact" >
                                 <Text fontSize="lg" fontWeight="bold">
                                     Contact
-                                </Text>
-                            </Link>
-                            <Link to="/about" >
-                                <Text fontSize="lg" fontWeight="bold">
-                                    À Propos
                                 </Text>
                             </Link>
                         </VStack>
@@ -84,7 +89,7 @@ export default function Menu() {
         return (
             <Box position="fixed" px={4} py={2} width="100%">
                 <Flex justify="space-between" width="100%">
-                    <HStack gap={4}>
+                    <HStack gap={8}>
                         <MenuRoot>
                             <MenuTrigger asChild>
                                 <Button variant="plain" fontWeight="bold">
@@ -97,7 +102,7 @@ export default function Menu() {
                                         <Link to="/dashboard">
                                             <VStack align="start">
                                                 <Text fontSize="sm" fontWeight="bold">
-                                                    Tableau de Bord
+                                                    Tableau de bord
                                                 </Text>
                                                 <Text color="gray.500">
                                                     Gérez vos activités et accédez rapidement à toutes vos
@@ -145,12 +150,20 @@ export default function Menu() {
                                 </SimpleGrid>
                             </MenuContent>
                         </MenuRoot>
-
-                        <Link to="/contact">
-                            <Text fontWeight="bold">Contact</Text>
+                        <Link to="/about" >
+                            <Text fontSize="lg" fontWeight="bold">
+                                L'équipe
+                            </Text>
                         </Link>
-                        <Link to="/about">
-                            <Text fontWeight="bold">À Propos</Text>
+                        <Link to="/support" >
+                            <Text fontSize="lg" fontWeight="bold">
+                                Support
+                            </Text>
+                        </Link>
+                        <Link to="/contact" >
+                            <Text fontSize="lg" fontWeight="bold">
+                                Contact
+                            </Text>
                         </Link>
                     </HStack>
 

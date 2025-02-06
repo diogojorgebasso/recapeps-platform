@@ -31,7 +31,7 @@ export default function AuthenticatedClientLayout() {
       )}
       <Box
         ml={{ base: 0, md: "100px" }} // Ajusta o espaço conforme o dispositivo
-        p="4" // Adiciona padding ao conteúdo principal
+        p="4"
       >
         <Outlet />
       </Box>

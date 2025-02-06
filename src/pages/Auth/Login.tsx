@@ -103,7 +103,6 @@ export default function Login() {
                             <ChakraLink
                                 href="/forgot-password"
                                 color="blue.600"
-                                textDecoration="underline"
                                 fontSize="sm"
                             >
                                 Mot de passe oublié ?
@@ -151,8 +150,7 @@ export default function Login() {
                         Vous n&apos;avez pas encore de compte ?{" "}
                         <ChakraLink
                             href="/register"
-                            color="blue.500"
-                            textDecoration="underline">
+                            color="blue.500">
                             Inscrivez-vous
                         </ChakraLink>
                     </Text>
