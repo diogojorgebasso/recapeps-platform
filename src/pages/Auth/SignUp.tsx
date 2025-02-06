@@ -135,7 +135,6 @@ export default function SignUp() {
                         <ChakraLink
                             href="/login"
                             color="blue.500"
-                            textDecoration="underline"
                         >
                             Connectez-vous
                         </ChakraLink>
