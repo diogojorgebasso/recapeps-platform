@@ -55,7 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isEmailNotificationEnabled,] = useState(true);
-    const [subscribed,] = useState(true);
+    const [subscribed,] = useState(false);
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -253,7 +254,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return (
         <AuthContext.Provider value={value}>
-            {!loading ? children : <AbsoluteCenter><Spinner size="xl" /><Text fontSize="5xl">Chargement...</Text></AbsoluteCenter>}
+            {!loading ? children : <AbsoluteCenter><Spinner size="xl" /><Text fontSize="5xl">Chargement&hellip;</Text></AbsoluteCenter>}
         </AuthContext.Provider>
     );
 }

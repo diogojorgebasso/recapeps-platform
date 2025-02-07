@@ -11,7 +11,7 @@ import Quiz from "./pages/Quiz";
 import SignUp from "./pages/Auth/SignUp";
 import ChatBot from "./pages/ChatBot";
 import SubjectQuiz from "./pages/Quiz/SubjectQuiz";
-
+import CreateNote from "./components/Admin/createNote";
 import Notes from "./pages/Notes";
 import Team from "./pages/Team";
 import Profil from "@/pages/Auth/Profil"
@@ -43,6 +43,7 @@ export function Routes() {
             <Route path="flashcards/:subjectId" element={<FlashcardsSubject />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="payment" element={<PaymentPage />} />
+            <Route path="create-note" element={<CreateNote />} />
         </>
     );
 

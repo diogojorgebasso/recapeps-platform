@@ -110,7 +110,7 @@ export default function QuizPage() {
     if (!quizzes.length && !isFinished) {
         return (
             <Center w="100%" h="100vh">
-                <Text fontSize="lg">Chargement...</Text>
+                <Text fontSize="lg">Chargement&hellip;</Text>
             </Center>
         );
     }
