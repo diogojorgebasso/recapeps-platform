@@ -8,7 +8,6 @@ import { defineStyle, MenuItemGroup } from "@chakra-ui/react"
 
 import { FaUser, FaCreditCard, FaKeyboard, FaLifeRing, FaSignOutAlt, FaCog } from "react-icons/fa";
 
-
 import {
     MenuContent,
     MenuItem,

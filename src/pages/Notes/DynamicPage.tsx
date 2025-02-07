@@ -28,7 +28,7 @@ export default function DynamicPage() {
         loadPage();
     }, [subject]);
 
-    if (loading) return <Box>Chargement...</Box>;
+    if (loading) return <Box>Chargement&hellip;</Box>;
     if (error) return <Box color="red.500">{error}</Box>;
     if (!pageData) return <Box>Page non trouvé.</Box>;
 

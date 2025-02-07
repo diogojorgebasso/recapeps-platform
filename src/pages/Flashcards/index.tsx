@@ -10,8 +10,22 @@ import {
 import { Link } from "react-router";
 import { Toaster, toaster } from "@/components/ui/toaster"
 import { getSubjectsFlashcards } from "@/api/getSubjectsFlashcards";
+import { useAuth } from "@/hooks/useAuth";
+
+import {
+    DialogActionTrigger,
+    DialogBody,
+    DialogCloseTrigger,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogRoot,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function Home() {
+    const { subscribed } = useAuth();
     const [subjects, setSubjects] = useState<Subject[]>([]);
 
     useEffect(() => {
@@ -43,6 +57,7 @@ export default function Home() {
                             name={name}
                             image={image}
                             premium={premium}
+                            isUserPremium={subscribed}
                         />
                     ))}
                 </SimpleGrid>
@@ -55,24 +70,72 @@ function ExamCard({
     id,
     name,
     image,
-    premium
+    premium,
+    isUserPremium
 }: {
     id: string;
     name: string;
     image: string;
     premium: boolean;
+    isUserPremium: boolean;
 }) {
-    return (
-        <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
-            <Image src={image} alt={name} h="200px" w="full" />
-            <Card.Body gap="2" p="4">
-                <Card.Title>{name} {premium ? "🔒" : ""}</Card.Title>
-            </Card.Body>
-            <Card.Footer gap="2" p="4">
-                <Button variant="solid" colorScheme="blue">
-                    <Link to={`/flashcards/${id}`}>Voir plus</Link>
-                </Button>
-            </Card.Footer>
-        </Card.Root>
-    );
+    if (isUserPremium) {
+        return (
+            <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
+                <Image src={image} alt={name} h="200px" w="full" />
+                <Card.Body gap="2" p="4">
+                    <Card.Title>{name}</Card.Title>
+                </Card.Body>
+                <Card.Footer gap="2" p="4">
+                    <Button variant="solid" colorScheme="blue">
+                        <Link to={`/flashcards/${id}`}>Voir plus</Link>
+                    </Button>
+                </Card.Footer>
+            </Card.Root>
+        );
+    }
+    else {
+        return (
+            <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
+                <Image src={image} alt={name} h="200px" w="full" />
+                <Card.Body gap="2" p="4">
+                    <Card.Title>{name} {premium ? "🔒" : ""}</Card.Title>
+                </Card.Body>
+                <Card.Footer gap="2" p="4">
+                    {premium ?
+                        <DialogRoot>
+                            <DialogTrigger asChild>
+                                <Button size="sm">
+                                    Voir plus
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Voulez-vous devient PRO?</DialogTitle>
+                                </DialogHeader>
+                                <DialogBody>
+                                    <p>
+                                        Je suis sur que vous aimerez!
+                                    </p>
+                                </DialogBody>
+                                <DialogFooter>
+                                    <DialogActionTrigger asChild>
+                                        <Button variant="outline">Non, merci</Button>
+                                    </DialogActionTrigger>
+                                    <Button>
+                                        <Link to="/checkout">Je voudrais devenir PRO</Link>
+                                    </Button>
+                                </DialogFooter>
+                                <DialogCloseTrigger />
+                            </DialogContent>
+                        </DialogRoot>
+                        :
+                        <Button variant="solid" colorScheme="blue">
+                            <Link to={`/flashcards/${id}`}>Voir plus</Link>
+                        </Button>}
+                </Card.Footer>
+            </Card.Root>
+        );
+    }
+
 }

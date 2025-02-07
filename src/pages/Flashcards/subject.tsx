@@ -54,7 +54,7 @@ export default function FlashcardsSubject() {
     if (loading) {
         return (
             <Center h="100vh">
-                <Text>Chargement...</Text>
+                <Text>Chargement&hellip;</Text>
             </Center>
         );
     }
