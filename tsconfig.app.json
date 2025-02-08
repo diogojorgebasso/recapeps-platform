@@ -2,24 +2,12 @@
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": "./", // Base directory for resolving non-relative module names
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@inputs/*": [
-        "src/components/Inputs/*"
-      ],
-      "@feedback/*": [
-        "src/components/Feedback/*"
-      ],
+      "@/*": ["src/*"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -34,7 +22,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

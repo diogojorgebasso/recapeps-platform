@@ -1,66 +1,35 @@
-import { Route, Routes as ReactRouterRoutes } from "react-router";
+import { type RouteConfig, route, index, layout, prefix } from "@react-router/dev/routes";
 
-import Layout from "./layouts/MainLayout";
-import AuthenticatedClientLayout from "./layouts/AuthenticatedClientLayout";
-import Login from "./pages/Auth/Login";
-import Home from "./pages/Home";
-import Checkout from "./pages/Checkout";
-import Dashboard from "./pages/Dashboard";
-import NotFoundPage from "./pages/404";
-import Quiz from "./pages/Quiz";
-import SignUp from "./pages/Auth/SignUp";
-import ChatBot from "./pages/ChatBot";
-import SubjectQuiz from "./pages/Quiz/SubjectQuiz";
-import CreateNote from "./components/Admin/createNote";
-import Notes from "./pages/Notes";
-import Team from "./pages/Team";
-import Profil from "@/pages/Auth/Profil"
-import ContactForm from "./pages/Contact";
-import APropos from "./pages/APropos";
-import FlashcardsPage from "./pages/Flashcards";
-import FlashcardsSubject from "./pages/Flashcards/subject";
-import TermesCondition from "./pages/Legal/Termes-Condition";
-import PaymentPage from "./pages/Checkout/Payment";
-import DynamicPage from "./pages/Notes/DynamicPage";
-import ForgottenPassword from "./pages/Auth/ForgotPassword";
+export default [
+    layout("./layouts/MainLayout.tsx", [
+        index("./Home.tsx"),
+        route("contact", "./Contact.tsx"),
+        route("a-propos", "./APropos.tsx"),
+        ...prefix("legal", [
+            route("terme-condition", "./pages/Legal/termes-condition.tsx"),
+        ])]),
 
-export function Routes() {
+    route("register", "./pages/Auth/Register.tsx"),
+    route("login", "./pages/Auth/Login.tsx"),
+    route("forgot-password", "./pages/Auth/ForgotPassword.tsx"),
 
-    const userRoutes = (
-        <>
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="team" element={<Team />} />
-            <Route path="quiz" element={<Quiz />} />
-            <Route path="quiz/:subjectId" element={<SubjectQuiz />} />
-            <Route path="chatbot" element={<ChatBot />} />
-            <Route path="notes">
-                <Route index element={<Notes />} />
-                <Route path=":subject" element={<DynamicPage />} />
-            </Route>
-            <Route path="profil" element={<Profil />} />
-            <Route path="flashcards" element={<FlashcardsPage />} />
-            <Route path="flashcards/:subjectId" element={<FlashcardsSubject />} />
-            <Route path="checkout" element={<Checkout />} />
-            <Route path="payment" element={<PaymentPage />} />
-            <Route path="create-note" element={<CreateNote />} />
-        </>
-    );
+    layout("./layouts/AuthenticatedClientLayout.tsx", [
+        route("dashboard", "./Dashboard.tsx"),
+        route("quiz", "./pages/Quiz/index.tsx"),
+        route("quiz/:subjectId", "./pages/Quiz/SubjectQuiz.tsx"),
+        ...prefix("notes", [
+            index("./pages/Notes/index.tsx"),
+            route(":subject", "./pages/Notes/DynamicPage.tsx"),
+            route("create-note", "./pages/Notes/createNote.tsx"), // funcionalitie just for admins
+        ]),
+        route("profil", "./pages/Auth/Profil.tsx"),
+        ...prefix("flashcards", [
+            index("./pages/Flashcards/index.tsx"),
+            route(":subjectId", "./pages/Flashcards/subject.tsx"),
+        ]),
+        route("checkout", "./pages/Checkout/index.tsx"),
+        route("payment", "./pages/Checkout/Payment.tsx"),
+        route("*?", "catchall.tsx"),
+    ]),
+] satisfies RouteConfig
 
-    return (
-        <ReactRouterRoutes>
-            <Route element={<Layout />} >
-                <Route index element={<Home />} />
-                <Route path="contact" element={<ContactForm />} />
-                <Route path="a-propos" element={<APropos />} />
-                <Route path="termes-et-condition" element={<TermesCondition />} />
-            </Route>
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<SignUp />} />
-            <Route path="forgot-password" element={<ForgottenPassword />} />
-            <Route element={<AuthenticatedClientLayout />}>
-                {userRoutes}
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-        </ReactRouterRoutes >
-    );
-}

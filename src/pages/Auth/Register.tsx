@@ -17,7 +17,7 @@ import { Field } from "@/components/ui/field";
 import { PasswordInput, PasswordStrengthMeter } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 
-export default function SignUp() {
+export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);

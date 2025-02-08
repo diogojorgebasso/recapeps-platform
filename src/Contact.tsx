@@ -12,7 +12,7 @@ import {
 import { Field } from "@/components/ui/field";
 import { useColorModeValue } from "@/components/ui/color-mode";
 
-export default function ContactForm() {
+export default function Contact() {
     const [formData, setFormData] = useState({ name: "", email: "", message: "" });
     const [submitted, setSubmitted] = useState(false);
 

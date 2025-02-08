@@ -14,7 +14,7 @@ import {
     MenuItem,
     MenuRoot,
     MenuTrigger,
-} from "../ui/menu";
+} from "../../components/ui/menu";
 
 import {
     PopoverBody,
