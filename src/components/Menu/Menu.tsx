@@ -64,14 +64,9 @@ export default function Menu() {
                                     Quiz
                                 </Text>
                             </Link>
-                            <Link to="/about" >
+                            <Link to="/a-propos" >
                                 <Text fontSize="lg" fontWeight="bold">
-                                    L'équipe
-                                </Text>
-                            </Link>
-                            <Link to="/support" >
-                                <Text fontSize="lg" fontWeight="bold">
-                                    Support
+                                    À propos
                                 </Text>
                             </Link>
                             <Link to="/contact" >
@@ -87,9 +82,23 @@ export default function Menu() {
     }
     else {
         return (
-            <Box position="fixed" px={4} py={2} width="100%">
+            <Box
+                position="sticky"
+                top={0}
+                px={4}
+                py={2}
+                width="100%"
+                zIndex="sticky"
+                bg="gray.100"
+                _dark={{ bg: "gray.950" }}
+            >
                 <Flex justify="space-between" width="100%">
                     <HStack gap={8}>
+                        <Link to="/" >
+                            <Text fontSize="lg" fontWeight="bold">
+                                Accueil
+                            </Text>
+                        </Link>
                         <MenuRoot>
                             <MenuTrigger asChild>
                                 <Button variant="plain" fontWeight="bold">
@@ -150,14 +159,9 @@ export default function Menu() {
                                 </SimpleGrid>
                             </MenuContent>
                         </MenuRoot>
-                        <Link to="/about" >
+                        <Link to="/a-propos" >
                             <Text fontSize="lg" fontWeight="bold">
-                                L'équipe
-                            </Text>
-                        </Link>
-                        <Link to="/support" >
-                            <Text fontSize="lg" fontWeight="bold">
-                                Support
+                                À propos
                             </Text>
                         </Link>
                         <Link to="/contact" >
