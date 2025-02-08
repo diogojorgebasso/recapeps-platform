@@ -1,9 +1,9 @@
-const {initializeApp} = require("firebase-admin/app");
-const {getFirestore, FieldValue } = require("firebase-admin/firestore");
-const {onRequest} = require("firebase-functions/v2/https");
-const {logger} = require("firebase-functions");
-const functions = require('firebase-functions/v1');
-const admin = require("firebase-admin")
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+const { onRequest } = require("firebase-functions/v2/https");
+const { logger } = require("firebase-functions");
+const functions = require("firebase-functions/v1");
+const admin = require("firebase-admin");
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 
 require("dotenv").config();
@@ -34,7 +34,6 @@ exports.saveRoleToFirestore = functions.auth.user().onCreate(async (user) => {
 
     await admin.auth().setCustomUserClaims(uid, { role });
     logger.info(`Role ${role} saved to user ${uid} successfully.`);
-
   } catch (error) {
     logger.error("Error saving user to Firestore:", error);
   }
@@ -42,7 +41,7 @@ exports.saveRoleToFirestore = functions.auth.user().onCreate(async (user) => {
 
 exports.cleanUpAnonymousUsers = onSchedule(
   {
-    schedule: "0 0 * * *", 
+    schedule: "0 0 * * *",
     timeZone: "America/Sao_Paulo",
   },
   async () => {
@@ -71,7 +70,9 @@ exports.cleanUpAnonymousUsers = onSchedule(
       nextPageToken = listUsersResult.pageToken;
     } while (nextPageToken);
 
-    console.log(`Limpeza concluída. Total de usuários deletados: ${deletedCount}.`);
+    console.log(
+      `Limpeza concluída. Total de usuários deletados: ${deletedCount}.`
+    );
     return null;
   }
 );
@@ -86,20 +87,21 @@ exports.deleteUserDocument = functions.auth.user().onDelete(async (user) => {
 
     if (!docSnapshot.exists) {
       logger.warn(`Document for user ${userUid} not found in Firestore.`);
-    } 
-    else {
+    } else {
       // Deleta o documento
       await userDocRef.delete();
       logger.info(`User ${userUid} deleted from Firestore successfully.`);
     }
-  
-  const userFolderRef = admin.storage().bucket().file(`user/${userUid}`);
 
-  const [exists] = await userFolderRef.exists();
+    const userFolderRef = admin.storage().bucket().file(`user/${userUid}`);
+
+    const [exists] = await userFolderRef.exists();
 
     if (exists) {
       await userFolderRef.delete();
-      logger.info(`User folder user/${userUid} deleted from Storage successfully.`);
+      logger.info(
+        `User folder user/${userUid} deleted from Storage successfully.`
+      );
     }
   } catch (error) {
     logger.error("Error deleting user data:", error);
@@ -107,7 +109,7 @@ exports.deleteUserDocument = functions.auth.user().onDelete(async (user) => {
 });
 
 exports.createStripeCheckoutSession = onRequest(
-  { cors: "https://recapeps-platform.web.app" },
+  { cors: "https://recapeps.fr" },
   async (req, res) => {
     if (req.method !== "POST") {
       res.status(405).json({ error: "Method Not Allowed" });
@@ -120,7 +122,9 @@ exports.createStripeCheckoutSession = onRequest(
       : null;
 
     if (!token) {
-      res.status(401).json({ error: "Unauthenticated request. Token missing." });
+      res
+        .status(401)
+        .json({ error: "Unauthenticated request. Token missing." });
       return;
     }
 
