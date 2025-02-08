@@ -8,7 +8,7 @@ import {
     VStack,
     Image,
     Card,
-    HStack,
+    Stack,
     Icon,
     Highlight,
     LinkBox,
@@ -24,7 +24,7 @@ export default function Home() {
 
     return (
         <Box bg={bg}>
-            <VStack alignItems="center" py="8" width="100%" textAlign="center">
+            <VStack alignItems="center" width="100%" textAlign="center">
                 <Logo />
                 <Heading as="h1" size="5xl" letterSpacing="tight">
                     <Highlight query="RECAP'EPS" styles={{ color: "orange.600" }}>
@@ -34,7 +34,10 @@ export default function Home() {
                 <Heading size={{ base: "xl", md: "2xl" }} as="h2">
                     Réussir ce n'est qu'une question d'entraînement, avec Recap'eps, s'entraîner n'a jamais été aussi facile 😎
                 </Heading>
-                <HStack display={{ base: "none", md: "flex" }}>
+                <Stack
+                    direction={{ base: "column", md: "row" }}
+                    align="center"
+                >
                     <Button
                         rounded="full"
                         asChild
@@ -49,23 +52,7 @@ export default function Home() {
                         <Link to="/dashboard">COMMENCER MAINTENANT</Link>
                     </Button>
                     <Image alt="Avatar running" height="100px" width="100px" src="/avatar.svg" />
-                </HStack>
-                <VStack display={{ base: "flex", md: "none" }}>
-                    <Button
-                        rounded="full"
-                        asChild
-                        size="2xl"
-                        bg="orange.500"
-                        color="white"
-                        _hover={{
-                            bg: "orange.600",
-                            transform: "scale(1.1)"
-                        }}
-                    >
-                        <Link to="/dashboard">COMMENCER MAINTENANT</Link>
-                    </Button>
-                    <Image alt="Avatar running" height="100px" width="100px" src="/avatar.svg" />
-                </VStack>
+                </Stack>
             </VStack>
 
             <Box bgRepeat="no-repeat" bgAttachment="fixed" bgImage="url(./bandeau-home-vert.svg)" bgSize="cover" position="top">

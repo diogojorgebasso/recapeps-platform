@@ -8,6 +8,7 @@ import {
   SimpleGrid,
   Image,
   Button,
+  Text
 } from "@chakra-ui/react";
 import { Link } from "react-router";
 import { Toaster, toaster } from "@/components/ui/toaster"
@@ -52,9 +53,10 @@ export default function Home() {
       <Toaster />
 
       <Box mb="12">
-        <Heading size="xl" mb="4" color="blue.600">
+        <Heading size="xl" color="blue.600">
           Écrit 1
         </Heading>
+        <Text mb="4" fontWeight="bold" >Confronte toi à différents niveaux de difficulté pour évaluer et approfondir tes connaissances.</Text>
         <SimpleGrid minChildWidth="sm" gap="6">
           {subjects1.map(({ id, name, image, premium }) => (
             <ExamCard
@@ -73,6 +75,7 @@ export default function Home() {
         <Heading size="xl" mb="4" color="blue.600">
           Écrit 2
         </Heading>
+        <Text mb="4" fontWeight="bold" >Teste immédiatement tes connaissances pour t’assurer d’avoir bien assimilé les concepts clés.</Text>
         <SimpleGrid columns={[1, 2, 3]} gap="6">
           {subjects2.map(({ id, name, image, premium }) => (
             <ExamCard
@@ -161,5 +164,4 @@ function ExamCard({
       </Card.Root>
     );
   }
-
 }
