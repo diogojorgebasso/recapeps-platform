@@ -7,7 +7,6 @@ on:
 permissions:
   contents: read # Permissões para acessar o conteúdo do repositório
   actions: read # Permissões para usar ações (como checkout)
-  artifacts: write # Permissões para fazer upload de artefatos
 jobs:
   test:
     timeout-minutes: 60
