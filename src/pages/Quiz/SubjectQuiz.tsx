@@ -166,8 +166,9 @@ export default function QuizPage() {
                         {currentQuiz.question}
                     </Heading>
                     <Badge colorPalette="blue" position="absolute" top={2} right={4} fontSize="0.7em">
-                        niveau: {currentQuiz.level}
+                        {currentQuiz.evaluation == 1 ? `niveau: ${currentQuiz.level}` : "Mode aléatoire"}
                     </Badge>
+
                 </Card.Header>
 
                 <Card.Body>

@@ -16,10 +16,9 @@ import Notes from "./pages/Notes";
 import Team from "./pages/Team";
 import Profil from "@/pages/Auth/Profil"
 import ContactForm from "./pages/Contact";
-import About from "./pages/About";
+import APropos from "./pages/APropos";
 import FlashcardsPage from "./pages/Flashcards";
 import FlashcardsSubject from "./pages/Flashcards/subject";
-import Support from "./pages/Support";
 import TermesCondition from "./pages/Legal/Termes-Condition";
 import PaymentPage from "./pages/Checkout/Payment";
 import DynamicPage from "./pages/Notes/DynamicPage";
@@ -52,8 +51,7 @@ export function Routes() {
             <Route element={<Layout />} >
                 <Route index element={<Home />} />
                 <Route path="contact" element={<ContactForm />} />
-                <Route path="about" element={<About />} />
-                <Route path="support" element={<Support />} />
+                <Route path="a-propos" element={<APropos />} />
                 <Route path="termes-et-condition" element={<TermesCondition />} />
             </Route>
             <Route path="login" element={<Login />} />

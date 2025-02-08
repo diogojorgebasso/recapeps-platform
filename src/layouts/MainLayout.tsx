@@ -2,15 +2,17 @@ import CookieBanner from "@/components/Cookies/cookie-banner";
 import { Outlet } from "react-router";
 import Menu from "../components/Menu/Menu";
 import Footer from "@/components/Footer";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 export default function MainLayout() {
     return (
-        <Box>
+        <Flex minH="100vh" direction="column">
             <Menu />
-            <Outlet />
+            <Box flex="1">
+                <Outlet />
+            </Box>
             <Footer />
             <CookieBanner />
-        </Box>
+        </Flex>
     );
 };

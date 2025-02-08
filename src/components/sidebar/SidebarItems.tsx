@@ -14,5 +14,5 @@ export const SidebarItems: Item[] = [
   { label: "Fiches de révision", icon: <LuNotebookPen />, path: "/notes" },
   { label: "Quiz", icon: <LuListTodo />, path: "/quiz" },
   { label: "Flashcards", icon: <FiBookOpen />, path: "/flashcards" },
-  { label: "Support", icon: <FiHelpCircle />, path: "/support", target: "_blank" },
+  { label: "Contact", icon: <FiHelpCircle />, path: "/contact", target: "_blank" },
 ];

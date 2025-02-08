@@ -82,12 +82,6 @@ export default function ContextualAvatar() {
                         <MenuItemCommand>⌘K</MenuItemCommand>
                     </MenuItem>
                     <MenuSeparator />
-                    <MenuItem value="support" asChild>
-                        <Link to="support">
-                            <FaLifeRing />
-                            Support
-                        </Link>
-                    </MenuItem>
                     <MenuSeparator />
                     <DialogRoot>
                         <DialogTrigger>

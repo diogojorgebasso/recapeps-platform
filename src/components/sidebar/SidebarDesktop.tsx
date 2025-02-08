@@ -79,7 +79,7 @@ export default function SidebarDesktop() {
       description: "Tu as des difficultés à retenir des informations? Les flashcards sont faites pour toi! Elles te permettront de réviser de manière plus ludique et plus efficace."
     },
     {
-      title: "Support",
+      title: "Contact",
       description: "Et voilà, maintenant que tu sais tout, tu peux commencer à explorer les différents thèmes et commencer tes révisions ! 🚀💥 Si tu as une question, n'hésites pas à nous contacter."
     }
   ];

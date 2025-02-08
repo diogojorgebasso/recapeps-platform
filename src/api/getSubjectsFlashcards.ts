@@ -15,7 +15,7 @@ export async function getSubjectsFlashcards() {
     const subjects: Subject[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      if (data.flashcards) {
+      if (data.contains?.includes("flashcard")) {
         subjects.push({
           id: doc.id,
           name: data.name,
