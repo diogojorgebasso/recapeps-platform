@@ -28,6 +28,7 @@ export default [
         ]),
         route("checkout", "./pages/Checkout/index.tsx"),
         route("payment", "./pages/Checkout/Payment.tsx"),
+        route("success", "./Success.tsx"),
         route("*?", "catchall.tsx"),
     ]),
 ] satisfies RouteConfig
