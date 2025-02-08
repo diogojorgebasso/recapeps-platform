@@ -20,7 +20,7 @@ import About from "./pages/About";
 import FlashcardsPage from "./pages/Flashcards";
 import FlashcardsSubject from "./pages/Flashcards/subject";
 import Support from "./pages/Support";
-import TermesCondition from "./pages/Termes-Condition";
+import TermesCondition from "./pages/Legal/Termes-Condition";
 import PaymentPage from "./pages/Checkout/Payment";
 import DynamicPage from "./pages/Notes/DynamicPage";
 import ForgottenPassword from "./pages/Auth/ForgotPassword";

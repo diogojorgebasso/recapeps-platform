@@ -78,20 +78,22 @@ function ExamCard({
     id,
     name,
     image,
+    premium = false,
 }: {
     id: string;
     name: string;
     image: string;
+    premium?: boolean;
 }) {
     return (
         <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
             <Image src={image} alt={name} h="200px" w="full" />
             <Card.Body gap="2" p="4">
-                <Card.Title>{name}</Card.Title>
+                <Card.Title>{name} {premium ? "🔒" : ""}</Card.Title>
             </Card.Body>
             <Card.Footer gap="2" p="4">
                 <Button variant="solid" colorScheme="blue">
-                    <Link to={`/notes/${id}`}>Voir plus</Link>
+                    <Link to={`/quiz/${id}`}>Voir plus</Link>
                 </Button>
             </Card.Footer>
         </Card.Root>

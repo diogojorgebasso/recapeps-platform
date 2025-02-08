@@ -1,5 +1,5 @@
 import {
-  VStack, IconButton, Text, Group, Image,
+  VStack, IconButton, Text, Group,
   AspectRatio
 } from "@chakra-ui/react";
 import { Button } from "../ui/button";
@@ -48,9 +48,10 @@ import {
   DialogDescription,
   DialogActionTrigger
 } from "@/components/ui/dialog"
+import Logo from "../ui/logo-recapeps";
 
 export default function SidebarDesktop() {
-  const { currentUser, signOut } = useAuth();
+  const { currentUser, signOut, handleTourPreference } = useAuth();
   const [openPopover, setOpenPopover] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(true);
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -88,205 +89,212 @@ export default function SidebarDesktop() {
   };
 
   const startWizard = () => {
-    setOpenDialog(false); // Fecha o Dialog
-    setOpenPopover(0); // Abre o Popover do primeiro item
+    setOpenDialog(false);
+    setOpenPopover(0);
   };
 
 
-  return (<>
-    <DialogRoot role="alertdialog" open={openDialog} onOpenChange={(e) => setOpenDialog(e.open)} placement="top">
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Salut !</DialogTitle>
-        </DialogHeader>
-        <DialogBody pt="4">
-          <DialogDescription mb="4">
-            Tu es prêt à démarrer tes révisions? Alors laisse moi te faire un petit tour du site pour que tu te repères plus facilement. Suis moi…
-            <AspectRatio ratio={4 / 3}>
-              <Image src="/logo-recapepeps.svg" />
-            </AspectRatio>
-          </DialogDescription>
-        </DialogBody>
-        <DialogFooter>
-          <DialogActionTrigger asChild>
-            <Button variant="outline">Non, merci</Button>
-          </DialogActionTrigger>
-          <Button colorPalette="green" onClick={startWizard}>oui, bien sûr!</Button>
-        </DialogFooter>
-        <DialogCloseTrigger />
-      </DialogContent>
-    </DialogRoot>
-    <VStack
-      as="nav"
-      position="fixed"
-      bg="orange.400"
-      gap={4}
-      borderRadius="0 0 16px 0"
-      p={2}
-      shadow="lg"
-    >
-      <PopoverRoot
-        positioning={{ placement: "right" }}
-        open={openPopover === 0}
-        onOpenChange={(e) => handleOpenChange(0, e.open)}
-        lazyMount
-        unmountOnExit>
-        <PopoverTrigger asChild>
-          <MenuRoot positioning={{ placement: "right-end" }}>
-            <MenuTrigger>
-              <Avatar src={currentUser?.photoURL || "/avatar.svg"} name={currentUser?.displayName || "Étudiant"} mt="4" size="2xl" className="h-8 w-8 rounded-lg" />
-            </MenuTrigger>
-
-            <MenuContent className="min-w-56 rounded-lg" alignContent="end">
-              <MenuItem value="checkout" asChild>
-                <Link to="/checkout">
-                  <LuSparkles />
-                  Passez à Recap'eps Pro
-                </Link>
-              </MenuItem>
-              <MenuSeparator />
-              <MenuItemGroup>
-                <MenuItem value="profil" asChild>
-                  <Link to="/profil">
-                    <LuBadge />
-                    Profil
-                  </Link>
-                </MenuItem>
-                <MenuItem value="notifications" asChild>
-                  <Link to="/profil">
-                    <LuBell />
-                    Notifications
-                  </Link>
-                </MenuItem>
-              </MenuItemGroup>
-              <MenuSeparator />
-              <MenuItem
-                value="log-out"
-                onClick={() => {
-                  signOut();
+  return (
+    <>
+      <DialogRoot role="alertdialog" open={openDialog} onOpenChange={(e) => setOpenDialog(e.open)} placement="top">
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Salut !</DialogTitle>
+          </DialogHeader>
+          <DialogBody pt="4">
+            <DialogDescription mb="4">
+              Tu es prêt à démarrer tes révisions? Alors laisse moi te faire un petit tour du site pour que tu te repères plus facilement. Suis moi…
+              <AspectRatio ratio={4 / 3}>
+                <Logo />
+              </AspectRatio>
+            </DialogDescription>
+          </DialogBody>
+          <DialogFooter>
+            <DialogActionTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await handleTourPreference(false);
                 }}
               >
-                <LuLogOut />
-                Déconnexion
-              </MenuItem>
-            </MenuContent>
-          </MenuRoot>
-        </PopoverTrigger>
-        <PopoverContent>
-          <PopoverArrow />
-          <PopoverBody>
-            <PopoverTitle fontWeight="medium">{steps[0].title}</PopoverTitle>
-            <Text my="4">
-              {steps[0].description}
-            </Text>
-            <StepsRoot defaultValue={1} count={3}>
-              <StepsList>
-                <StepsItem index={0} icon={<LuUser />} />
-                <StepsItem index={1} icon={<LuInbox />} />
-                <StepsItem index={2} icon={<LuNotebookPen />} />
-                <StepsItem index={3} icon={<LuListTodo />} />
-                <StepsItem index={4} icon={<FiBookOpen />} />
-              </StepsList>
+                Non, merci
+              </Button>
+            </DialogActionTrigger>
+            <Button colorPalette="green" onClick={startWizard}>oui, bien sûr!</Button>
+          </DialogFooter>
+          <DialogCloseTrigger />
+        </DialogContent>
+      </DialogRoot>
+      <VStack
+        as="nav"
+        position="fixed"
+        bg="orange.400"
+        gap={4}
+        borderRadius="0 0 16px 0"
+        p={2}
+        shadow="lg"
+      >
+        <PopoverRoot
+          positioning={{ placement: "right" }}
+          open={openPopover === 0}
+          onOpenChange={(e) => handleOpenChange(0, e.open)}
+          lazyMount
+          unmountOnExit>
+          <PopoverTrigger asChild>
+            <MenuRoot positioning={{ placement: "right-end" }}>
+              <MenuTrigger>
+                <Avatar src={currentUser?.photoURL || "/avatar.svg"} name={currentUser?.displayName || "Étudiant"} mt="4" size="2xl" className="h-8 w-8 rounded-lg" />
+              </MenuTrigger>
 
-              <Group>
-                <StepsPrevTrigger asChild>
-                  <Button
-                    onClick={() => {
-                      if (currentStep > 0) {
-                        console.log(currentStep)
-                        setCurrentStep(currentStep - 1)
-                        handleOpenChange(currentStep - 1, true)
-                      }
-                    }}
-                    variant="outline" size="sm">
-                    Retour
-                  </Button>
-                </StepsPrevTrigger>
-                <StepsNextTrigger asChild>
-                  <Button
-                    onClick={() => {
-                      setOpenPopover(currentStep + 1)
-                      handleOpenChange(currentStep + 1, true)
-                    }}
-                    variant="outline" size="sm">
-                    Suivant
-                  </Button>
-                </StepsNextTrigger>
-              </Group>
-            </StepsRoot>
-          </PopoverBody>
-        </PopoverContent>
-      </PopoverRoot>
+              <MenuContent className="min-w-56 rounded-lg" alignContent="end">
+                <MenuItem value="checkout" asChild>
+                  <Link to="/checkout">
+                    <LuSparkles />
+                    Passez à Recap'eps Pro
+                  </Link>
+                </MenuItem>
+                <MenuSeparator />
+                <MenuItemGroup>
+                  <MenuItem value="profil" asChild>
+                    <Link to="/profil">
+                      <LuBadge />
+                      Profil
+                    </Link>
+                  </MenuItem>
+                  <MenuItem value="notifications" asChild>
+                    <Link to="/profil">
+                      <LuBell />
+                      Notifications
+                    </Link>
+                  </MenuItem>
+                </MenuItemGroup>
+                <MenuSeparator />
+                <MenuItem
+                  value="log-out"
+                  onClick={() => {
+                    signOut();
+                  }}
+                >
+                  <LuLogOut />
+                  Déconnexion
+                </MenuItem>
+              </MenuContent>
+            </MenuRoot>
+          </PopoverTrigger>
+          <PopoverContent>
+            <PopoverArrow />
+            <PopoverBody>
+              <PopoverTitle fontWeight="medium">{steps[0].title}</PopoverTitle>
+              <Text my="4">
+                {steps[0].description}
+              </Text>
+              <StepsRoot defaultValue={1} count={3}>
+                <StepsList>
+                  <StepsItem index={0} icon={<LuUser />} />
+                  <StepsItem index={1} icon={<LuInbox />} />
+                  <StepsItem index={2} icon={<LuNotebookPen />} />
+                  <StepsItem index={3} icon={<LuListTodo />} />
+                  <StepsItem index={4} icon={<FiBookOpen />} />
+                </StepsList>
 
-      <VStack as="ul" gap="6" align="center" mt="4">
-        {SidebarItems.map((item, index) => (
-          <PopoverRoot
-            key={index + 1}
-            open={openPopover === index + 1}
-            onOpenChange={(e) => handleOpenChange(index + 1, e.open)}
-            lazyMount
-            unmountOnExit>
-            <PopoverTrigger>
-              <Link target={item.target} to={item.path}>
-                <IconButton
-                  as="li"
-                  aria-label={item.label}
-                  variant="ghost"
-                  size="2xl"
-                  color="white"
-                  _hover={{ bg: "orange.500" }}
-                >{item.icon}</IconButton>
-              </Link>
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverBody>
-                <PopoverTitle fontWeight="medium">{steps[currentStep].title}</PopoverTitle>
-                <Text my="4">
-                  {steps[currentStep].description}
-                </Text>
-                <StepsRoot step={currentStep} onStepChange={(e) => setCurrentStep(e.step)} count={5}>
-                  <StepsList>
-                    <StepsItem index={0} icon={<LuUser />} />
-                    <StepsItem index={1} icon={<LuInbox />} />
-                    <StepsItem index={2} icon={<LuNotebookPen />} />
-                    <StepsItem index={3} icon={<LuListTodo />} />
-                    <StepsItem index={4} icon={<FiBookOpen />} />
-                  </StepsList>
-
-                  <StepsCompletedContent>Allez va réviser maintenant!</StepsCompletedContent>
-
-                  <Group>
-                    <StepsPrevTrigger asChild>
-                      <Button
-                        onClick={() => {
+                <Group>
+                  <StepsPrevTrigger asChild>
+                    <Button
+                      onClick={() => {
+                        if (currentStep > 0) {
+                          console.log(currentStep)
                           setCurrentStep(currentStep - 1)
-                          setOpenPopover(currentStep - 1)
-                        }}
-                        variant="outline" size="sm">
-                        Retour
-                      </Button>
-                    </StepsPrevTrigger>
-                    <StepsNextTrigger asChild>
-                      <Button
-                        onClick={() => {
-                          setOpenPopover(currentStep + 1)
-                          setCurrentStep(currentStep + 1)
-                        }}
-                        variant="outline" size="sm">
-                        Suivant
-                      </Button>
-                    </StepsNextTrigger>
-                  </Group>
-                </StepsRoot>
-              </PopoverBody>
-            </PopoverContent>
-          </PopoverRoot>
+                          handleOpenChange(currentStep - 1, true)
+                        }
+                      }}
+                      variant="outline" size="sm">
+                      Retour
+                    </Button>
+                  </StepsPrevTrigger>
+                  <StepsNextTrigger asChild>
+                    <Button
+                      onClick={() => {
+                        setOpenPopover(currentStep + 1)
+                        handleOpenChange(currentStep + 1, true)
+                      }}
+                      variant="outline" size="sm">
+                      Suivant
+                    </Button>
+                  </StepsNextTrigger>
+                </Group>
+              </StepsRoot>
+            </PopoverBody>
+          </PopoverContent>
+        </PopoverRoot>
 
-        ))}
-        <SimpleColorModeButton mb={5} />
+        <VStack as="ul" gap="6" align="center" mt="4">
+          {SidebarItems.map((item, index) => (
+            <PopoverRoot
+              key={index + 1}
+              open={openPopover === index + 1}
+              onOpenChange={(e) => handleOpenChange(index + 1, e.open)}
+              lazyMount
+              unmountOnExit>
+              <PopoverTrigger>
+                <Link target={item.target} to={item.path}>
+                  <IconButton
+                    as="li"
+                    aria-label={item.label}
+                    variant="ghost"
+                    size="2xl"
+                    color="white"
+                    _hover={{ bg: "orange.500" }}
+                  >{item.icon}</IconButton>
+                </Link>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverBody>
+                  <PopoverTitle fontWeight="medium">{steps[currentStep].title}</PopoverTitle>
+                  <Text my="4">
+                    {steps[currentStep].description}
+                  </Text>
+                  <StepsRoot step={currentStep} onStepChange={(e) => setCurrentStep(e.step)} count={5}>
+                    <StepsList>
+                      <StepsItem index={0} icon={<LuUser />} />
+                      <StepsItem index={1} icon={<LuInbox />} />
+                      <StepsItem index={2} icon={<LuNotebookPen />} />
+                      <StepsItem index={3} icon={<LuListTodo />} />
+                      <StepsItem index={4} icon={<FiBookOpen />} />
+                    </StepsList>
+
+                    <StepsCompletedContent>Allez va réviser maintenant!</StepsCompletedContent>
+
+                    <Group>
+                      <StepsPrevTrigger asChild>
+                        <Button
+                          onClick={() => {
+                            setCurrentStep(currentStep - 1)
+                            setOpenPopover(currentStep - 1)
+                          }}
+                          variant="outline" size="sm">
+                          Retour
+                        </Button>
+                      </StepsPrevTrigger>
+                      <StepsNextTrigger asChild>
+                        <Button
+                          onClick={() => {
+                            setOpenPopover(currentStep + 1)
+                            setCurrentStep(currentStep + 1)
+                          }}
+                          variant="outline" size="sm">
+                          Suivant
+                        </Button>
+                      </StepsNextTrigger>
+                    </Group>
+                  </StepsRoot>
+                </PopoverBody>
+              </PopoverContent>
+            </PopoverRoot>
+          ))}
+          <SimpleColorModeButton mb={5} />
+        </VStack>
       </VStack>
-    </VStack>
-  </>
+    </>
   );
 };

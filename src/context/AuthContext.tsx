@@ -45,6 +45,7 @@ interface AuthContextProps {
     deleteUserAccount: (currentPassword: string) => Promise<void>;
     upgradeFromAnonymous: (email: string, password: string) => Promise<User>;
     simpleLogin: (email: string, password: string) => Promise<User>;
+    handleTourPreference: (enableTour: boolean) => Promise<void>;
 };
 
 
@@ -117,6 +118,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.error("Error deleting user account:", error);
         }
     }
+
+    /**
+     * 
+     * @param enableTour 
+     * @returns 
+     */
+    const handleTourPreference = async (enableTour: boolean) => {
+        try {
+            if (!currentUser) return;
+            const userRef = doc(db, "users", currentUser.uid);
+            await updateDoc(userRef, { tourEnabled: enableTour });
+        } catch (error) {
+            console.error("Error updating tour preference:", error);
+        }
+    };
 
     const handleEmailChange = async (currentPassword: string, newEmail: string) => {
         if (!currentUser || !currentUser.email) return;
@@ -249,7 +265,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isEmailNotificationEnabled,
         subscribed,
         setCurrentUser,
-        getUserToken
+        getUserToken,
+        handleTourPreference
     };
 
     return (

@@ -11,7 +11,6 @@ import { Link } from "react-router";
 import { Toaster, toaster } from "@/components/ui/toaster"
 import { getSubjectsFlashcards } from "@/api/getSubjectsFlashcards";
 import { useAuth } from "@/hooks/useAuth";
-
 import {
     DialogActionTrigger,
     DialogBody,
@@ -24,8 +23,10 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 
+
 export default function Home() {
     const { subscribed } = useAuth();
+
     const [subjects, setSubjects] = useState<Subject[]>([]);
 
     useEffect(() => {
@@ -137,5 +138,4 @@ function ExamCard({
             </Card.Root>
         );
     }
-
 }
