@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Avatar } from "@/components/ui/avatar";
 import { defineStyle, MenuItemGroup } from "@chakra-ui/react"
 
-import { FaUser, FaCreditCard, FaKeyboard, FaLifeRing, FaSignOutAlt, FaCog } from "react-icons/fa";
+import { FaUser, FaCreditCard, FaKeyboard, FaSignOutAlt, FaCog } from "react-icons/fa";
 
 import {
     MenuContent,
