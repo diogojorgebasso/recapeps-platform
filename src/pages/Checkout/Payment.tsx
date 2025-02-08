@@ -14,7 +14,7 @@ interface PaymentPageState {
     };
 }
 
-const stripePromise = loadStripe("pk_test_51IOvMXBiilgt3voLm7kvY2GAgsyYVssTyO59sttI2KqgGLTrgPMA5WHox80IXFS7YCuQuo40nXj0qX9JKZiTRocQ00l1cSSkFU");
+const stripePromise = loadStripe(import.meta.env.STRIPE_PROD_PUBLIC_KEY);
 
 const PaymentPage: React.FC = () => {
     const location = useLocation();
