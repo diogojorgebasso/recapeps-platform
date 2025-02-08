@@ -13,4 +13,7 @@ export default defineConfig({
   ssr: {
     noExternal: ["react-easy-crop", "tslib"],
   },
+  build: {
+    target: "esnext",
+  },
 });

@@ -15,6 +15,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <html lang="fr">
             <head>
                 <meta charSet="UTF-8" />
+                <link rel="canonical" href="https://recapeps.fr" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <link rel="icon" type="image/svg+xml" href="/logo.svg" sizes="any" />
                 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -26,6 +27,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;700&family=Inter:ital,wght@0,14;1,14&display=swap"
                     rel="stylesheet"
                 />
+                <meta name="description" content="Recap'eps est un site de récapitulatif d'épisodes de séries." />
                 <title>Recap'eps</title>
                 <Meta />
                 <Links />
