@@ -102,7 +102,7 @@ export default function Menu() {
                         <MenuRoot>
                             <MenuTrigger asChild>
                                 <Button variant="plain" fontWeight="bold">
-                                    <Text fontSize="16px">Fonctionnalités</Text> <FaChevronDown />
+                                    <Text fontSize="lg">Fonctionnalités</Text> <FaChevronDown />
                                 </Button>
                             </MenuTrigger>
                             <MenuContent p={4} boxShadow="lg" borderRadius="md" maxW="lg">
