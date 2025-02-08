@@ -1,0 +1,34 @@
+# Recapeps Platform Robots.txt
+# Last updated: February 8, 2024
+
+# Allow all robots full access by default
+User-agent: *
+Allow: /
+
+# Protected routes - prevent indexing of auth and payment pages
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /profil
+Disallow: /dashboard
+
+# Prevent crawling of API endpoints
+Disallow: /api/
+
+# Prevent crawling of admin functionality
+Disallow: /notes/create-note
+
+# Allow crawling of public content
+Allow: /notes/$
+Allow: /quiz/$
+Allow: /flashcards/$
+Allow: /contact
+Allow: /a-propos
+Allow: /legal/terme-condition
+
+# Sitemap location
+Sitemap: https://recapeps.com/sitemap.xml
+
+# Additional metadata
+# Website owner: Recapeps
+# Contact: support@recapeps.fr
