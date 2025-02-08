@@ -3,6 +3,7 @@ src/api/boilerPlateFlashcard.ts
 
 # React Router
 .react-router/
+.firebase/
 
 # Logs
 logs
