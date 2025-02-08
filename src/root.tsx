@@ -6,8 +6,6 @@ import {
     ScrollRestoration,
 } from "react-router";
 
-
-import { BrowserRouter } from "react-router";
 import { AuthProvider } from "@/context/AuthContext";
 import { CookieProvider } from "./context/CookieContext";
 import { Provider } from "@/components/ui/provider"
@@ -45,11 +43,9 @@ export default function Root() {
     return (
         <Provider>
             <AuthProvider>
-                <BrowserRouter>
-                    <CookieProvider>
-                        <Outlet />
-                    </CookieProvider>
-                </BrowserRouter>
+                <CookieProvider>
+                    <Outlet />
+                </CookieProvider>
             </AuthProvider>
         </Provider>
     );

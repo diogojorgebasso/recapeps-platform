@@ -10,7 +10,7 @@ export default defineConfig({
       "@": resolve(__dirname, "./src"),
     },
   },
-  build: {
-    target: "esnext",
+  ssr: {
+    noExternal: ["react-easy-crop", "tslib"],
   },
 });

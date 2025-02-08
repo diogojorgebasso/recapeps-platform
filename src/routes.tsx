@@ -5,9 +5,8 @@ export default [
         index("./Home.tsx"),
         route("contact", "./Contact.tsx"),
         route("a-propos", "./APropos.tsx"),
-        ...prefix("legal", [
-            route("terme-condition", "./pages/Legal/termes-condition.tsx"),
-        ])]),
+        route("terme-condition", "./pages/Legal/Termes-Condition.tsx"),
+    ]),
 
     route("register", "./pages/Auth/Register.tsx"),
     route("login", "./pages/Auth/Login.tsx"),
