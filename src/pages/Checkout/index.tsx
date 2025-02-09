@@ -1,27 +1,25 @@
-import React from "react";
 import { redirect } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Box, Heading, List, Button, Card } from "@chakra-ui/react";
 import { LuCircleCheck } from "react-icons/lu";
+import { httpsCallable } from 'firebase/functions';
+import { functions } from "@/utils/firebase";
 
-const CheckoutPage: React.FC = () => {
+export default function CheckoutPage() {
     const { getUserToken } = useAuth();
 
     const handleCheckout = async (plan: { id: string; price: string; amount: number }) => {
-        const token = await getUserToken();
-        const response = await fetch("https://us-central1-recapeps-platform.cloudfunctions.net/createStripeCheckoutSession", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ items: [plan] }),
-        });
+        try {
+            const createStripeCheckoutSession = httpsCallable(functions, 'createStripeCheckoutSession');
+            const result = await createStripeCheckoutSession({ items: [plan] });
+            const data = result.data as { clientSecret: string };
 
-        const data = await response.json();
-        redirect("/payment", {
-            state: {
-                clientSecret: data.clientSecret,
-                selectedPlan: plan,
-            }
-        });
+            return redirect(`/payment?clientSecret=${data.clientSecret}&planId=${plan.id}&planPrice=${plan.price}&planAmount=${plan.amount}`);
+        } catch (error: any) {
+            console.error("Error calling function:", error);
+            // Handle error appropriately (e.g., show an error message to the user)
+            return redirect("/error"); // Redirect to an error page
+        }
     };
 
     const plans = [
@@ -62,5 +60,3 @@ const CheckoutPage: React.FC = () => {
         </Box>
     );
 };
-
-export default CheckoutPage;

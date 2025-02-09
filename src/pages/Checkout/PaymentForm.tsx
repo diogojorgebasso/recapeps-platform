@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { CardElement, useStripe, useElements, PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import { Box, Button, Container, Heading, Text, VStack } from '@chakra-ui/react';
 import { useAuth } from "@/hooks/useAuth";
+import { PaymentRequest } from '@stripe/stripe-js';
 
 interface PaymentFormProps {
   clientSecret: string;
@@ -19,7 +20,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   const elements = useElements();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const [paymentRequest, setPaymentRequest] = useState<stripe.paymentRequest.PaymentRequest | null>(null);
+  const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
 
   useEffect(() => {
     if (!currentUser) {
@@ -66,18 +67,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
         <Text>Prix: {selectedPlan.price}</Text>
         <Box as="form" onSubmit={handlePayment}>
           <Box border="1px" borderColor="gray.200" p={4} borderRadius="md">
-            <CardElement
-              options={{
-                style: {
-                  base: {
-                    fontSize: "16px",
-                    color: "#424770",
-                    "::placeholder": { color: "#aab7c4" },
-                  },
-                  invalid: { color: "#9e2146" },
-                },
-              }}
-            />
+            <CardElement />
           </Box>
           <Button
             type="submit"
