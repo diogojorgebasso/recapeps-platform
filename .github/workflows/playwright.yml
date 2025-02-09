@@ -2,11 +2,10 @@ name: Playwright Tests
 on:
   push:
     branches: [main, master]
-  pull_request:
-    branches: [main, master]
+
 permissions:
-  contents: read # Permissões para acessar o conteúdo do repositório
-  actions: read # Permissões para usar ações (como checkout)
+  contents: read
+  actions: read
 jobs:
   test:
     timeout-minutes: 60
