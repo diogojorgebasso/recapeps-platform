@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { CardElement, PaymentElement, useStripe, useElements, PaymentRequestButtonElement } from '@stripe/react-stripe-js';
+import { CardElement, useStripe, useElements, PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import { Box, Button, Container, Heading, Text, VStack } from '@chakra-ui/react';
 import { PaymentRequest } from '@stripe/stripe-js';
 
@@ -20,18 +20,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   const navigate = useNavigate();
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
 
-  useEffect(() => {
-    if (!stripe) return;
-    const pr = stripe.paymentRequest({
-      country: "US",
-      currency: "eur",
-      total: { label: "Plano Recap'eps", amount: selectedPlan.amount },
-      requestPayerEmail: true,
-    });
-    pr.canMakePayment().then((result) => {
-      if (result) setPaymentRequest(pr);
-    });
-  }, [stripe, selectedPlan.amount]);
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +47,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
         <Text>Prix: {selectedPlan.price}</Text>
         <Box as="form" onSubmit={handlePayment}>
           <Box border="1px" borderColor="gray.200" p={4} borderRadius="md">
-            <PaymentElement />
+            <CardElement />
           </Box>
           <Button
             type="submit"
