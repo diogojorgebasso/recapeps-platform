@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 export default function CheckoutPage() {
     const { getUserToken } = useAuth();
 
-    const handleCheckout = async (plan: { id: string; price: string; amount: number }) => {
+    const handleCheckout = async (plan: { id: string; price: string; amount: number, priceId: string }) => {
         try {
             const token = await getUserToken();
             if (!token) {
@@ -17,7 +17,7 @@ export default function CheckoutPage() {
             }
 
             const createStripeCheckoutSession = httpsCallable(functions, 'createStripeCheckoutSession');
-            const result = await createStripeCheckoutSession({ items: [plan] });
+            const result = await createStripeCheckoutSession({ priceId: plan.priceId, quantity: 1 });
             const data = result.data as { clientSecret: string };
 
             return redirect(`/payment?clientSecret=${data.clientSecret}&planId=${plan.id}&planPrice=${plan.price}&planAmount=${plan.amount}`);
@@ -29,7 +29,7 @@ export default function CheckoutPage() {
     };
 
     const plans = [
-        { id: "basic", price: "4.99€", amount: 499, description: "Basic Plan" },
+        { id: "basic", price: "4.99€", amount: 499, description: "Basic Plan", priceId: 'price_1QqKUpEfLSFXfvk14iyABkSP' },
     ];
 
     return (

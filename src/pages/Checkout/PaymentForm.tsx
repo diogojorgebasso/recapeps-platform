@@ -19,20 +19,20 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser } = useAuth(); //check if the user is logged
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
 
   useEffect(() => {
     if (!currentUser) {
       navigate("/login");
     }
-  }, [currentUser, navigate]);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!stripe) return;
     const pr = stripe.paymentRequest({
       country: "US",
-      currency: "usd",
+      currency: "eur",
       total: { label: "Plano Recap'eps", amount: selectedPlan.amount },
       requestPayerEmail: true,
     });
