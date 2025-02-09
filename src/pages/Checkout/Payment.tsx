@@ -20,7 +20,7 @@ export default function Payment() {
     const state = location.state as PaymentPageState | undefined;
     if (!state) return <Navigate to="/" />;
     return (
-        <Elements stripe={stripePromise}>
+        <Elements stripe={stripePromise} options={{ clientSecret: state.clientSecret }}>
             <PaymentForm
                 clientSecret={state.clientSecret}
                 selectedPlan={state.selectedPlan}
