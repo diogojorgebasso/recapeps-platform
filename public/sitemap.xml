@@ -1,85 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://recapeps.com/</loc>
+    <loc>https://recapeps.fr/</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/contact</loc>
+    <loc>https://recapeps.fr/contact</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/a-propos</loc>
+    <loc>https://recapeps.fr/a-propos</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/legal/terme-condition</loc>
+    <loc>https://recapeps.fr/legal/terme-condition</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/register</loc>
+    <loc>https://recapeps.fr/register</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/login</loc>
+    <loc>https://recapeps.fr/login</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/forgot-password</loc>
+    <loc>https://recapeps.fr/forgot-password</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/dashboard</loc>
+    <loc>https://recapeps.fr/dashboard</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/quiz</loc>
+    <loc>https://recapeps.fr/quiz</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/notes</loc>
+    <loc>https://recapeps.fr/notes</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/profil</loc>
+    <loc>https://recapeps.fr/profil</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/flashcards</loc>
+    <loc>https://recapeps.fr/flashcards</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/checkout</loc>
+    <loc>https://recapeps.fr/checkout</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://recapeps.com/payment</loc>
+    <loc>https://recapeps.fr/payment</loc>
     <lastmod>2024-02-08T12:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

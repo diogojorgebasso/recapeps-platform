@@ -2,7 +2,6 @@ import { getFirestore } from "firebase/firestore";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
@@ -21,8 +20,12 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
-// Only initialize App Check in browser environment
-if (typeof window !== "undefined") {
+
+// Initialize App Check only on the client side
+const initAppCheck = async () => {
+  const { initializeAppCheck, ReCaptchaV3Provider } = await import(
+    "firebase/app-check"
+  );
   try {
     initializeAppCheck(app, {
       provider: new ReCaptchaV3Provider(
@@ -33,4 +36,9 @@ if (typeof window !== "undefined") {
   } catch (e) {
     console.error(e);
   }
+};
+
+// Only run in browser
+if (typeof document !== "undefined") {
+  initAppCheck();
 }

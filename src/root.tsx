@@ -21,12 +21,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
                 <link rel="icon" type="image/png" href="/favicon-48x48.png" sizes="48x48" />
                 <link rel="mask-icon" href="/logo.svg" color="#FF7F2A" />
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;700&family=Inter:ital,wght@0,14;1,14&display=swap"
-                    rel="stylesheet"
-                />
                 <meta name="description" content="Recap'eps est un site de récapitulatif d'épisodes de séries." />
                 <title>Recap'eps</title>
                 <Meta />

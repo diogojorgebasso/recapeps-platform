@@ -79,15 +79,8 @@ export default function APropos() {
                 mb="6"
             >
                 Recap’eps est un outil de révision conçu par des étudiants, pour des étudiants. C’est un projet collaboratif qui ne fait que commencer. Votre avis compte !
-
-
-
-                Si vous souhaitez nous aider à améliorer nos services, n’hésitez pas à nous faire des retours en masse sur votre expérience utilisateur. Toutes les critiques sont bonnes à prendre. Pour cela, vous pouvez remplir ce Google Form (URL) ou nous contacter directement par mail à l’adresse support@recapeps.fr.
-
-
-
+                Se vous souhaitez nous aider à améliorer nos services, n’hésitez pas à nous faire des retours en masse sur votre expérience utilisateur. Toutes les critiques sont bonnes à prendre. Pour cela, vous pouvez remplir ce Google Form (URL) ou nous contacter directement par mail à l’adresse support@recapeps.fr.
                 Ce sont vos suggestions qui nous permettent d’évoluer et d’adapter nos services à vos besoins. C’est par vos critiques que nous construirons le monde de demain, ou dans un futur plus proche, que vous appréhenderez sereinement les épreuves du CAPEPS.
-
             </Text>
 
             <Box mt="10" textAlign="center">
