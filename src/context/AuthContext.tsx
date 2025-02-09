@@ -54,10 +54,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log(user);
+                console.log("Já tem usuário autenticado:",)
                 setCurrentUser(user);
                 setLoading(false);
-                setIsAuthenticated(true);
             } else {
                 // Caso não tenha user, faz login anônimo
                 try {
@@ -197,11 +196,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    // TODO : Create a log-out page
     const signOutFn = useCallback(async () => {
-        await signOut(auth);
-        setIsAuthenticated(false)
-        window.location.assign("/");
+        try {
+            await signOut(auth);
+            setCurrentUser(null);
+            setIsAuthenticated(false);
+            // Clean up any user-specific data from localStorage if needed
+            localStorage.removeItem('user-preferences');
+
+            // Use navigate instead of window.location for better React integration
+            window.location.href = '/';
+        } catch (error) {
+            console.error("Error signing out:", error);
+            throw error;
+        }
     }, []);
 
     const handleRecoverPassword = useCallback(async (email: string) => {

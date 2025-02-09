@@ -5,7 +5,11 @@ export default [
         index("./Home.tsx"),
         route("contact", "./Contact.tsx"),
         route("a-propos", "./APropos.tsx"),
-        route("terme-condition", "./pages/Legal/Termes-Condition.tsx"),
+        ...prefix("legal", [
+            route("conditions-generales", "./pages/Legal/conditions-generales.tsx"),
+            route("politique-confidentialite", "./pages/Legal/politique-confidentialite.tsx"),
+            route("mentions-legales", "./pages/Legal/mentions-legales.tsx"),
+        ])
     ]),
 
     route("register", "./pages/Auth/Register.tsx"),

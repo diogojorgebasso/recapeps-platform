@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router';
 import { CardElement, useStripe, useElements, ExpressCheckoutElement, LinkAuthenticationElement } from '@stripe/react-stripe-js';
 import { Box, Button, Container, Heading, Text, VStack } from '@chakra-ui/react';

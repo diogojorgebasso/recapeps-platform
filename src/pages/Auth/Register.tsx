@@ -7,13 +7,14 @@ import {
     Stack,
     Input,
     Link as ChakraLink,
-    Fieldset
+    Fieldset,
+    Field
 } from "@chakra-ui/react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { useColorModeValue } from "@/components/ui/color-mode";
-import { Field } from "@/components/ui/field";
 import { PasswordInput, PasswordStrengthMeter } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 
@@ -88,7 +89,8 @@ export default function Register() {
                 <Card.Body>
                     <Stack gap={4}>
                         <Fieldset.Root>
-                            <Field label="Email">
+                            <Field.Root required>
+                                <Field.Label>Email</Field.Label>
                                 <Input
                                     type="email"
                                     placeholder="exemple@email.com"
@@ -96,7 +98,7 @@ export default function Register() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
                                 />
-                            </Field>
+                            </Field.Root>
                             <PasswordInput
                                 placeholder="Entrez votre mot de passe"
                                 value={password}
@@ -104,7 +106,12 @@ export default function Register() {
                                 required
                             />
                             <PasswordStrengthMeter value={(password.length / 4) + 1} />
-
+                            <Field.Root required >
+                                <Field.Label>Conditions générales</Field.Label>
+                                <Checkbox defaultChecked>
+                                    J’accepte les Conditions générales
+                                </Checkbox>
+                            </Field.Root>
                         </Fieldset.Root>
 
                         {error && <Text color="red.500">{error}</Text>}

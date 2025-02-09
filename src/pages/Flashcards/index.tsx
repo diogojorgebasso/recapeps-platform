@@ -10,7 +10,6 @@ import {
 import { Link } from "react-router";
 import { Toaster, toaster } from "@/components/ui/toaster"
 import { getSubjectsFlashcards } from "@/api/getSubjectsFlashcards";
-import { useAuth } from "@/hooks/useAuth";
 import {
     DialogActionTrigger,
     DialogBody,
@@ -22,10 +21,12 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { useSubscription } from "@/hooks/useSubscription";
 
 
 export default function Home() {
-    const { subscribed } = useAuth();
+    const { isSubscribed } = useSubscription();
+    console.log(isSubscribed)
 
     const [subjects, setSubjects] = useState<Subject[]>([]);
 
@@ -58,7 +59,7 @@ export default function Home() {
                             name={name}
                             image={image}
                             premium={premium}
-                            isUserPremium={subscribed}
+                            isUserPremium={isSubscribed}
                         />
                     ))}
                 </SimpleGrid>

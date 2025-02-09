@@ -17,17 +17,6 @@ import {
     MenuSeparator
 } from "@/components/ui/menu"
 
-import {
-    DialogBody,
-    DialogCloseTrigger,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogRoot,
-    DialogTitle,
-    DialogTrigger,
-    DialogActionTrigger
-} from "@/components/ui/dialog"
 
 const ringCss = defineStyle({
     outlineWidth: "2px",
@@ -83,31 +72,11 @@ export default function ContextualAvatar() {
                     </MenuItem>
                     <MenuSeparator />
                     <MenuSeparator />
-                    <DialogRoot>
-                        <DialogTrigger>
-                            <MenuItem value="logOut">
-                                <FaSignOutAlt />
-                                Log out
-                                <MenuItemCommand>⇧⌘Q</MenuItemCommand>
-                            </MenuItem>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Dialog Title</DialogTitle>
-                                <DialogCloseTrigger />
-                            </DialogHeader>
-                            <DialogBody>
-                                Voulez-vous bien vous déconnecter ?
-                            </DialogBody>
-                            <DialogFooter>
-                                <DialogActionTrigger asChild>
-                                    <Button variant="outline">Cancel</Button>
-                                </DialogActionTrigger>
-                                <Button onClick={signOut}>Sign Out</Button>
-                            </DialogFooter>
-                            <DialogCloseTrigger />
-                        </DialogContent>
-                    </DialogRoot>
+                    <MenuItem onClick={signOut} value="logOut">
+                        <FaSignOutAlt />
+                        Log out
+                        <MenuItemCommand>⇧⌘Q</MenuItemCommand>
+                    </MenuItem>
                 </MenuContent>
             </MenuRoot >
         )
