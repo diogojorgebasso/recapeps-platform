@@ -29,7 +29,7 @@ export default function CheckoutPage() {
                 navigate("/error");
                 return;
             }
-            navigate(`/payment?clientSecret=${data.clientSecret}&planId=${plan.id}&planPrice=${plan.price}&planAmount=${plan.amount}`);
+            navigate("/payment", { state: { clientSecret: data.clientSecret, selectedPlan: { id: plan.id, price: plan.price, amount: plan.amount } } });
         } catch (error: any) {
             console.error("Error calling function:", error);
             navigate("/error");

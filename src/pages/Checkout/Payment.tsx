@@ -1,8 +1,7 @@
-import { redirect } from "react-router";
+import { Navigate, useLocation } from "react-router";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "./PaymentForm";
-import type { Route } from "./+types/payment";
 
 interface PaymentPageState {
     clientSecret: string;
@@ -16,12 +15,10 @@ interface PaymentPageState {
 
 const stripePromise = loadStripe(import.meta.env.STRIPE_PROD_PUBLIC_KEY);
 
-export default function Payment({
-    params
-}: Route.ComponentProps) {
-    const state = params as PaymentPageState;
-    console.log(state);
-    if (!state) redirect("/");
+export default function Payment() {
+    const location = useLocation();
+    const state = location.state as PaymentPageState | undefined;
+    if (!state) return <Navigate to="/" />;
     return (
         <Elements stripe={stripePromise}>
             <PaymentForm
@@ -30,5 +27,5 @@ export default function Payment({
             />
         </Elements>
     );
-};
+}
 
