@@ -30,10 +30,6 @@ interface AuthContextProps {
     isEmailNotificationEnabled: boolean;
     currentUser: User | null;
     loginWithGoogle: () => Promise<void>;
-    signUpWithEmailAndPassword: (
-        email: string,
-        password: string
-    ) => Promise<void>;
     signOut: () => Promise<void>;
     handleRecoverPassword: (email: string) => Promise<void>;
     sendPasswordReset: (email: string) => Promise<void>;
@@ -87,21 +83,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsAuthenticated(true);
         return result.user;
     }
-
-    const signUpWithEmailAndPassword = useCallback(async (email: string, password: string) => {
-        try {
-            const currentUser = auth.currentUser;
-
-            if (currentUser?.isAnonymous) {
-                const credential = EmailAuthProvider.credential(email, password);
-                const linked = await linkWithCredential(currentUser, credential);
-                console.log("Anonymous account linked successfully!", linked);
-            }
-        } catch (error) {
-            console.error("Error during sign-up:", error);
-            throw error;
-        }
-    }, []);
 
     const deleteUserAccount = async (currentPassword: string) => {
         console.log("Deleting user account...");
@@ -189,7 +170,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Configurar o usuário atual e o estado de autenticação
             setCurrentUser(result.user);
             setIsAuthenticated(true);
-
             return result.user;
         } catch (error) {
             const authError = error as { code?: string; message: string };
@@ -249,7 +229,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         currentUser,
         isAuthenticated,
         loginWithGoogle,
-        signUpWithEmailAndPassword,
         signOut: signOutFn,
         handleRecoverPassword,
         sendPasswordReset,

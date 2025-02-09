@@ -10,7 +10,7 @@ import { redirect } from "react-router";
 export default function CheckoutPage() {
     const { isAuthenticated } = useAuth();
     const [loading, setLoading] = useState(false);
-
+    console.log(isAuthenticated)
     useEffect(() => {
         if (!isAuthenticated) {
             redirect("/login?redirect=/checkout");
