@@ -3,9 +3,8 @@ import { LuCircleCheck } from "react-icons/lu";
 import { httpsCallable } from 'firebase/functions';
 import { functions } from "@/utils/firebase";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useNavigate, redirect } from "react-router";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function CheckoutPage() {
     const { isAuthenticated } = useAuth();
@@ -13,10 +12,10 @@ export default function CheckoutPage() {
     let navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (isAuthenticated === false) {
             navigate("/login?redirect=/checkout");
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, navigate]);
 
     const handleCheckout = async (plan: { id: string; price: string; amount: number, priceId: string }) => {
         setLoading(true);
@@ -24,17 +23,16 @@ export default function CheckoutPage() {
             const createStripeCheckoutSession = httpsCallable(functions, 'createStripeCheckoutSession');
             const result = await createStripeCheckoutSession({ priceId: plan.priceId, quantity: 1 });
             const data = result.data as { clientSecret?: string };
-            console.log(data)
+            console.log(data);
             if (!data.clientSecret) {
                 console.error("Client secret missing in response:", data);
-                return redirect("/error");
+                navigate("/error");
+                return;
             }
-
-            return redirect(`/payment?clientSecret=${data.clientSecret}&planId=${plan.id}&planPrice=${plan.price}&planAmount=${plan.amount}`);
+            navigate(`/payment?clientSecret=${data.clientSecret}&planId=${plan.id}&planPrice=${plan.price}&planAmount=${plan.amount}`);
         } catch (error: any) {
             console.error("Error calling function:", error);
-            // Handle error appropriately (e.g., show an error message to the user)
-            return redirect("/error"); // Redirect to an error page
+            navigate("/error");
         } finally {
             setLoading(false);
         }
