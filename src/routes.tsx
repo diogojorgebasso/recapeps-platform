@@ -23,7 +23,6 @@ export default [
         ...prefix("notes", [
             index("./pages/Notes/index.tsx"),
             route(":subject", "./pages/Notes/DynamicPage.tsx"),
-            route("create-note", "./pages/Notes/createNote.tsx"), // funcionalitie just for admins
         ]),
         route("profil", "./pages/Auth/Profil.tsx"),
         ...prefix("flashcards", [

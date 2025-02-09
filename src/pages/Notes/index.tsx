@@ -46,7 +46,6 @@ export default function Home() {
 
     }, []);
 
-
     return (
         <Box>
             <Toaster />

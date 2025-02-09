@@ -9,7 +9,7 @@ export async function getBlogPage(subject: string) {
       id: doc.id,
       ...doc.data(),
     }));
-    return pages[0]; //retorna somente a primeira nota
+    return pages[0];
   } catch (error) {
     console.error("Erro ao buscar a página: ", error);
     throw error;

@@ -11,10 +11,9 @@ export default function APropos() {
     return (
         <Box
             minH="100vh"
-            alignItems="center"
-            justifyContent="center"
+            mx="auto"  // centers the content horizontally with automatic left/right margins
+            px={4}     // adds padding on left and right
         >
-            {/* Título principal */}
             <Heading
                 as="h1"
                 size="xl"

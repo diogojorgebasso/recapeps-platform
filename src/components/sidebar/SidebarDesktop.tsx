@@ -55,7 +55,6 @@ export default function SidebarDesktop() {
   const [openPopover, setOpenPopover] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(true);
   const [currentStep, setCurrentStep] = useState<number>(0);
-
   const steps = [
     {
       title: "Profil",
@@ -95,7 +94,7 @@ export default function SidebarDesktop() {
 
   return (
     <>
-      {currentUser?.tourEnabled && openDialog && (
+      {currentUser?.tourEnabled && (
         <DialogRoot role="alertdialog" open={openDialog} onOpenChange={(e) => setOpenDialog(e.open)} placement="top">
           <DialogContent>
             <DialogHeader>

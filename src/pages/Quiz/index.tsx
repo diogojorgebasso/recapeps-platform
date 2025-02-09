@@ -73,7 +73,7 @@ export default function Home() {
       </Box>
 
       <Box>
-        <Heading size="xl" mb="4" color="blue.600">
+        <Heading size="xl" color="blue.600">
           Écrit 2
         </Heading>
         <Text mb="4" fontWeight="bold" >Teste immédiatement tes connaissances pour t’assurer d’avoir bien assimilé les concepts clés.</Text>

@@ -18,17 +18,23 @@ import {
 import { createContext, useCallback, useEffect, useState } from "react";
 import { ReactNode } from "react";
 import { auth } from "@/utils/firebase";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { AbsoluteCenter, Spinner, Text } from "@chakra-ui/react";
 
+export interface ExtendedUser extends User {
+    firstName?: string;
+    secondName?: string;
+    tourEnabled?: boolean;
+    emailNotifications?: boolean;
+}
+
 interface AuthContextProps {
-    getUserToken: () => Promise<string>;
-    setCurrentUser:
-    React.Dispatch<React.SetStateAction<User | null>>;
+    currentUser: ExtendedUser | null;
     isAuthenticated: boolean;
     isEmailNotificationEnabled: boolean;
-    currentUser: User | null;
+    getUserToken: () => Promise<string>;
+    setCurrentUser: React.Dispatch<React.SetStateAction<ExtendedUser | null>>;
     loginWithGoogle: () => Promise<void>;
     signOut: () => Promise<void>;
     handleRecoverPassword: (email: string) => Promise<void>;
@@ -36,52 +42,58 @@ interface AuthContextProps {
     handleEmailChange: (currentPassword: string, email: string) => Promise<void>;
     updateUserName: (firstName: string, secondName: string) => Promise<void>;
     updateEmailNotificationPreference: (preference: boolean) => Promise<void>;
-    deleteUserAccount: (currentPassword: string) => Promise<void>;
-    upgradeFromAnonymous: (email: string, password: string) => Promise<User>;
-    simpleLogin: (email: string, password: string) => Promise<User>;
     handleTourPreference: (enableTour: boolean) => Promise<void>;
-};
+    upgradeFromAnonymous: (email: string, password: string) => Promise<User>;
+    deleteUserAccount: (currentPassword: string) => Promise<void>;
+    simpleLogin: (email: string, password: string) => Promise<User>;
+}
 
-
-export const AuthContext = createContext<AuthContextProps | null>(null);
+export const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [currentUser, setCurrentUser] = useState<ExtendedUser | null>(null);
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isEmailNotificationEnabled,] = useState(true);
+    const [isEmailNotificationEnabled] = useState(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                setCurrentUser(user);
-                // Define isAuthenticated como true somente se o usuário não for anônimo
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                const userData = userSnap.exists() ? userSnap.data() : {};
+
+                setCurrentUser({
+                    ...user,
+                    firstName: userData?.firstName ?? "Étudiant",
+                    secondName: userData?.secondName ?? "Recap'eps",
+                    tourEnabled: userData?.tourEnabled ?? true,
+                    emailNotifications: userData?.emailNotifications ?? true,
+                } as ExtendedUser);
                 setIsAuthenticated(!user.isAnonymous);
-                setLoading(false);
             } else {
-                // Caso não tenha user, faz login anônimo
                 try {
                     await signInAnonymously(auth);
                 } catch (err) {
                     console.error('Erro ao fazer login anônimo:', err);
                 } finally {
-                    setLoading(false);
+                    setCurrentUser(null);
+                    setIsAuthenticated(false);
                 }
             }
+            setLoading(false);
         });
         return () => unsubscribe();
     }, []);
 
-    async function upgradeFromAnonymous(email: string, password: string) {
+    const upgradeFromAnonymous = async (email: string, password: string) => {
         const user = auth.currentUser;
-        if (!user) {
-            throw new Error("Nenhum usuário autenticado para fazer upgrade.");
-        }
+        if (!user) throw new Error("No user is currently signed in.");
         const credential = EmailAuthProvider.credential(email, password);
         const result = await linkWithCredential(user, credential);
-        setCurrentUser(result.user);
+        setCurrentUser(result.user as ExtendedUser);
         return result.user;
-    }
+    };
 
     const deleteUserAccount = async (currentPassword: string) => {
         console.log("Deleting user account...");
@@ -94,20 +106,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             console.error("Error deleting user account:", error);
         }
-    }
+    };
 
-    /**
-     * 
-     * @param enableTour 
-     * @returns 
-     */
     const handleTourPreference = async (enableTour: boolean) => {
         try {
             console.log("Updating tour preference...", enableTour);
             if (!currentUser) return;
             const userRef = doc(db, "users", currentUser.uid);
             await updateDoc(userRef, { tourEnabled: enableTour });
-            // Update the local user object with the new tour preference
             setCurrentUser({ ...(currentUser as any), tourEnabled: enableTour });
         } catch (error) {
             console.error("Error updating tour preference:", error);
@@ -129,7 +135,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-
     const updateUserName = async (firstName: string, secondName: string) => {
         if (currentUser) {
             try {
@@ -141,33 +146,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-
-    /**
-       * Login com Google (faz link automático se o user for anônimo,
-       * ou simplesmente "login" se não for).
-       */
     const loginWithGoogle = useCallback(async () => {
         const provider = new GoogleAuthProvider();
         const user = auth.currentUser;
         if (user?.isAnonymous) {
-            // Se é anônimo, linkamos
             await signInWithPopup(auth, provider);
         } else {
-            // Se não é anônimo, também funciona, mas vira "multi-provider".
             await signInWithPopup(auth, provider);
         }
     }, []);
 
-    /**
-     * Função responsável por logar o usuário.
-     * @param email Identificador do Usuário
-     * @param password Senha de Login do Usuário
-     * @returns 
-     */
     async function simpleLogin(email: string, password: string) {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
-            setCurrentUser(result.user);
+            setCurrentUser(result.user as ExtendedUser);
             setIsAuthenticated(true);
             return result.user;
         } catch (error) {
@@ -182,7 +174,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
         }
     }
-
 
     const updateEmailNotificationPreference = async (preference: boolean) => {
         try {
@@ -201,10 +192,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             await signOut(auth);
             setCurrentUser(null);
             setIsAuthenticated(false);
-            // Clean up any user-specific data from localStorage if needed
             localStorage.removeItem('user-preferences');
-
-            // Use navigate instead of window.location for better React integration
             window.location.href = '/';
         } catch (error) {
             console.error("Error signing out:", error);
@@ -231,7 +219,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return "";
     }, []);
 
-    const value = {
+    const value: AuthContextProps = {
         currentUser,
         isAuthenticated,
         loginWithGoogle,
@@ -252,7 +240,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return (
         <AuthContext.Provider value={value}>
-            {!loading ? children : <AbsoluteCenter><Spinner size="xl" /><Text fontSize="5xl">Chargement&hellip;</Text></AbsoluteCenter>}
+            {!loading ? children : (
+                <AbsoluteCenter>
+                    <Spinner size="xl" />
+                    <Text fontSize="5xl">Chargement&hellip;</Text>
+                </AbsoluteCenter>
+            )}
         </AuthContext.Provider>
     );
 }

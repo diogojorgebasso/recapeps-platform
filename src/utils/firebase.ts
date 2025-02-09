@@ -23,10 +23,14 @@ export const storage = getStorage(app);
 export const functions = getFunctions(app);
 // Only initialize App Check in browser environment
 if (typeof window !== "undefined") {
-  initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider(
-      "6Le-6H8qAAAAABnX3YE60B2yDwojG0nZAEd0a7ne"
-    ),
-    isTokenAutoRefreshEnabled: true,
-  });
+  try {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(
+        "6Le-6H8qAAAAABnX3YE60B2yDwojG0nZAEd0a7ne"
+      ),
+      isTokenAutoRefreshEnabled: true,
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
