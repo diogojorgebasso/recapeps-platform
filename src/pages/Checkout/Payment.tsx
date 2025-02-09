@@ -20,6 +20,7 @@ export default function Payment({
     params
 }: Route.ComponentProps) {
     const state = params.state as PaymentPageState;
+    console.log(state);
     if (!state) redirect("/");
     return (
         <Elements stripe={stripePromise}>
