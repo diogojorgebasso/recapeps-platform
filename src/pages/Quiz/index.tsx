@@ -23,11 +23,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+
 export default function Home() {
   const [subjects1, setSubjects1] = useState<Subject[]>([]);
   const [subjects2, setSubjects2] = useState<Subject[]>([]);
-  const { subscribed } = useAuth();
+  const { isSubscribed } = useSubscription();
 
   useEffect(() => {
     const loadSubjects = async () => {
@@ -65,7 +66,7 @@ export default function Home() {
               name={name}
               image={image}
               premium={premium}
-              isUserPremium={subscribed}
+              isUserPremium={isSubscribed}
             />
           ))}
         </SimpleGrid>
@@ -84,7 +85,7 @@ export default function Home() {
               name={name}
               image={image}
               premium={premium}
-              isUserPremium={subscribed}
+              isUserPremium={isSubscribed}
             />
           ))}
         </SimpleGrid>
