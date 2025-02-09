@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import {
     Flex,
     Card,
@@ -9,7 +10,6 @@ import {
     Fieldset,
 } from "@chakra-ui/react";
 import { FaGoogle } from "react-icons/fa";
-import { useNavigate } from "react-router";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useAuth } from "@/hooks/useAuth";
 import { useColorModeValue } from "@/components/ui/color-mode";
@@ -23,13 +23,16 @@ export default function Login() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { isAuthenticated, simpleLogin, loginWithGoogle } = useAuth();
+    const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/dashboard");
+            const params = new URLSearchParams(location.search);
+            const redirectTo = params.get("redirect") || "/dashboard";
+            navigate(redirectTo);
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, location, navigate]);
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -38,7 +41,7 @@ export default function Login() {
         setIsSubmitting(true);
         try {
             await simpleLogin(email, password);
-            navigate("/dashboard");
+            // Navigation is handled by useEffect when isAuthenticated becomes true
         } catch (error) {
             const authError = error as { code?: string; message: string };
             if (authError.code === "auth/user-not-found") {
@@ -53,8 +56,6 @@ export default function Login() {
             setIsSubmitting(false);
         }
     };
-
-
 
     const handleGoogleLogin = async () => {
         setErrorMessage(null);

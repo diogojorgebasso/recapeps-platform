@@ -4,27 +4,36 @@ import { LuCircleCheck } from "react-icons/lu";
 import { httpsCallable } from 'firebase/functions';
 import { functions } from "@/utils/firebase";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
 
 export default function CheckoutPage() {
-    const { getUserToken } = useAuth();
+    const { isAuthenticated } = useAuth();
+    const [loading, setLoading] = useState(false);
 
     const handleCheckout = async (plan: { id: string; price: string; amount: number, priceId: string }) => {
+        setLoading(true);
         try {
-            const token = await getUserToken();
-            if (!token) {
-                // Redirect to login if the user is not authenticated
-                return redirect("/login");
+            if (!isAuthenticated) {
+                // Redirect to login with a parameter to redirect back to the checkout page
+                return redirect("/login?redirect=/checkout");
             }
 
             const createStripeCheckoutSession = httpsCallable(functions, 'createStripeCheckoutSession');
             const result = await createStripeCheckoutSession({ priceId: plan.priceId, quantity: 1 });
-            const data = result.data as { clientSecret: string };
+            const data = result.data as { clientSecret?: string };
+            console.log(data)
+            if (!data.clientSecret) {
+                console.error("Client secret missing in response:", data);
+                return redirect("/error");
+            }
 
             return redirect(`/payment?clientSecret=${data.clientSecret}&planId=${plan.id}&planPrice=${plan.price}&planAmount=${plan.amount}`);
         } catch (error: any) {
             console.error("Error calling function:", error);
             // Handle error appropriately (e.g., show an error message to the user)
             return redirect("/error"); // Redirect to an error page
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -51,6 +60,7 @@ export default function CheckoutPage() {
                     <Card.Footer>
                         <Button
                             onClick={() => handleCheckout(plan)}
+                            disabled={loading}
                             rounded="full"
                             mt={3}
                             size="2xl"

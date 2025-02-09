@@ -27,7 +27,6 @@ interface AuthContextProps {
     setCurrentUser:
     React.Dispatch<React.SetStateAction<User | null>>;
     isAuthenticated: boolean;
-    subscribed: boolean;
     isEmailNotificationEnabled: boolean;
     currentUser: User | null;
     loginWithGoogle: () => Promise<void>;
@@ -55,7 +54,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isEmailNotificationEnabled,] = useState(true);
-    const [subscribed,] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -262,7 +260,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         upgradeFromAnonymous,
         simpleLogin,
         isEmailNotificationEnabled,
-        subscribed,
         setCurrentUser,
         getUserToken,
         handleTourPreference

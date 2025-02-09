@@ -19,14 +19,14 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const { currentUser } = useAuth(); //check if the user is logged
+  const { isAuthenticated } = useAuth(); //check if the user is logged
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!isAuthenticated) {
       navigate("/login");
     }
-  }, [currentUser]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!stripe) return;

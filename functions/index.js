@@ -95,8 +95,9 @@ exports.createStripeCheckoutSession = onRequest(
       res.status(401).json({ error: "Invalid authentication token." });
       return;
     }
-
-    const { priceId, quantity = 1 } = req.body;
+    logger.info(`User ${userId} authenticated successfully.`);
+    logger.info("Request body:", req.body.data);
+    const { priceId, quantity = 1 } = req.body.data;
     if (!priceId) {
       res.status(400).json({ error: "Invalid subscription data." });
       return;
@@ -107,8 +108,10 @@ exports.createStripeCheckoutSession = onRequest(
       let customer;
       const userDoc = await db.collection("users").doc(userId).get();
       if (userDoc.exists && userDoc.data().stripeCustomerId) {
+        logger.info(`Customer found for user ${userId}.`);
         customer = userDoc.data().stripeCustomerId;
       } else {
+        logger.info(`Creating customer for user ${userId}.`);
         const customerData = await stripe.customers.create({
           email: userDoc.data().email,
           metadata: { firebaseUID: userId },
