@@ -13,7 +13,7 @@ interface PaymentPageState {
     };
 }
 
-const stripePromise = loadStripe(import.meta.env.STRIPE_PROD_PUBLIC_KEY);
+const stripePromise = loadStripe("pk_live_51QqK3jEfLSFXfvk1Ysx877RxVyMoWj4NMoFUWGvyvVKbI7Zw9bT4FzuJ4TKf0ne3LxO7FjKCaTGdwJZ1VTRgBkpv00eNrzjryZ");
 
 export default function Payment() {
     const location = useLocation();
