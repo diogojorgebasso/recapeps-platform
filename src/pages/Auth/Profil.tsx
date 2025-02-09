@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/dialog"
 import { Field } from "@/components/ui/field";
 import { Toaster, toaster } from "@/components/ui/toaster"
-
 import {
     FileUploadRoot,
     FileUploadTrigger,
@@ -37,7 +36,8 @@ import {
 import { HiUpload } from "react-icons/hi";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useSubscription } from "@/hooks/useSubscription";
-
+import { functions } from "@/utils/firebase";
+import { httpsCallable } from "firebase/functions";
 export default function Profil() {
     const { handleEmailChange, updateUserName, deleteUserAccount,
         isEmailNotificationEnabled, updateEmailNotificationPreference, currentUser } = useAuth();
@@ -143,12 +143,10 @@ export default function Profil() {
     }
 
     const cancelSubscription = async () => {
-        const token = await currentUser?.getIdToken();
-        const response = await fetch("/cancelSubscription", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        });
-        if (response.ok) {
+        const cancelSubscriptionFn = httpsCallable(functions, 'cancelSubscription');
+        const result = await cancelSubscriptionFn({ subscriptionId: subscriptionType });
+
+        if (result.data) {
             toaster.create({
                 title: "Abonnement annulé",
                 type: "success",
@@ -159,6 +157,30 @@ export default function Profil() {
                 title: "Erreur",
                 type: "error",
                 description: "Une erreur s'est produite lors de l'annulation de l'abonnement.",
+            });
+        }
+    };
+
+    const handlePortalSession = async () => {
+        try {
+            const createPortalSession = httpsCallable(functions, 'createPortalSession');
+            const result = await createPortalSession({});
+            const data = result.data as { url?: string };
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                toaster.create({
+                    title: "Erreur",
+                    type: "error",
+                    description: "Aucun lien de session de portail reçu.",
+                });
+            }
+        } catch (error) {
+            console.error("Error creating portal session:", error);
+            toaster.create({
+                title: "Erreur",
+                type: "error",
+                description: "Impossible de créer la session de portail.",
             });
         }
     };
@@ -302,6 +324,14 @@ export default function Profil() {
                         </Text>
                         <Button colorScheme="red" onClick={cancelSubscription}>
                             Annuler l'abonnement
+                        </Button>
+                        {/* New button for Portal */}
+                        <Button
+                            mt={4}
+                            colorScheme="blue"
+                            onClick={handlePortalSession}
+                        >
+                            Gérer mon abonnement
                         </Button>
                     </VStack>
                 ) : (

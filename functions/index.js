@@ -231,9 +231,10 @@ exports.stripeWebhook = functions.https.onRequest((req, res) => {
   switch (event.type) {
     case "invoice.payment_succeeded": {
       const invoice = event.data.object;
+      logger.info("Invoice payment succeeded:", invoice);
       const subscriptionId = invoice.subscription;
-      const userId = invoice.metadata.firebaseUID; // Ensure firebaseUID is passed
-      logger.info("Invoice payment succeeded:", invoice.id);
+      const userId = invoice.subscription_details.metadata.firebaseUID; // Ensure firebaseUID is passed
+      logger.info("Invoice payment succeeded:", subscriptionId);
       logger.info("User ID:", userId);
       if (userId && subscriptionId) {
         const subscriptionRef = db
