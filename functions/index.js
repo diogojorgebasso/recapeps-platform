@@ -4,7 +4,6 @@ const { onRequest } = require("firebase-functions/v2/https");
 const { logger } = require("firebase-functions");
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
-const { onSchedule } = require("firebase-functions/v2/scheduler");
 
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -13,7 +12,6 @@ initializeApp();
 
 const db = getFirestore();
 
-// Exporte as funções (NÃO altere a lógica interna):
 exports.saveRoleToFirestore = functions.auth.user().onCreate(async (user) => {
   try {
     const { uid, email, displayName, photoURL } = user;
@@ -39,44 +37,6 @@ exports.saveRoleToFirestore = functions.auth.user().onCreate(async (user) => {
   }
 });
 
-exports.cleanUpAnonymousUsers = onSchedule(
-  {
-    schedule: "0 0 * * *",
-    timeZone: "America/Sao_Paulo",
-  },
-  async () => {
-    const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000;
-    const now = Date.now();
-
-    let nextPageToken;
-    let deletedCount = 0;
-
-    do {
-      const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
-      const usersToDelete = listUsersResult.users.filter((user) => {
-        const lastSignInTime = user.metadata.lastSignInTime;
-        if (!lastSignInTime) return true;
-        const diff = now - new Date(lastSignInTime).getTime();
-        const isAnonymous = user.providerData.length === 0;
-        return isAnonymous && diff > THIRTY_DAYS_IN_MS;
-      });
-
-      for (const user of usersToDelete) {
-        await admin.auth().deleteUser(user.uid);
-        deletedCount++;
-        console.log(`Usuário anônimo ${user.uid} deletado.`);
-      }
-
-      nextPageToken = listUsersResult.pageToken;
-    } while (nextPageToken);
-
-    console.log(
-      `Limpeza concluída. Total de usuários deletados: ${deletedCount}.`
-    );
-    return null;
-  }
-);
-
 exports.deleteUserDocument = functions.auth.user().onDelete(async (user) => {
   console.log("Deleting user data:", user.uid);
   const userUid = user.uid;
@@ -88,7 +48,6 @@ exports.deleteUserDocument = functions.auth.user().onDelete(async (user) => {
     if (!docSnapshot.exists) {
       logger.warn(`Document for user ${userUid} not found in Firestore.`);
     } else {
-      // Deleta o documento
       await userDocRef.delete();
       logger.info(`User ${userUid} deleted from Firestore successfully.`);
     }
@@ -137,44 +96,105 @@ exports.createStripeCheckoutSession = onRequest(
       return;
     }
 
-    const { items } = req.body;
-    if (!items || !Array.isArray(items)) {
-      res.status(400).json({ error: "Invalid items payload." });
+    const { priceId, quantity = 1 } = req.body;
+    if (!priceId) {
+      res.status(400).json({ error: "Invalid subscription data." });
       return;
     }
 
     try {
-      const amount = items.reduce(
-        (total, item) => total + item.amount * item.quantity,
-        0
-      );
+      // Recupera ou cria um cliente no Stripe
+      let customer;
+      const userDoc = await db.collection("users").doc(userId).get();
+      if (userDoc.exists && userDoc.data().stripeCustomerId) {
+        customer = userDoc.data().stripeCustomerId;
+      } else {
+        const customerData = await stripe.customers.create({
+          email: userDoc.data().email,
+          metadata: { firebaseUID: userId },
+        });
+        customer = customerData.id;
+        await db
+          .collection("users")
+          .doc(userId)
+          .update({ stripeCustomerId: customer });
+      }
 
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount,
-        currency: "eur",
-        automatic_payment_methods: { enabled: true },
-        metadata: { firebaseUID: userId },
+      // Cria a assinatura no Stripe
+      const subscription = await stripe.subscriptions.create({
+        customer,
+        items: [{ price: priceId, quantity }],
+        payment_behavior: "default_incomplete",
+        expand: ["latest_invoice.payment_intent"],
       });
 
-      const paymentData = {
-        amount,
-        currency: "eur",
-        status: "pending",
+      // Salva no Firestore
+      await db.collection("users").doc(userId).collection("subscriptions").add({
+        subscriptionId: subscription.id,
+        priceId,
         createdAt: FieldValue.serverTimestamp(),
-        items,
-        paymentIntentId: paymentIntent.id,
-      };
+        status: subscription.status,
+      });
 
-      await db
-        .collection("users")
-        .doc(userId)
-        .collection("payments")
-        .add(paymentData);
-
+      // Retorna o client_secret para o front
+      const paymentIntent = subscription.latest_invoice.payment_intent;
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (error) {
-      console.error("Error creating Stripe Payment Intent:", error);
-      res.status(500).json({ error: "Failed to create payment session." });
+      console.error("Error creating subscription:", error);
+      res.status(500).json({ error: "Failed to create subscription." });
+    }
+  }
+);
+
+exports.cancelSubscription = onRequest(
+  { cors: "https://recapeps.fr" },
+  async (req, res) => {
+    if (req.method !== "POST") {
+      res.status(405).json({ error: "Method Not Allowed" });
+      return;
+    }
+
+    const authHeader = req.headers.authorization || "";
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.split("Bearer ")[1]
+      : null;
+
+    if (!token) {
+      res
+        .status(401)
+        .json({ error: "Unauthenticated request. Token missing." });
+      return;
+    }
+
+    let userId;
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      userId = decodedToken.uid;
+    } catch (error) {
+      res.status(401).json({ error: "Invalid authentication token." });
+      return;
+    }
+
+    const { subscriptionId } = req.body;
+    if (!subscriptionId) {
+      res.status(400).json({ error: "Invalid subscription data." });
+      return;
+    }
+
+    try {
+      // Cancela a assinatura no Stripe
+      await stripe.subscriptions.del(subscriptionId);
+      // Atualiza o status da assinatura no Firestore
+      const subscriptionRef = db
+        .collection("users")
+        .doc(userId)
+        .collection("subscriptions")
+        .doc(subscriptionId);
+      await subscriptionRef.update({ status: "canceled" });
+      res.status(200).json({ message: "Subscription canceled successfully." });
+    } catch (error) {
+      console.error("Error canceling subscription:", error);
+      res.status(500).json({ error: "Failed to cancel subscription." });
     }
   }
 );
