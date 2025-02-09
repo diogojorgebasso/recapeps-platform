@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { CardElement, useStripe, useElements, PaymentRequestButtonElement } from '@stripe/react-stripe-js';
+import { CardElement, PaymentElement, useStripe, useElements, PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import { Box, Button, Container, Heading, Text, VStack } from '@chakra-ui/react';
 import { PaymentRequest } from '@stripe/stripe-js';
 
@@ -59,7 +59,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
         <Text>Prix: {selectedPlan.price}</Text>
         <Box as="form" onSubmit={handlePayment}>
           <Box border="1px" borderColor="gray.200" p={4} borderRadius="md">
-            <CardElement />
+            <PaymentElement />
           </Box>
           <Button
             type="submit"
