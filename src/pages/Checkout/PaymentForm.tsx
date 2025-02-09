@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { CardElement, useStripe, useElements, PaymentRequestButtonElement } from '@stripe/react-stripe-js';
+import { CardElement, useStripe, useElements, ExpressCheckoutElement, LinkAuthenticationElement } from '@stripe/react-stripe-js';
 import { Box, Button, Container, Heading, Text, VStack } from '@chakra-ui/react';
-import { PaymentRequest } from '@stripe/stripe-js';
 
 interface PaymentFormProps {
   clientSecret: string;
@@ -18,7 +17,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
 
 
   const handlePayment = async (e: React.FormEvent) => {
@@ -46,6 +44,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
         <Heading size="xl">Payer pour {selectedPlan.name}</Heading>
         <Text>Prix: {selectedPlan.price}</Text>
         <Box as="form" onSubmit={handlePayment}>
+          <LinkAuthenticationElement />
           <Box border="1px" borderColor="gray.200" p={4} borderRadius="md">
             <CardElement />
           </Box>
@@ -60,13 +59,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
             Payer
           </Button>
         </Box>
-        {paymentRequest && (
-          <PaymentRequestButtonElement
-            options={{ paymentRequest, style: { paymentRequestButton: { theme: "dark" } } }}
-          />
-        )}
+        <ExpressCheckoutElement onConfirm={async (params) => {
+          console.log('onConfirm', params);
+        }} />
       </VStack>
-    </Container>
+    </Container >
   );
 };
 
