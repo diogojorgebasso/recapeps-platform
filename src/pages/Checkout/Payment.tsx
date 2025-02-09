@@ -19,7 +19,7 @@ const stripePromise = loadStripe(import.meta.env.STRIPE_PROD_PUBLIC_KEY);
 export default function Payment({
     params
 }: Route.ComponentProps) {
-    const state = params.state as PaymentPageState;
+    const state = params as PaymentPageState;
     console.log(state);
     if (!state) redirect("/");
     return (
