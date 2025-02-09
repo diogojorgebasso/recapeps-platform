@@ -131,6 +131,8 @@ exports.createStripeCheckoutSession = onRequest(
         expand: ["latest_invoice.payment_intent"],
       });
 
+      logger.info("Subscription created:", subscription);
+
       // Salva no Firestore
       await db.collection("users").doc(userId).collection("subscriptions").add({
         subscriptionId: subscription.id,
@@ -141,6 +143,7 @@ exports.createStripeCheckoutSession = onRequest(
 
       // Retorna o client_secret para o front
       const paymentIntent = subscription.latest_invoice.payment_intent;
+      logger.debug("Payment intent:", paymentIntent);
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (error) {
       console.error("Error creating subscription:", error);

@@ -61,7 +61,7 @@ export default function CheckoutPage() {
                     <Card.Footer>
                         <Button
                             onClick={() => handleCheckout(plan)}
-                            disabled={loading}
+                            loading={loading}
                             rounded="full"
                             mt={3}
                             size="2xl"

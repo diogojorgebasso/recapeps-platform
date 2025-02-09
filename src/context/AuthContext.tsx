@@ -54,8 +54,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
+                console.log(user);
                 setCurrentUser(user);
                 setLoading(false);
+                setIsAuthenticated(true);
             } else {
                 // Caso não tenha user, faz login anônimo
                 try {
@@ -166,15 +168,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function simpleLogin(email: string, password: string) {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
-
-            // Configurar o usuário atual e o estado de autenticação
             setCurrentUser(result.user);
             setIsAuthenticated(true);
             return result.user;
         } catch (error) {
             const authError = error as { code?: string; message: string };
-
-            // Tratar diferentes tipos de erros
             if (authError.code === "auth/user-not-found") {
                 throw new Error("Usuário não encontrado. Verifique seu e-mail.");
             } else if (authError.code === "auth/wrong-password") {

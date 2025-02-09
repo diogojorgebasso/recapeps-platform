@@ -37,7 +37,6 @@ export default function Login() {
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setErrorMessage(null);
-        console.log("entrei no handleLogin")
         setIsSubmitting(true);
         try {
             await simpleLogin(email, password);
