@@ -24,10 +24,10 @@ export default function MentionsLegales() {
                     ARTICLE 1 – OBJET
                 </Heading>
                 <Text>
-                    Les présentes CGV définissent les droits et obligations des parties dans le cadre de la vente
-                    en ligne des services proposés par le Site. Elles régissent les étapes nécessaires à la
-                    finalisation de tout achat sur le Site. Toute commande passée sur le Site implique l’adhésion
-                    sans réserve du Client aux présentes CGV.
+                    Les présentes CGV définissent les droits et obligations des parties dans le cadre de la vente en
+                    ligne des services proposés par le Site. Elles régissent les étapes nécessaires à la finalisation
+                    de tout achat sur le Site. Toute commande passée sur le Site implique l’adhésion sans réserve du
+                    Client aux présentes CGV.
                 </Text>
 
                 <Heading as="h2" size="lg" mt={4} color="orange.500">
@@ -126,13 +126,21 @@ export default function MentionsLegales() {
                     ARTICLE 8 – DONNÉES PERSONNELLES
                 </Heading>
                 <Text>
-                    Les données personnelles collectées sont traitées conformément à notre Politique de
-                    Confidentialité.
+                    Les données personnelles collectées sont traitées conformément à notre <strong>Politique de
+                        Confidentialité.</strong>
                 </Text>
+                <Text>Conformément au RGPD, au règlement européen 2016/679 et à la Loi Informatique et Liberté (Loi 78-17 du 6 janvier 1978), tout utilisateur dispose des droits suivants :</Text>
+                <List.Root ps="5">
+                    <List.Item>Droit d’accès, rectification et effacement des données</List.Item>
+                    <List.Item>Droit à la portabilité des données</List.Item>
+                    <List.Item>Droit à la limitation et à l’opposition du traitement des données</List.Item>
+                    <List.Item>Droit de déterminer le sort des données après la mort</List.Item>
+                    <List.Item>Droit de saisir l’autorité de contrôle compétente.</List.Item>
+                </List.Root>
                 <Text>
-                    Le Client dispose d’un droit d’accès, de modification et de suppression de ses données en
-                    envoyant une demande à<Link target="_blank" href="mailto:contact@recapeps.fr">contact@recapeps.fr</Link>.
+                    L’Utilisateur peut exercer ces droits en nous contactant à  <Link target="_blank" href="mailto:contact@recapeps.fr">contact@recapeps.fr</Link>.
                 </Text>
+                <Text>Nous l’invitons également à consulter le site cnil.fr pour plus d’informations sur ses droits. </Text>
                 <Heading as="h2" size="lg" mt={4} color="orange.500">
                     ARTICLE 9 – PROPRIÉTÉ INTELLECTUELLE
                 </Heading>
@@ -145,21 +153,30 @@ export default function MentionsLegales() {
                     lien qu’il jugerait inapproprié.
                 </Text>
                 <Heading as="h2" size="lg" mt={4} color="orange.500">
-                    ARTICLE 10 – DROIT APPLICABLE EN CAS DE LITIGE
+                    ARTICLE 10 – LITIGE
+                </Heading>
+                <Text>
+                    Pour toute réclamation, merci de contacter l’Editeur directement à l’adresse suivante : <Link target="_blank" href="mailto:contact@recapeps.fr">contact@recapeps.fr</Link>.
+                </Text>
+                <Text>Le Client est informé qu’il peut en tout état de cause faire appel à un médiateur conventionnel de la consommation, après des instance de médiation sectorielles existantes ou à tout autre mode alternatif de règlement des différends comme la conciliation en cas de contestation.</Text>
+                <Text>Le Client est également informé qu’il peut s’il le souhaite recourir à la plateforme européenne de Règlement en Ligne des Litiges : <Link href="https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=FR">https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=FR</Link> </Text>
+                <Text>Tous les litiges entre le Client et le vendeur qui n’auraient pas fait l’objet d’un règlement amiable ou par médiation, seront soumis aux tribunaux compétents dans les conditions de droit commun. </Text>
+                <Heading as="h2" size="lg" mt={4} color="orange.500">
+                    ARTICLE 11 – DROIT APPLICABLE - LANGUE
                 </Heading>
                 <Text>
                     La langue du présent contrat est la langue française. Les présentes conditions de vente sont
                     soumises à la loi française. En cas de litige, les tribunaux français seront les seuls compétents.
                 </Text>
                 <Heading as="h2" size="lg" mt={4} color="orange.500">
-                    ARTICLE 11 – MODIFICATION DES CGV
+                    ARTICLE 12 – MODIFICATION DES CGV
                 </Heading>
                 <Text>
                     L’Editeur se réserve le droit de modifier les présentes CGV à tout moment. Les modifications
                     seront opposables aux Clients après leur mise en ligne.
                 </Text>
                 <Heading as="h2" size="lg" mt={4} color="orange.500">
-                    ARTICLE 12 – CONTACT
+                    ARTICLE 13 – CONTACT
                 </Heading>
                 <Text>
                     Pour toute question relative aux CGV, le Client peut contacter directement l’Editeur à
