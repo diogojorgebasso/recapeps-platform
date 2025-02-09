@@ -269,8 +269,10 @@ export default function SidebarDesktop() {
                       <StepsPrevTrigger asChild>
                         <Button
                           onClick={() => {
-                            setCurrentStep(currentStep - 1)
-                            setOpenPopover(currentStep - 1)
+                            if (currentStep > 0) {
+                              setCurrentStep(currentStep - 1)
+                              setOpenPopover(currentStep - 1)
+                            }
                           }}
                           variant="outline" size="sm">
                           Retour
