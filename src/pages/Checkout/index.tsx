@@ -5,15 +5,16 @@ import { functions } from "@/utils/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { useEffect } from "react";
-import { redirect } from "react-router";
+import { useNavigate, redirect } from "react-router";
 
 export default function CheckoutPage() {
     const { isAuthenticated } = useAuth();
     const [loading, setLoading] = useState(false);
-    console.log(isAuthenticated)
+    let navigate = useNavigate();
+
     useEffect(() => {
         if (!isAuthenticated) {
-            redirect("/login?redirect=/checkout");
+            navigate("/login?redirect=/checkout");
         }
     }, [isAuthenticated]);
 
