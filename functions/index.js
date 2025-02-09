@@ -71,7 +71,7 @@ exports.createStripeCheckoutSession = onRequest(
   { cors: "https://recapeps.fr" },
   async (req, res) => {
     if (req.method !== "POST") {
-      res.status(405).json({ error: "Method Not Allowed" });
+      res.status(405).json({ data: { error: "Method Not Allowed" } });
       return;
     }
 
@@ -96,7 +96,6 @@ exports.createStripeCheckoutSession = onRequest(
       return;
     }
     logger.info(`User ${userId} authenticated successfully.`);
-    logger.info("Request body:", req.body.data);
     const { priceId, quantity = 1 } = req.body.data;
     if (!priceId) {
       res.status(400).json({ error: "Invalid subscription data." });
@@ -143,11 +142,14 @@ exports.createStripeCheckoutSession = onRequest(
 
       // Retorna o client_secret para o front
       const paymentIntent = subscription.latest_invoice.payment_intent;
-      logger.debug("Payment intent:", paymentIntent);
-      res.status(200).json({ clientSecret: paymentIntent.client_secret });
+      res
+        .status(200)
+        .json({ data: { clientSecret: paymentIntent.client_secret } });
     } catch (error) {
       console.error("Error creating subscription:", error);
-      res.status(500).json({ error: "Failed to create subscription." });
+      res
+        .status(500)
+        .json({ data: { error: "Failed to create subscription." } });
     }
   }
 );
