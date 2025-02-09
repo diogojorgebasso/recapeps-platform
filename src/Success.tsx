@@ -6,7 +6,7 @@ export default function Success() {
         <Container maxW="container.md" py={10}>
             <VStack gap={6} textAlign="center">
                 <Icon as={FaCheckCircle} w={16} h={16} color="green.500" />
-                <Heading size="xl">Thank You for Your Purchase!</Heading>
+                <Heading size="xl">Merci pour votre achat!</Heading>
                 <Text fontSize="lg" color="gray.600">
                     We appreciate your business and hope you enjoy your products.
                 </Text>

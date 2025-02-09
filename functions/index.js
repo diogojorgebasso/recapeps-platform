@@ -128,6 +128,7 @@ exports.createStripeCheckoutSession = onRequest(
         items: [{ price: priceId, quantity }],
         payment_behavior: "default_incomplete",
         expand: ["latest_invoice.payment_intent"],
+        metadata: { firebaseUID: userId },
       });
 
       logger.info("Subscription created:", subscription);
@@ -203,6 +204,123 @@ exports.cancelSubscription = onRequest(
     } catch (error) {
       console.error("Error canceling subscription:", error);
       res.status(500).json({ error: "Failed to cancel subscription." });
+    }
+  }
+);
+
+// Updated Stripe webhook endpoint to update subscription status in Firestore
+exports.stripeWebhook = functions.https.onRequest((req, res) => {
+  logger.info("Stripe webhook received", req.headers);
+  const sig = req.headers["stripe-signature"];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("Webhook secret (STRIPE_WEBHOOK_SECRET) is not defined.");
+    return res.status(500).send("Webhook secret is not configured.");
+  }
+
+  let event;
+  try {
+    // req.rawBody is needed; ensure Firebase Functions is set to pass raw body.
+    event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
+  } catch (err) {
+    console.error("⚠️  Webhook signature verification failed.", err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle relevant event types
+  switch (event.type) {
+    case "invoice.payment_succeeded": {
+      const invoice = event.data.object;
+      const subscriptionId = invoice.subscription;
+      const userId = invoice.metadata.firebaseUID; // Ensure firebaseUID is passed
+      logger.info("Invoice payment succeeded:", invoice.id);
+      logger.info("User ID:", userId);
+      if (userId && subscriptionId) {
+        const subscriptionRef = db
+          .collection("users")
+          .doc(userId)
+          .collection("subscriptions");
+        subscriptionRef
+          .where("subscriptionId", "==", subscriptionId)
+          .get()
+          .then((snapshot) => {
+            snapshot.forEach((doc) => {
+              logger.info("Updating subscription status to active in", doc.id);
+              doc.ref.update({ status: "active" });
+            });
+          })
+          .catch((err) => console.error("Error updating subscription:", err));
+      }
+      break;
+    }
+    case "customer.subscription.updated": {
+      const subscription = event.data.object;
+      const userId = subscription.metadata.firebaseUID;
+      if (userId) {
+        const subscriptionRef = db
+          .collection("users")
+          .doc(userId)
+          .collection("subscriptions");
+        subscriptionRef
+          .where("subscriptionId", "==", subscription.id)
+          .get()
+          .then((snapshot) => {
+            snapshot.forEach((doc) => {
+              doc.ref.update({ status: subscription.status });
+            });
+          })
+          .catch((err) => console.error("Error updating subscription:", err));
+      }
+      break;
+    }
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.json({ received: true });
+});
+
+exports.createPortalSession = onRequest(
+  { cors: "https://recapeps.fr" },
+  async (req, res) => {
+    if (req.method !== "POST") {
+      res.status(405).json({ error: "Method Not Allowed" });
+      return;
+    }
+
+    const authHeader = req.headers.authorization || "";
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.split("Bearer ")[1]
+      : null;
+
+    if (!token) {
+      res.status(401).json({ error: "Unauthenticated request" });
+      return;
+    }
+
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      const userId = decodedToken.uid;
+
+      // Get customer ID from Firestore
+      const userDoc = await db.collection("users").doc(userId).get();
+      const stripeCustomerId = userDoc.data()?.stripeCustomerId;
+
+      if (!stripeCustomerId) {
+        res.status(404).json({ error: "Customer not found" });
+        return;
+      }
+
+      // Create portal session
+      const session = await stripe.billingPortal.sessions.create({
+        customer: stripeCustomerId,
+        return_url: "https://recapeps.fr/profil",
+      });
+
+      res.status(200).json({ url: session.url });
+    } catch (error) {
+      console.error("Error creating portal session:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   }
 );
