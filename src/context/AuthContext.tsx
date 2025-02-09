@@ -54,7 +54,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log("Já tem usuário autenticado:");
                 setCurrentUser(user);
                 // Define isAuthenticated como true somente se o usuário não for anônimo
                 setIsAuthenticated(!user.isAnonymous);
@@ -104,9 +103,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      */
     const handleTourPreference = async (enableTour: boolean) => {
         try {
+            console.log("Updating tour preference...", enableTour);
             if (!currentUser) return;
             const userRef = doc(db, "users", currentUser.uid);
             await updateDoc(userRef, { tourEnabled: enableTour });
+            // Update the local user object with the new tour preference
+            setCurrentUser({ ...(currentUser as any), tourEnabled: enableTour });
         } catch (error) {
             console.error("Error updating tour preference:", error);
         }

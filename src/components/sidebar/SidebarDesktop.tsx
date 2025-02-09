@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { Link } from "react-router";
 import { SidebarItems } from "./SidebarItems";
 import { MenuRoot, MenuTrigger, MenuContent, MenuSeparator, MenuItem, MenuItemGroup } from "../ui/menu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LuSparkles,
   LuBadge,
@@ -56,7 +56,6 @@ export default function SidebarDesktop() {
   const [openDialog, setOpenDialog] = useState(true);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
-
   const steps = [
     {
       title: "Profil",
@@ -96,35 +95,37 @@ export default function SidebarDesktop() {
 
   return (
     <>
-      <DialogRoot role="alertdialog" open={openDialog} onOpenChange={(e) => setOpenDialog(e.open)} placement="top">
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Salut !</DialogTitle>
-          </DialogHeader>
-          <DialogBody pt="4">
-            <DialogDescription mb="4">
-              Tu es prêt à démarrer tes révisions? Alors laisse moi te faire un petit tour du site pour que tu te repères plus facilement. Suis moi…
-              <AspectRatio ratio={4 / 3}>
-                <Logo />
-              </AspectRatio>
-            </DialogDescription>
-          </DialogBody>
-          <DialogFooter>
-            <DialogActionTrigger asChild>
-              <Button
-                variant="outline"
-                onClick={async () => {
-                  await handleTourPreference(false);
-                }}
-              >
-                Non, merci
-              </Button>
-            </DialogActionTrigger>
-            <Button colorPalette="green" onClick={startWizard}>oui, bien sûr!</Button>
-          </DialogFooter>
-          <DialogCloseTrigger />
-        </DialogContent>
-      </DialogRoot>
+      {currentUser?.tourEnabled && openDialog && (
+        <DialogRoot role="alertdialog" open={openDialog} onOpenChange={(e) => setOpenDialog(e.open)} placement="top">
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Salut !</DialogTitle>
+            </DialogHeader>
+            <DialogBody pt="4">
+              <DialogDescription mb="4">
+                Tu es prêt à démarrer tes révisions? Alors laisse moi te faire un petit tour du site pour que tu te repères plus facilement. Suis moi…
+                <AspectRatio ratio={4 / 3}>
+                  <Logo />
+                </AspectRatio>
+              </DialogDescription>
+            </DialogBody>
+            <DialogFooter>
+              <DialogActionTrigger asChild>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    await handleTourPreference(false);
+                  }}
+                >
+                  Non, merci
+                </Button>
+              </DialogActionTrigger>
+              <Button colorPalette="green" onClick={startWizard}>oui, bien sûr!</Button>
+            </DialogFooter>
+            <DialogCloseTrigger />
+          </DialogContent>
+        </DialogRoot>
+      )}
       <VStack
         as="nav"
         position="fixed"

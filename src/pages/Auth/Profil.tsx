@@ -53,6 +53,7 @@ export default function Profil() {
     const [newFirstName, setNewFirstName] = useState(currentUser?.displayName || "Prenom")
     const [newSecondName, setNewSecondName] = useState(currentUser?.displayName || "Nom")
     const [currentPassword, setCurrentPassword] = useState("")
+    const [loadingGererAbonemant, setLoadingGererAbonemant] = useState(false)
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -142,32 +143,15 @@ export default function Profil() {
         })
     }
 
-    const cancelSubscription = async () => {
-        const cancelSubscriptionFn = httpsCallable(functions, 'cancelSubscription');
-        const result = await cancelSubscriptionFn({ subscriptionId: subscriptionType });
-
-        if (result.data) {
-            toaster.create({
-                title: "Abonnement annulé",
-                type: "success",
-                description: "Votre abonnement a été annulé avec succès.",
-            });
-        } else {
-            toaster.create({
-                title: "Erreur",
-                type: "error",
-                description: "Une erreur s'est produite lors de l'annulation de l'abonnement.",
-            });
-        }
-    };
-
     const handlePortalSession = async () => {
         try {
+            setLoadingGererAbonemant(true);
             const createPortalSession = httpsCallable(functions, 'createPortalSession');
             const result = await createPortalSession({});
             const data = result.data as { url?: string };
             if (data.url) {
-                window.location.href = data.url;
+                setLoadingGererAbonemant(false);
+                window.open(data.url, '_blank');
             } else {
                 toaster.create({
                     title: "Erreur",
@@ -322,14 +306,11 @@ export default function Profil() {
                         <Text>
                             Dernier achat: <strong>{lastPurchaseDate}</strong>
                         </Text>
-                        <Button colorScheme="red" onClick={cancelSubscription}>
-                            Annuler l'abonnement
-                        </Button>
-                        {/* New button for Portal */}
                         <Button
                             mt={4}
-                            colorScheme="blue"
+                            colorPalette="orange"
                             onClick={handlePortalSession}
+                            loading={loadingGererAbonemant}
                         >
                             Gérer mon abonnement
                         </Button>

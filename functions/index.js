@@ -155,60 +155,6 @@ exports.createStripeCheckoutSession = onRequest(
   }
 );
 
-exports.cancelSubscription = onRequest(
-  { cors: "https://recapeps.fr" },
-  async (req, res) => {
-    if (req.method !== "POST") {
-      res.status(405).json({ error: "Method Not Allowed" });
-      return;
-    }
-
-    const authHeader = req.headers.authorization || "";
-    const token = authHeader.startsWith("Bearer ")
-      ? authHeader.split("Bearer ")[1]
-      : null;
-
-    if (!token) {
-      res
-        .status(401)
-        .json({ error: "Unauthenticated request. Token missing." });
-      return;
-    }
-
-    let userId;
-    try {
-      const decodedToken = await admin.auth().verifyIdToken(token);
-      userId = decodedToken.uid;
-    } catch (error) {
-      res.status(401).json({ error: "Invalid authentication token." });
-      return;
-    }
-
-    const { subscriptionId } = req.body;
-    if (!subscriptionId) {
-      res.status(400).json({ error: "Invalid subscription data." });
-      return;
-    }
-
-    try {
-      // Cancela a assinatura no Stripe
-      await stripe.subscriptions.del(subscriptionId);
-      // Atualiza o status da assinatura no Firestore
-      const subscriptionRef = db
-        .collection("users")
-        .doc(userId)
-        .collection("subscriptions")
-        .doc(subscriptionId);
-      await subscriptionRef.update({ status: "canceled" });
-      res.status(200).json({ message: "Subscription canceled successfully." });
-    } catch (error) {
-      console.error("Error canceling subscription:", error);
-      res.status(500).json({ error: "Failed to cancel subscription." });
-    }
-  }
-);
-
-// Updated Stripe webhook endpoint to update subscription status in Firestore
 exports.stripeWebhook = functions.https.onRequest((req, res) => {
   logger.info("Stripe webhook received", req.headers);
   const sig = req.headers["stripe-signature"];
@@ -285,7 +231,7 @@ exports.createPortalSession = onRequest(
   { cors: "https://recapeps.fr" },
   async (req, res) => {
     if (req.method !== "POST") {
-      res.status(405).json({ error: "Method Not Allowed" });
+      res.status(405).json({ data: { error: "Method Not Allowed" } });
       return;
     }
 
@@ -295,7 +241,7 @@ exports.createPortalSession = onRequest(
       : null;
 
     if (!token) {
-      res.status(401).json({ error: "Unauthenticated request" });
+      res.status(401).json({ data: { error: "Unauthenticated request" } });
       return;
     }
 
@@ -303,12 +249,13 @@ exports.createPortalSession = onRequest(
       const decodedToken = await admin.auth().verifyIdToken(token);
       const userId = decodedToken.uid;
 
-      // Get customer ID from Firestore
+      // Retrieve Stripe customer ID from Firestore
       const userDoc = await db.collection("users").doc(userId).get();
       const stripeCustomerId = userDoc.data()?.stripeCustomerId;
 
       if (!stripeCustomerId) {
-        res.status(404).json({ error: "Customer not found" });
+        logger.error(`Customer not found for user ${userId}`);
+        res.status(404).json({ data: { error: "Customer not found" } });
         return;
       }
 
@@ -317,11 +264,11 @@ exports.createPortalSession = onRequest(
         customer: stripeCustomerId,
         return_url: "https://recapeps.fr/profil",
       });
-
-      res.status(200).json({ url: session.url });
+      logger.info(`Portal session created: ${session.id} ${session.url}`);
+      res.status(200).json({ data: { url: session.url } });
     } catch (error) {
-      console.error("Error creating portal session:", error);
-      res.status(500).json({ error: "Internal server error" });
+      logger.error("Error creating portal session:", error);
+      res.status(500).json({ data: { error: "Internal server error" } });
     }
   }
 );
