@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CardElement, useStripe, useElements, PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import { Box, Button, Container, Heading, Text, VStack } from '@chakra-ui/react';
-import { useAuth } from "@/hooks/useAuth";
 import { PaymentRequest } from '@stripe/stripe-js';
 
 interface PaymentFormProps {
@@ -19,14 +18,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth(); //check if the user is logged
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!stripe) return;

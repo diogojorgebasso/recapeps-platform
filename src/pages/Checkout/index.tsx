@@ -1,23 +1,25 @@
-import { redirect } from "react-router";
 import { Box, Heading, List, Button, Card } from "@chakra-ui/react";
 import { LuCircleCheck } from "react-icons/lu";
 import { httpsCallable } from 'firebase/functions';
 import { functions } from "@/utils/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
+import { useEffect } from "react";
+import { redirect } from "react-router";
 
 export default function CheckoutPage() {
     const { isAuthenticated } = useAuth();
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        if (!isAuthenticated) {
+            redirect("/login?redirect=/checkout");
+        }
+    }, [isAuthenticated]);
+
     const handleCheckout = async (plan: { id: string; price: string; amount: number, priceId: string }) => {
         setLoading(true);
         try {
-            if (!isAuthenticated) {
-                // Redirect to login with a parameter to redirect back to the checkout page
-                return redirect("/login?redirect=/checkout");
-            }
-
             const createStripeCheckoutSession = httpsCallable(functions, 'createStripeCheckoutSession');
             const result = await createStripeCheckoutSession({ priceId: plan.priceId, quantity: 1 });
             const data = result.data as { clientSecret?: string };
