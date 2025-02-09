@@ -54,8 +54,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log("Já tem usuário autenticado:",)
+                console.log("Já tem usuário autenticado:");
                 setCurrentUser(user);
+                // Define isAuthenticated como true somente se o usuário não for anônimo
+                setIsAuthenticated(!user.isAnonymous);
                 setLoading(false);
             } else {
                 // Caso não tenha user, faz login anônimo
@@ -68,8 +70,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
             }
         });
-
-        // Cleanup
         return () => unsubscribe();
     }, []);
 
@@ -81,7 +81,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const credential = EmailAuthProvider.credential(email, password);
         const result = await linkWithCredential(user, credential);
         setCurrentUser(result.user);
-        setIsAuthenticated(true);
         return result.user;
     }
 
@@ -151,7 +150,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (user?.isAnonymous) {
             // Se é anônimo, linkamos
             await signInWithPopup(auth, provider);
-            setIsAuthenticated(true);
         } else {
             // Se não é anônimo, também funciona, mas vira "multi-provider".
             await signInWithPopup(auth, provider);

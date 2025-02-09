@@ -18,7 +18,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   const elements = useElements();
   const navigate = useNavigate();
 
-
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
 

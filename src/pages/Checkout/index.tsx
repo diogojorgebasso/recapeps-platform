@@ -5,11 +5,20 @@ import { functions } from "@/utils/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { useSubscription } from "@/hooks/useSubscription";
 
 export default function CheckoutPage() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, currentUser } = useAuth();
     const [loading, setLoading] = useState(false);
     let navigate = useNavigate();
+    const { isSubscribed } = useSubscription();
+    console.log(isAuthenticated)
+    console.log(currentUser)
+    useEffect(() => {
+        if (isSubscribed) {
+            navigate("/profil");
+        }
+    }, [isSubscribed, navigate]);
 
     useEffect(() => {
         if (isAuthenticated === false) {
