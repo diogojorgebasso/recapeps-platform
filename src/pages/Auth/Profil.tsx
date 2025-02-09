@@ -36,10 +36,12 @@ import {
 } from "@/components/ui/file-upload"
 import { HiUpload } from "react-icons/hi";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useSubscription } from "@/hooks/useSubscription";
 
 export default function Profil() {
     const { handleEmailChange, updateUserName, deleteUserAccount,
         isEmailNotificationEnabled, updateEmailNotificationPreference, currentUser } = useAuth();
+    const { isSubscribed, subscriptionType, lastPurchaseDate } = useSubscription();
     const [newEmailNotification, setNewEmailNotification] = useState(isEmailNotificationEnabled);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -51,7 +53,6 @@ export default function Profil() {
     const [newFirstName, setNewFirstName] = useState(currentUser?.displayName || "Prenom")
     const [newSecondName, setNewSecondName] = useState(currentUser?.displayName || "Nom")
     const [currentPassword, setCurrentPassword] = useState("")
-    const subscribed = false; // or set this based on your logic
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -140,6 +141,27 @@ export default function Profil() {
             description: "Votre profil a été mise à jour avec succès.",
         })
     }
+
+    const cancelSubscription = async () => {
+        const token = await currentUser?.getIdToken();
+        const response = await fetch("/cancelSubscription", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        });
+        if (response.ok) {
+            toaster.create({
+                title: "Abonnement annulé",
+                type: "success",
+                description: "Votre abonnement a été annulé avec succès.",
+            });
+        } else {
+            toaster.create({
+                title: "Erreur",
+                type: "error",
+                description: "Une erreur s'est produite lors de l'annulation de l'abonnement.",
+            });
+        }
+    };
 
     return (
         <Box p={6}>
@@ -270,14 +292,17 @@ export default function Profil() {
                 <Heading as="h3" size="md" mb={4}>
                     Historique des Achats
                 </Heading>
-                {subscribed ? (
+                {isSubscribed ? (
                     <VStack align="start">
                         <Text>
-                            Abonnement: <strong>Premium (Actif)</strong>
+                            Abonnement: <strong>{subscriptionType}</strong>
                         </Text>
                         <Text>
-                            Dernier achat: <strong>10 décembre 2024</strong>
+                            Dernier achat: <strong>{lastPurchaseDate}</strong>
                         </Text>
+                        <Button colorScheme="red" onClick={cancelSubscription}>
+                            Annuler l'abonnement
+                        </Button>
                     </VStack>
                 ) : (
                     <Button asChild>
@@ -285,18 +310,15 @@ export default function Profil() {
                     </Button>
                 )}
             </Box>
-
-            <Box>
-                <Heading as="h3" size="md" mb={4}>
-                    Supprimer le Compte
-                </Heading>
-                <Text>
-                    Vous pouvez supprimer votre compte à tout moment. Veuillez noter que
-                    cette action est irréversible.
-                </Text>
-                <Button colorPalette="red" onClick={() => deleteUserAccount(currentPassword)}>Supprimer le Compte</Button>
-            </Box>
-        </Box >
+            <Heading as="h3" size="md" mb={4}>
+                Supprimer le Compte
+            </Heading>
+            <Text>
+                Vous pouvez supprimer votre compte à tout moment. Veuillez noter que
+                cette action est irréversible.
+            </Text>
+            <Button colorPalette="red" onClick={() => deleteUserAccount(currentPassword)}>Supprimer le Compte</Button>
+        </Box>
     );
 }
 
