@@ -23,7 +23,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { useSubscription } from "@/hooks/useSubscription";
-import { addQuestionsToFirestore } from "@/api/boilerPlateQuizzes";
 
 export default function Home() {
     const [subjects1, setSubjects1] = useState<SubjectNote[]>([]);
@@ -53,7 +52,6 @@ export default function Home() {
                 <Heading size="xl" mb="4" color="blue.600">
                     Écrit 1
                 </Heading>
-                <Button onClick={addQuestionsToFirestore}>Add Quiz</Button>
                 <SimpleGrid columns={[1, 2, 3]} gap="6">
                     {subjects1.map(({ id, name, image, premium, link }) => (
                         <ExamCard
