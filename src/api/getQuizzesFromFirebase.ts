@@ -42,30 +42,53 @@ const calculateDistribution = (
 // Function to fetch quizzes of a specific subject and level
 export const fetchQuizzesBySubject = async (
   subjectId: string,
-  level: number
+  uid: string
 ): Promise<Quiz[]> => {
   try {
+    // Fetch user data to determine subject level
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data() || {};
+    const subjectLevels = userData.levels || {};
+    const level = subjectLevels[subjectId] || 1;
+
     const distribution = calculateDistribution(level);
     let allQuestions: Quiz[] = [];
 
     for (const [targetLevel, count] of Object.entries(distribution)) {
-      const levelDocRef = doc(
-        db,
-        "subjects",
-        subjectId,
-        "quizz",
-        `level-${targetLevel}`
-      );
+      let levelKey = `level-${targetLevel}`;
+      let levelDocRef = doc(db, "subjects", subjectId, "quizz", levelKey);
+      let levelDocSnapshot = await getDoc(levelDocRef);
 
-      // Fetch the level document
-      const levelDocSnapshot = await getDoc(levelDocRef);
+      // Fallback if level document does not exist and targetLevel is greater than 1
+      if (!levelDocSnapshot.exists() && Number(targetLevel) > 1) {
+        let found = false;
+        for (
+          let fallback = Number(targetLevel) - 1;
+          fallback >= 1;
+          fallback--
+        ) {
+          levelKey = `level-${fallback}`;
+          levelDocRef = doc(db, "subjects", subjectId, "quizz", levelKey);
+          levelDocSnapshot = await getDoc(levelDocRef);
+          if (levelDocSnapshot.exists()) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          console.error(
+            `No data found for subject ${subjectId} at fallback levels for target level ${targetLevel}`
+          );
+          continue;
+        }
+      }
 
       if (!levelDocSnapshot.exists()) {
         console.error(
-          `No data found for subject ${subjectId} at level ${level}`
+          `No data found for subject ${subjectId} at level ${targetLevel}`
         );
-        continue; // Skip to next level instead of returning empty array
-        //  hoping to catch data in the next level in case of a temporary error
+        continue;
       }
 
       const levelData = levelDocSnapshot.data();
@@ -73,7 +96,7 @@ export const fetchQuizzesBySubject = async (
         id: key,
         ...levelData.questions[key],
         evaluation: levelData.evaluation,
-        level: Number(targetLevel), // Add the level parameter to each question
+        level: Number(targetLevel), // level set to the originally targeted level
       }));
 
       const selectedQuestions = questions

@@ -33,8 +33,8 @@ export default function QuizPage() {
 
     useEffect(() => {
         const loadQuiz = async () => {
-            if (subjectId) {
-                const fetchedQuizzes = await fetchQuizzesBySubject(subjectId, 1);
+            if (subjectId && currentUser) {
+                const fetchedQuizzes = await fetchQuizzesBySubject(subjectId, currentUser.uid);
                 setQuizzes(fetchedQuizzes);
             }
         };

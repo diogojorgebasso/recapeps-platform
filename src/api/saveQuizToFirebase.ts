@@ -1,5 +1,4 @@
-// Função para salvar o quiz que o usuário acabou de realizar
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 
 export const saveUserQuiz = async (
@@ -15,6 +14,19 @@ export const saveUserQuiz = async (
   try {
     const userQuizRef = collection(db, "users", uid, "quizzes");
     await addDoc(userQuizRef, quizResult);
+
+    // Update user's subject level if score >= 6
+    if (quizResult.score >= 6) {
+      const userRef = doc(db, "users", uid);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data() || {};
+      const subjectLevels = userData.levels || {};
+      const currentLevel = subjectLevels[quizResult.subjectId] || 1;
+      if (currentLevel < 3) {
+        subjectLevels[quizResult.subjectId] = currentLevel + 1;
+        await setDoc(userRef, { subjectLevels }, { merge: true });
+      }
+    }
   } catch (error) {
     console.error("Erro ao salvar o quiz:", error);
   }
