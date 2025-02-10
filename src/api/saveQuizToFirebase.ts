@@ -15,7 +15,6 @@ export const saveUserQuiz = async (
     const userQuizRef = collection(db, "users", uid, "quizzes");
     await addDoc(userQuizRef, quizResult);
 
-    // Update user's subject level if score >= 6
     if (quizResult.score >= 6) {
       const userRef = doc(db, "users", uid);
       const userSnap = await getDoc(userRef);

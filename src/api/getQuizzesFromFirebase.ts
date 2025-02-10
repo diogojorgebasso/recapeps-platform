@@ -49,7 +49,7 @@ export const fetchQuizzesBySubject = async (
     const userRef = doc(db, "users", uid);
     const userSnap = await getDoc(userRef);
     const userData = userSnap.data() || {};
-    const subjectLevels = userData.levels || {};
+    const subjectLevels = userData.subjectLevels || {};
     const level = subjectLevels[subjectId] || 1;
 
     const distribution = calculateDistribution(level);
