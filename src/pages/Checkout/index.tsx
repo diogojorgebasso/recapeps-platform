@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import { useSubscription } from "@/hooks/useSubscription";
 
 export default function CheckoutPage() {
-    const { isAuthenticated, currentUser } = useAuth();
+    const { isAuthenticated } = useAuth();
     const [loading, setLoading] = useState(false);
     let navigate = useNavigate();
     const { isSubscribed } = useSubscription();
@@ -46,7 +46,7 @@ export default function CheckoutPage() {
     };
 
     const plans = [
-        { id: "basic", price: "4.99€", amount: 499, description: "Basic Plan", priceId: 'price_1QqquKEfLSFXfvk1kpTCdtQt' },
+        { id: "basic", price: "4.99€", amount: 499, description: "Basic Plan", priceId: 'price_1QqyWOEfLSFXfvk1xUBQQiPj' },
     ];
 
     return (

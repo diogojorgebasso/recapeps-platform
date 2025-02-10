@@ -56,7 +56,7 @@ export default function Menu() {
                             </Link>
                             <Link to="/flashcards" >
                                 <Text fontSize="lg" fontWeight="bold">
-                                    Cartes Mémoire
+                                    Flashcards
                                 </Text>
                             </Link>
                             <Link to="/quiz" >

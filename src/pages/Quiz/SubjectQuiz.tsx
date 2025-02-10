@@ -118,20 +118,20 @@ export default function QuizPage() {
     if (isFinished) {
         const performanceMessage =
             score / quizzes.length >= 0.7
-                ? "Félicitations ! Vous avez bien réussi ce quiz ! Continuez à briller ! 🎉"
-                : "Ne vous découragez pas ! Chaque erreur est une opportunité d'apprendre. Vous pouvez le faire ! 💪";
+                ? "Félicitations ! Tu as bien réussi ce quiz, continue comme ça 😉"
+                : "Ne te décourage pas ! C'est en faisant des erreurs qu'on apprend. N'hésite pas à relire la fiche correspondante si tu en ressens le besoin 💪";
 
         return (
             <Center w="100%" h="100vh" p={4}>
                 <Card.Root maxW="md" w="full" p={4} boxShadow="lg">
                     <Card.Header>
                         <Heading as="h2" textAlign="center" size="md">
-                            Quiz Terminé !
+                            Quiz terminé !
                         </Heading>
                     </Card.Header>
                     <Card.Body>
                         <Text textAlign="center" fontSize="lg" mb={4}>
-                            Votre Note: <strong>{score}</strong> / {quizzes.length}
+                            Votre score: <strong>{score}</strong> / {quizzes.length}
                         </Text>
                         <Text textAlign="center">
                             {performanceMessage}
@@ -142,7 +142,7 @@ export default function QuizPage() {
                             colorPalette="blue"
                             onClick={() => navigate("/quiz")}
                         >
-                            Retour aux Quiz
+                            Retour aux quiz
                         </Button>
                     </Card.Body>
                 </Card.Root>
