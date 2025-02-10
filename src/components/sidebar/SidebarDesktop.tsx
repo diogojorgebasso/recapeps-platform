@@ -202,7 +202,6 @@ export default function SidebarDesktop() {
                     <Button
                       onClick={() => {
                         if (currentStep > 0) {
-                          console.log(currentStep)
                           setCurrentStep(currentStep - 1)
                           handleOpenChange(currentStep - 1, true)
                         }

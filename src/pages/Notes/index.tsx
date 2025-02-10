@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getNotes } from "@/api/getSubjects";
-import { Subject } from "@/types/Subject";
+import { SubjectNote } from "@/types/Subject";
 import {
     Box,
     Card,
@@ -8,8 +8,8 @@ import {
     SimpleGrid,
     Image,
     Button,
+    Link
 } from "@chakra-ui/react";
-import { Link } from "react-router";
 import { Toaster, toaster } from "@/components/ui/toaster"
 import {
     DialogActionTrigger,
@@ -23,15 +23,15 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { useSubscription } from "@/hooks/useSubscription";
+import { addQuestionsToFirestore } from "@/api/boilerPlateQuizzes";
 
 export default function Home() {
-    const [subjects1, setSubjects1] = useState<Subject[]>([]);
-    const [subjects2, setSubjects2] = useState<Subject[]>([]);
+    const [subjects1, setSubjects1] = useState<SubjectNote[]>([]);
+    const [subjects2, setSubjects2] = useState<SubjectNote[]>([]);
     const { isSubscribed } = useSubscription();
     useEffect(() => {
         const loadSubjects = async () => {
             const allSubjects = await getNotes();
-            console.log(allSubjects)
             setSubjects1(allSubjects.filter((subject) => subject.evaluation === 1));
             setSubjects2(allSubjects.filter((subject) => subject.evaluation === 2));
             if (allSubjects.length == 0) {
@@ -49,16 +49,15 @@ export default function Home() {
     return (
         <Box>
             <Toaster />
-
             <Box mb="12">
                 <Heading size="xl" mb="4" color="blue.600">
                     Écrit 1
                 </Heading>
+                <Button onClick={addQuestionsToFirestore}>Add Quiz</Button>
                 <SimpleGrid columns={[1, 2, 3]} gap="6">
                     {subjects1.map(({ id, name, image, premium, link }) => (
                         <ExamCard
                             key={id}
-                            id={id}
                             name={name}
                             image={image}
                             premium={premium}
@@ -77,7 +76,6 @@ export default function Home() {
                     {subjects2.map(({ id, name, image, premium, link }) => (
                         <ExamCard
                             key={id}
-                            id={id}
                             name={name}
                             image={image}
                             premium={premium}
@@ -93,14 +91,12 @@ export default function Home() {
 
 
 function ExamCard({
-    id,
     name,
     image,
     premium,
     isUserPremium,
     vers
 }: {
-    id: string;
     name: string;
     image: string;
     premium: boolean;
@@ -110,13 +106,13 @@ function ExamCard({
     if (isUserPremium) {
         return (
             <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
-                <Image src={image} alt={name} h="200px" w="full" />
+                <Image src={image} alt={name} maxH="200px" w="100%" />
                 <Card.Body gap="2" p="4">
                     <Card.Title>{name}</Card.Title>
                 </Card.Body>
                 <Card.Footer gap="2" p="4">
-                    <Button variant="solid" colorScheme="blue">
-                        <Link to={vers}>Voir plus</Link>
+                    <Button variant="solid" colorScheme="blue" asChild>
+                        <a target="_blank" href={vers}>Voir plus</a>
                     </Button>
                 </Card.Footer>
             </Card.Root>
@@ -125,7 +121,7 @@ function ExamCard({
     else {
         return (
             <Card.Root maxW="sm" overflow="hidden" borderWidth="1px" borderRadius="lg" shadow="md">
-                <Image src={image} alt={name} h="200px" w="full" />
+                <Image src={image} alt={name} />
                 <Card.Body gap="2" p="4">
                     <Card.Title>{name} {premium ? "🔒" : ""}</Card.Title>
                 </Card.Body>
@@ -139,11 +135,12 @@ function ExamCard({
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Voulez-vous devient PRO?</DialogTitle>
+                                    <DialogTitle>Passer à Recap’eps pro?
+                                    </DialogTitle>
                                 </DialogHeader>
                                 <DialogBody>
                                     <p>
-                                        Je suis sur que vous aimerez!
+                                        Tu apprécies le contenu que nous te proposons mais tu restes sur ta faim? Tu  aimerai accéder à tout le contenu que nous t’avons concocté? Alors n’hésite plus et passe à Recap’eps pro ! 🎯
                                     </p>
                                 </DialogBody>
                                 <DialogFooter>
@@ -151,15 +148,15 @@ function ExamCard({
                                         <Button variant="outline">Non, merci</Button>
                                     </DialogActionTrigger>
                                     <Button>
-                                        <Link to="/checkout">Je voudrais devenir PRO</Link>
+                                        <Link href="/checkout">Oui par pitié</Link>
                                     </Button>
                                 </DialogFooter>
                                 <DialogCloseTrigger />
                             </DialogContent>
                         </DialogRoot>
                         :
-                        <Button variant="solid" colorScheme="blue">
-                            <Link to={vers}>Voir plus</Link>
+                        <Button variant="solid" colorScheme="blue" asChild>
+                            <a target="_blank" href={vers}>Voir plus</a>
                         </Button>}
                 </Card.Footer>
             </Card.Root>

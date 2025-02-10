@@ -26,7 +26,6 @@ import { useSubscription } from "@/hooks/useSubscription";
 
 export default function Home() {
     const { isSubscribed } = useSubscription();
-    console.log(isSubscribed)
 
     const [subjects, setSubjects] = useState<Subject[]>([]);
 
@@ -113,11 +112,11 @@ function ExamCard({
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Voulez-vous devient PRO?</DialogTitle>
+                                    <DialogTitle>Passer à Recap’eps pro?</DialogTitle>
                                 </DialogHeader>
                                 <DialogBody>
                                     <p>
-                                        Je suis sur que vous aimerez!
+                                        Tu apprécies le contenu que nous te proposons mais tu restes sur ta faim? Tu  aimerai accéder à tout le contenu que nous t’avons concocté? Alors n’hésite plus et passe à Recap’eps pro ! 🎯
                                     </p>
                                 </DialogBody>
                                 <DialogFooter>
@@ -125,7 +124,7 @@ function ExamCard({
                                         <Button variant="outline">Non, merci</Button>
                                     </DialogActionTrigger>
                                     <Button>
-                                        <Link to="/checkout">Je voudrais devenir PRO</Link>
+                                        <Link to="/checkout">Oui par pitié</Link>
                                     </Button>
                                 </DialogFooter>
                                 <DialogCloseTrigger />

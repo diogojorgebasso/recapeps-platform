@@ -14,3 +14,12 @@ export interface SubjectFlashCard {
   premium: boolean;
   flashcards: boolean;
 }
+
+export interface SubjectNote {
+  id: string;
+  name: string;
+  image: string;
+  evaluation: number;
+  premium: boolean;
+  link: string;
+}

@@ -12,8 +12,7 @@ export default function CheckoutPage() {
     const [loading, setLoading] = useState(false);
     let navigate = useNavigate();
     const { isSubscribed } = useSubscription();
-    console.log(isAuthenticated)
-    console.log(currentUser)
+
     useEffect(() => {
         if (isSubscribed) {
             navigate("/profil");
@@ -32,7 +31,6 @@ export default function CheckoutPage() {
             const createStripeCheckoutSession = httpsCallable(functions, 'createStripeCheckoutSession');
             const result = await createStripeCheckoutSession({ priceId: plan.priceId, quantity: 1 });
             const data = result.data as { clientSecret?: string };
-            console.log(data);
             if (!data.clientSecret) {
                 console.error("Client secret missing in response:", data);
                 navigate("/error");

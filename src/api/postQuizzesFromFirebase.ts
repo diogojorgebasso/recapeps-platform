@@ -6,7 +6,10 @@ import { doc, collection, setDoc } from "firebase/firestore";
  * @param subjectId - O ID do sujeito
  * @param questionData - Os dados da questão, contendo `question`, `options` e `answer`
  */
-export const addQuizToSubject = async (subjectId: string, questionData: { question: string; options: string[]; answer: string }) => {
+export const addQuizToSubject = async (
+  subjectId: string,
+  questionData: { question: string; options: string[]; answer: string }
+) => {
   try {
     const subjectRef = doc(db, "subjects", subjectId);
     const quizRef = doc(collection(subjectRef, "quizzes"));
@@ -17,6 +20,9 @@ export const addQuizToSubject = async (subjectId: string, questionData: { questi
     return { success: true };
   } catch (error: unknown) {
     console.error("Erro ao adicionar a questão:", error);
-    return { success: false, error: (error instanceof Error ? error.message : String(error)) };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };

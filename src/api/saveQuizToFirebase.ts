@@ -15,7 +15,6 @@ export const saveUserQuiz = async (
   try {
     const userQuizRef = collection(db, "users", uid, "quizzes");
     await addDoc(userQuizRef, quizResult);
-    console.log("Quiz salvo com sucesso!");
   } catch (error) {
     console.error("Erro ao salvar o quiz:", error);
   }

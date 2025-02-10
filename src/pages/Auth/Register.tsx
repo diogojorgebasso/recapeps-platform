@@ -43,7 +43,6 @@ export default function Register() {
         setIsSubmitting(true);
         try {
             await upgradeFromAnonymous(email, password);
-            console.log("Inscription réussie !");
             navigate("/dashboard");
         } catch (error) {
             setError((error as Error).message);
@@ -58,7 +57,7 @@ export default function Register() {
         setIsSubmitting(true);
         try {
             await loginWithGoogle();
-            console.log("Connexion avec Google réussie !");
+            ("Connexion avec Google réussie !");
             navigate("/dashboard");
         } catch (error) {
             setError("Erreur lors de la connexion avec Google. Veuillez réessayer.");

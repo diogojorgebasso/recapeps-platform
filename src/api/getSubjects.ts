@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/utils/firebase";
-import { Subject } from "@/types/Subject";
+import { Subject, SubjectNote } from "@/types/Subject";
 
 export async function getSubjects() {
   try {
@@ -33,7 +33,7 @@ export async function getNotes() {
     const subjectsCollectionRef = collection(db, "subjects");
     const querySnapshot = await getDocs(subjectsCollectionRef);
 
-    const subjects: Subject[] = [];
+    const subjects: SubjectNote[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       if (data.contains?.includes("notes")) {
@@ -43,6 +43,7 @@ export async function getNotes() {
           evaluation: data.evaluation,
           image: data.image,
           premium: data.premium,
+          link: data.link,
         });
       }
     });
