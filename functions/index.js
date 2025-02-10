@@ -161,86 +161,65 @@ exports.createStripeCheckoutSession = onRequest(
   }
 );
 
-exports.stripeWebhook = functions.https.onRequest((req, res) => {
-  logger.info("Stripe webhook received", req.headers);
-  const sig = req.headers["stripe-signature"];
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!webhookSecret) {
-    console.error("Webhook secret (STRIPE_WEBHOOK_SECRET) is not defined.");
-    return res.status(500).send("Webhook secret is not configured.");
-  }
-
-  let event;
+exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
   try {
-    // req.rawBody is needed; ensure Firebase Functions is set to pass raw body.
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
-  } catch (err) {
-    console.error("⚠️  Webhook signature verification failed.", err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
+    const sig = req.headers["stripe-signature"];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  // Handle relevant event types
-  switch (event.type) {
-    case "customer.subscription.updated": {
-      const object = event.object;
-      const subscription = object.items.data[0].subscription; // como estamos tratando de uma inscrição por vez, a lista terá necessariamente um só elemento.
-      const userId = object.metadata.firebaseUID;
-      logger.info(`Subscription found: ${subscription} for user ${userId}`);
-      if (object.cancel_at_period_end) {
-        logger.info(
-          `Subscription canceled: ${subscription} for user ${userId}`
-        );
-        if (userId) {
-          const subscriptionRef = db
-            .collection("users")
-            .doc(userId)
-            .collection("subscriptions")
-            .doc(subscription);
-          subscriptionRef
-            .update({
-              status: "canceled",
-              cancelAt: object.cancel_at,
-            })
-            .catch((err) =>
-              console.error("Error updating subscription status:", err)
-            );
-        }
-      } else {
-        logger.info(
-          `Subscription created/returned: ${subscription} for user ${userId}`
-        );
-        if (userId) {
-          const subscriptionRef = db
-            .collection("users")
-            .doc(userId)
-            .collection("subscriptions")
-            .doc(subscription);
-          subscriptionRef
-            .update({
-              status: "active",
-            })
-            .catch((err) =>
-              console.error("Error updating subscription status:", err)
-            );
-        }
-      }
-      if (userId) {
-        const subscriptionRef = db
-          .collection("users")
-          .doc(userId)
-          .collection("subscriptions")
-          .doc(subscription);
-        subscriptionRef
-          .update({ cancel_at: object.cancel_at })
-          .catch((err) => console.error("Error updating subscription:", err));
-      }
-      break;
+    if (!webhookSecret) {
+      throw new Error("Webhook secret not configured");
     }
-    default:
-      logger.error(`Unhandled event type ${event.type}`);
-  }
 
-  res.json({ received: true });
+    const event = stripe.webhooks.constructEvent(
+      req.rawBody,
+      sig,
+      webhookSecret
+    );
+
+    // Send response immediately to avoid timeout
+    res.json({ received: true });
+
+    if (event.type === "customer.subscription.updated") {
+      const subscription = event.data.object;
+      const userId = subscription.metadata.firebaseUID;
+      const subscriptionId = subscription.id;
+
+      if (!userId) {
+        logger.error("No userId found in subscription metadata");
+        return;
+      }
+
+      const subscriptionRef = db
+        .collection("users")
+        .doc(userId)
+        .collection("subscriptions")
+        .doc(subscriptionId);
+
+      const updateData = {
+        status: subscription.cancel_at_period_end
+          ? "canceled"
+          : subscription.status,
+        cancelAt: subscription.cancel_at || null,
+        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+        currentPeriodEnd: subscription.current_period_end,
+        currentPeriodStart: subscription.current_period_start,
+        canceledAt: subscription.canceled_at || null,
+        updatedAt: FieldValue.serverTimestamp(),
+      };
+
+      if (subscription.cancellation_details) {
+        updateData.cancellationDetails = subscription.cancellation_details;
+      }
+
+      await subscriptionRef.update(updateData);
+      logger.info(`Subscription ${subscriptionId} updated successfully`);
+    }
+  } catch (error) {
+    logger.error("Webhook error:", error.message);
+    if (!res.headersSent) {
+      res.status(400).send(`Webhook Error: ${error.message}`);
+    }
+  }
 });
 
 exports.createPortalSession = onRequest(

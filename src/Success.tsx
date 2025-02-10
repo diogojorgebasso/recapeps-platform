@@ -7,11 +7,11 @@ export default function Success() {
             <VStack gap={6} textAlign="center">
                 <Icon as={FaCheckCircle} w={16} h={16} color="green.500" />
                 <Heading size="xl">Merci pour votre achat!</Heading>
-                <Text fontSize="lg" color="gray.600">
+                <Text fontSize="lg">
                     We appreciate your business and hope you enjoy your products.
                 </Text>
                 <Box>
-                    <Text fontSize="md" color="gray.500">
+                    <Text fontSize="md" >
                         A confirmation email has been sent to your inbox.
                     </Text>
                 </Box>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getSubjects } from "@/api/getSubjects";
+import { getNotes } from "@/api/getSubjects";
 import { Subject } from "@/types/Subject";
 import {
     Box,
@@ -30,7 +30,7 @@ export default function Home() {
     const { isSubscribed } = useSubscription();
     useEffect(() => {
         const loadSubjects = async () => {
-            const allSubjects = await getSubjects();
+            const allSubjects = await getNotes();
             console.log(allSubjects)
             setSubjects1(allSubjects.filter((subject) => subject.evaluation === 1));
             setSubjects2(allSubjects.filter((subject) => subject.evaluation === 2));
@@ -55,7 +55,7 @@ export default function Home() {
                     Écrit 1
                 </Heading>
                 <SimpleGrid columns={[1, 2, 3]} gap="6">
-                    {subjects1.map(({ id, name, image, premium }) => (
+                    {subjects1.map(({ id, name, image, premium, link }) => (
                         <ExamCard
                             key={id}
                             id={id}
@@ -63,6 +63,7 @@ export default function Home() {
                             image={image}
                             premium={premium}
                             isUserPremium={isSubscribed}
+                            vers={link}
                         />
                     ))}
                 </SimpleGrid>
@@ -73,7 +74,7 @@ export default function Home() {
                     Écrit 2
                 </Heading>
                 <SimpleGrid columns={[1, 2, 3]} gap="6">
-                    {subjects2.map(({ id, name, image, premium }) => (
+                    {subjects2.map(({ id, name, image, premium, link }) => (
                         <ExamCard
                             key={id}
                             id={id}
@@ -81,6 +82,7 @@ export default function Home() {
                             image={image}
                             premium={premium}
                             isUserPremium={isSubscribed}
+                            vers={link}
                         />
                     ))}
                 </SimpleGrid>
@@ -95,13 +97,15 @@ function ExamCard({
     name,
     image,
     premium,
-    isUserPremium
+    isUserPremium,
+    vers
 }: {
     id: string;
     name: string;
     image: string;
     premium: boolean;
     isUserPremium: boolean;
+    vers: string;
 }) {
     if (isUserPremium) {
         return (
@@ -112,7 +116,7 @@ function ExamCard({
                 </Card.Body>
                 <Card.Footer gap="2" p="4">
                     <Button variant="solid" colorScheme="blue">
-                        <Link to={`/notes/${id}`}>Voir plus</Link>
+                        <Link to={vers}>Voir plus</Link>
                     </Button>
                 </Card.Footer>
             </Card.Root>
@@ -155,7 +159,7 @@ function ExamCard({
                         </DialogRoot>
                         :
                         <Button variant="solid" colorScheme="blue">
-                            <Link to={`/notes/${id}`}>Voir plus</Link>
+                            <Link to={vers}>Voir plus</Link>
                         </Button>}
                 </Card.Footer>
             </Card.Root>

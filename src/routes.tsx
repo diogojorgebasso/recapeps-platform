@@ -22,7 +22,7 @@ export default [
         route("quiz/:subjectId", "./pages/Quiz/SubjectQuiz.tsx"),
         ...prefix("notes", [
             index("./pages/Notes/index.tsx"),
-            route(":subject", "./pages/Notes/DynamicPage.tsx"),
+            // route(":subject", "./pages/Notes/DynamicPage.tsx"),
         ]),
         route("profil", "./pages/Auth/Profil.tsx"),
         ...prefix("flashcards", [
