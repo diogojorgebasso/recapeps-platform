@@ -22,8 +22,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+
 export default function Home() {
     const [subjects1, setSubjects1] = useState<Subject[]>([]);
     const [subjects2, setSubjects2] = useState<Subject[]>([]);
@@ -112,7 +112,7 @@ function ExamCard({
                 </Card.Body>
                 <Card.Footer gap="2" p="4">
                     <Button variant="solid" colorScheme="blue">
-                        <Link to={`/quiz/${id}`}>Voir plus</Link>
+                        <Link to={`/notes/${id}`}>Voir plus</Link>
                     </Button>
                 </Card.Footer>
             </Card.Root>

@@ -134,12 +134,18 @@ exports.createStripeCheckoutSession = onRequest(
       logger.info("Subscription created:", subscription);
 
       // Salva no Firestore
-      await db.collection("users").doc(userId).collection("subscriptions").add({
-        subscriptionId: subscription.id,
-        priceId,
-        createdAt: FieldValue.serverTimestamp(),
-        status: subscription.status,
-      });
+      await db
+        .collection("users")
+        .doc(userId)
+        .collection("subscriptions")
+        .doc(subscription.id)
+        .set({
+          priceId,
+          createdAt: FieldValue.serverTimestamp(),
+          status: subscription.status,
+          subscriptionId: subscription.id,
+          cancelAt: subscription.cancel_at,
+        });
 
       // Retorna o client_secret para o front
       const paymentIntent = subscription.latest_invoice.payment_intent;
@@ -175,53 +181,63 @@ exports.stripeWebhook = functions.https.onRequest((req, res) => {
 
   // Handle relevant event types
   switch (event.type) {
-    case "invoice.payment_succeeded": {
-      const invoice = event.data.object;
-      logger.info("Invoice payment succeeded:", invoice);
-      const subscriptionId = invoice.subscription;
-      const userId = invoice.subscription_details.metadata.firebaseUID; // Ensure firebaseUID is passed
-      logger.info("Invoice payment succeeded:", subscriptionId);
-      logger.info("User ID:", userId);
-      if (userId && subscriptionId) {
-        const subscriptionRef = db
-          .collection("users")
-          .doc(userId)
-          .collection("subscriptions");
-        subscriptionRef
-          .where("subscriptionId", "==", subscriptionId)
-          .get()
-          .then((snapshot) => {
-            snapshot.forEach((doc) => {
-              logger.info("Updating subscription status to active in", doc.id);
-              doc.ref.update({ status: "active" });
-            });
-          })
-          .catch((err) => console.error("Error updating subscription:", err));
-      }
-      break;
-    }
     case "customer.subscription.updated": {
-      const subscription = event.data.object;
-      const userId = subscription.metadata.firebaseUID;
+      const object = event.object;
+      const subscription = object.items.data[0].subscription; // como estamos tratando de uma inscrição por vez, a lista terá necessariamente um só elemento.
+      const userId = object.metadata.firebaseUID;
+      logger.info(`Subscription found: ${subscription} for user ${userId}`);
+      if (object.cancel_at_period_end) {
+        logger.info(
+          `Subscription canceled: ${subscription} for user ${userId}`
+        );
+        if (userId) {
+          const subscriptionRef = db
+            .collection("users")
+            .doc(userId)
+            .collection("subscriptions")
+            .doc(subscription);
+          subscriptionRef
+            .update({
+              status: "canceled",
+              cancelAt: object.cancel_at,
+            })
+            .catch((err) =>
+              console.error("Error updating subscription status:", err)
+            );
+        }
+      } else {
+        logger.info(
+          `Subscription created/returned: ${subscription} for user ${userId}`
+        );
+        if (userId) {
+          const subscriptionRef = db
+            .collection("users")
+            .doc(userId)
+            .collection("subscriptions")
+            .doc(subscription);
+          subscriptionRef
+            .update({
+              status: "active",
+            })
+            .catch((err) =>
+              console.error("Error updating subscription status:", err)
+            );
+        }
+      }
       if (userId) {
         const subscriptionRef = db
           .collection("users")
           .doc(userId)
-          .collection("subscriptions");
+          .collection("subscriptions")
+          .doc(subscription);
         subscriptionRef
-          .where("subscriptionId", "==", subscription.id)
-          .get()
-          .then((snapshot) => {
-            snapshot.forEach((doc) => {
-              doc.ref.update({ status: subscription.status });
-            });
-          })
+          .update({ cancel_at: object.cancel_at })
           .catch((err) => console.error("Error updating subscription:", err));
       }
       break;
     }
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      logger.error(`Unhandled event type ${event.type}`);
   }
 
   res.json({ received: true });
