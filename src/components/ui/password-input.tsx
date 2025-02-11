@@ -80,7 +80,7 @@ export const PasswordInput = React.forwardRef<
         <Input
           {...rest}
           css={{
-            "::-ms-reveal": {
+            "::MsReveal": {
               display: "none", // Oculta o botão de revelação de senha no IE/Edge
             },
           }}
@@ -103,7 +103,6 @@ const VisibilityTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
         aspectRatio="square"
         size="sm"
         variant="ghost"
-        height="calc(100% - {spacing.2})"
         aria-label="Toggle password visibility"
         {...props}
       />

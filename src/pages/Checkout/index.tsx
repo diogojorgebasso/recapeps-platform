@@ -47,7 +47,7 @@ export default function CheckoutPage() {
     };
 
     const plans = [
-        { id: "basic", price: "4.99€", amount: 499, description: "Basic Plan", priceId: 'price_1QqyWOEfLSFXfvk1xUBQQiPj' },
+        { id: "basic", price: "4.99€", amount: 499, description: "Basic Plan", priceId: 'price_1QrIBREfLSFXfvk1pguf3yl6' },
     ];
 
     return (

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { CardElement, useStripe, useElements, ExpressCheckoutElement, LinkAuthenticationElement } from '@stripe/react-stripe-js';
 import { Box, Button, Container, Heading, Text, VStack } from '@chakra-ui/react';
+import { useColorModeValue } from '@/components/ui/color-mode';
 
 interface PaymentFormProps {
   clientSecret: string;
@@ -17,7 +18,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-
+  const bg = useColorModeValue('black', 'white');
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -38,8 +39,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
   };
 
   return (
-    <Container maxW="lg" py={8}>
-      <VStack gap={4} align="stretch">
+    <Container border="1px solid orange" maxW=" lg" py={8}>
+      <VStack gap={4} align="stretch" >
         <Heading size="xl">Payer pour {selectedPlan.name}</Heading>
         <Text>Prix: {selectedPlan.price}</Text>
         <Box as="form" onSubmit={handlePayment}>
@@ -47,10 +48,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
           <Box border="1px" borderColor="gray.200" p={4} borderRadius="md">
             <CardElement
               options={{
+                hidePostalCode: true,
                 style: {
                   base: {
-                    color: '#fff',
-                  },
+                    color: bg,
+                  }
                 },
               }}
             />
@@ -69,7 +71,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
         <ExpressCheckoutElement onConfirm={async (params) => {
           console.log('onConfirm', params);
         }} />
-      </VStack>
+      </VStack >
     </Container >
   );
 };
