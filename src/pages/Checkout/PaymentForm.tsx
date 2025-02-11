@@ -45,13 +45,21 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, selectedPlan })
         <Box as="form" onSubmit={handlePayment}>
           <LinkAuthenticationElement />
           <Box border="1px" borderColor="gray.200" p={4} borderRadius="md">
-            <CardElement />
+            <CardElement
+              options={{
+                style: {
+                  base: {
+                    color: '#fff',
+                  },
+                },
+              }}
+            />
           </Box>
           <Button
             type="submit"
             width="full"
             mt={6}
-            colorScheme="green"
+            colorPalette="green"
             size="lg"
             disabled={!stripe}
           >

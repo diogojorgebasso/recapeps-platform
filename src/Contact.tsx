@@ -92,7 +92,7 @@ export default function Contact() {
 
                             <Button
                                 type="submit"
-                                colorScheme="blue"
+                                colorPalette="orange.500"
                                 w="full"
                                 disabled={!formData.name || !formData.email || !formData.message}
                             >

@@ -105,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
         } catch (error) {
             console.error("Error deleting user account:", error);
+            throw error; // rethrow the error to propagate it to the caller
         }
     };
 

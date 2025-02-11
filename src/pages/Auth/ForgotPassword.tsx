@@ -72,7 +72,7 @@ export default function ForgottenPassword() {
                                 </Button>
                             </>
                         )}
-                        <Button variant="outline" colorScheme="blue" size="sm">
+                        <Button variant="outline" colorPalette="orange.500" size="sm">
                             <Link to="/login">Retour à la page de connexion</Link>
                         </Button>
                     </VStack>

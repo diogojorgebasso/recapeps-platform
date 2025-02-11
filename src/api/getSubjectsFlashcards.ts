@@ -26,9 +26,9 @@ export async function getSubjectsFlashcards() {
       }
     });
 
+    subjects.sort((a, b) => Number(a.premium) - Number(b.premium));
     return subjects;
-  } catch (error) {
-    console.error("Error fetching subjects:", error);
+  } catch {
     return [];
   }
 }

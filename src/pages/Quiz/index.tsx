@@ -114,7 +114,7 @@ function ExamCard({
           <Card.Title>{name}</Card.Title>
         </Card.Body>
         <Card.Footer gap="2" p="4">
-          <Button variant="solid" colorScheme="blue">
+          <Button variant="solid" colorPalette="orange.500">
             <Link to={`/quiz/${id}`}>Voir plus</Link>
           </Button>
         </Card.Footer>
@@ -138,7 +138,7 @@ function ExamCard({
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Passer à Recap’eps pro?                  </DialogTitle>
+                  <DialogTitle>Passer à Recap’eps pro?</DialogTitle>
                 </DialogHeader>
                 <DialogBody>
                   <p>
@@ -149,7 +149,7 @@ function ExamCard({
                   <DialogActionTrigger asChild>
                     <Button variant="outline">Non, merci</Button>
                   </DialogActionTrigger>
-                  <Button>
+                  <Button variant="solid">
                     <Link to="/checkout">Oui par pitié</Link>
                   </Button>
                 </DialogFooter>
@@ -157,7 +157,7 @@ function ExamCard({
               </DialogContent>
             </DialogRoot>
             :
-            <Button variant="solid" colorScheme="blue">
+            <Button variant="solid" colorPalette="orange.500">
               <Link to={`/quiz/${id}`}>Voir plus</Link>
             </Button>}
         </Card.Footer>

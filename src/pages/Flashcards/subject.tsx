@@ -80,7 +80,7 @@ export default function FlashcardsSubject() {
                         </Text>
                         <Button
                             onClick={() => navigate("/flashcards")}
-                            colorScheme="blue"
+                            colorPalette="blue"
                             w="full"
                         >
                             Retour à tous les sujets
@@ -133,7 +133,7 @@ export default function FlashcardsSubject() {
                 <Button
                     onClick={handlePrevious}
                     disabled={currentPage === 0}
-                    colorScheme="gray"
+                    colorPalette="gray"
                     mr="4"
                 >
                     Précédent
@@ -144,7 +144,7 @@ export default function FlashcardsSubject() {
                 <Button
                     onClick={handleNext}
                     disabled={currentPage === flashcards.length}
-                    colorScheme="blue"
+                    colorPalette="orange.500"
                     ml="4">
                     Suivant
                 </Button>

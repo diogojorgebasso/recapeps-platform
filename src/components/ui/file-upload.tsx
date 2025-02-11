@@ -87,7 +87,7 @@ const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProps>(
 
         {clearable && (
           <ChakraFileUpload.ItemDeleteTrigger asChild>
-            <IconButton variant="ghost" color="fg.muted" size="xs">
+            <IconButton color="orange.500" size="xs">
               <LuX />
             </IconButton>
           </ChakraFileUpload.ItemDeleteTrigger>
@@ -99,7 +99,7 @@ const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProps>(
 
 interface FileUploadListProps
   extends VisibilityProps,
-    ChakraFileUpload.ItemGroupProps {
+  ChakraFileUpload.ItemGroupProps {
   files?: File[]
 }
 

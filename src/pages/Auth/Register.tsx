@@ -6,10 +6,10 @@ import {
     Text,
     Stack,
     Input,
-    Link as ChakraLink,
     Fieldset,
     Field
 } from "@chakra-ui/react";
+import { Link } from "react-router";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router";
@@ -106,9 +106,8 @@ export default function Register() {
                             />
                             <PasswordStrengthMeter value={(password.length / 4) + 1} />
                             <Field.Root required >
-                                <Field.Label>Conditions générales</Field.Label>
                                 <Checkbox defaultChecked>
-                                    J’accepte les Conditions générales
+                                    J’ai lu et j’accepte la <Link to="/legal/politique-confidentialite"> Politique de Confidentialité.</Link>
                                 </Checkbox>
                             </Field.Root>
                         </Fieldset.Root>
@@ -117,7 +116,7 @@ export default function Register() {
 
 
                         <Button
-                            colorScheme="blue"
+                            colorPalette="blue"
                             w="full"
                             onClick={handleSignUp}
                             loading={isSubmitting}
@@ -125,10 +124,8 @@ export default function Register() {
                             S&apos;inscrire
                         </Button>
 
-
                         <Button
                             variant="outline"
-                            colorScheme="red"
                             w="full"
                             onClick={handleGoogleSignUp}
                         >
@@ -138,12 +135,11 @@ export default function Register() {
 
                     <Text mt={4} fontSize="sm" textAlign="center">
                         Vous avez déjà un compte ?{" "}
-                        <ChakraLink
-                            href="/login"
-                            color="blue.500"
+                        <Link
+                            to="/login"
                         >
                             Connectez-vous
-                        </ChakraLink>
+                        </Link>
                     </Text>
                 </Card.Body>
             </Card.Root>

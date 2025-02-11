@@ -21,6 +21,9 @@ export async function getSubjects() {
       }
     });
 
+    // Ordenar para que os gratuitos venham primeiro
+    subjects.sort((a, b) => Number(a.premium) - Number(b.premium));
+
     return subjects;
   } catch (error) {
     console.error("Error fetching subjects:", error);
@@ -47,6 +50,9 @@ export async function getNotes() {
         });
       }
     });
+
+    // Ordenar para que os gratuitos venham primeiro
+    subjects.sort((a, b) => Number(a.premium) - Number(b.premium));
 
     return subjects;
   } catch (error) {

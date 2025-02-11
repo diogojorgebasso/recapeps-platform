@@ -61,7 +61,7 @@ export function CTA({ linkTo }: { linkTo: string }) {
                     </Text>{" "}
                     Alors, êtes-vous prêt à relever le défi ?
                 </Text>
-                <Button asChild colorScheme="blue" size="lg">
+                <Button asChild size="lg">
                     <LinkNavegation to={linkTo}>Faire le quiz</LinkNavegation>
                 </Button>
             </VStack>

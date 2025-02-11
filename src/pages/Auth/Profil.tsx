@@ -38,10 +38,12 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useSubscription } from "@/hooks/useSubscription";
 import { functions } from "@/utils/firebase";
 import { httpsCallable } from "firebase/functions";
+
+import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 export default function Profil() {
-    const { handleEmailChange, updateUserName, deleteUserAccount,
+    const { handleEmailChange, updateUserName,
         isEmailNotificationEnabled, updateEmailNotificationPreference, currentUser } = useAuth();
-    const { isSubscribed, subscriptionType, lastPurchaseDate } = useSubscription();
+    const { isSubscribed, lastPurchaseDate } = useSubscription();
     const [newEmailNotification, setNewEmailNotification] = useState(isEmailNotificationEnabled);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -173,16 +175,16 @@ export default function Profil() {
         <Box p={6}>
             <Toaster />
             <Heading as="h2" size="lg" mb={6}>
-                Profil
+                Ton profil
             </Heading>
             <Flex gap={10}>
                 <VStack gap={4} >
                     <Box w="200px" h="200px">
                         <Avatar size="full" name="Profile Photo" src={currentUser?.photoURL || "/avatar.svg"} />
                     </Box>
-                    <FileUploadRoot onChange={handleFileChange}>
+                    <FileUploadRoot color="orange.500" onChange={handleFileChange}>
                         <FileUploadTrigger>
-                            <Button>
+                            <Button >
                                 <HiUpload /> Changez votre photo de profil
                             </Button>
                         </FileUploadTrigger>
@@ -214,7 +216,7 @@ export default function Profil() {
                                 {isUploading ?
                                     <Text>Enregistrement...</Text>
                                     :
-                                    <Button colorScheme="blue" onClick={uploadImage}>
+                                    <Button colorPalette="green" onClick={uploadImage}>
                                         Enregistrer
                                     </Button>}
                             </DialogFooter>
@@ -283,28 +285,22 @@ export default function Profil() {
 
             <Box mt={8}>
                 <Heading as="h3" size="md" mb={4}>
-                    Confidentialité
+                    Gestion de vos données personnelles
                 </Heading>
                 <Text>
-                    Vous pouvez consulter nos{" "}
-                    <Link color="blue.500" to="/termes-et-condition">
-                        termes et conditions
-                    </Link>
-                    .
+                    Veuillez consulter notre   <Link to="/legal/politique-confidentialite">Politique de Confidentialité </Link>
+                    pour tout savoir sur la manière dont nous traitons vos données personnelles
                 </Text>
             </Box>
 
             <Box mt={8}>
                 <Heading as="h3" size="md" mb={4}>
-                    Historique des Achats
+                    Mon abonnement
                 </Heading>
                 {isSubscribed ? (
                     <VStack align="start">
                         <Text>
-                            Abonnement: <strong>{subscriptionType}</strong>
-                        </Text>
-                        <Text>
-                            Dernier achat: <strong>{lastPurchaseDate}</strong>
+                            Vous bénéficiez d'un abonnement Recape'ps pro depuis le {lastPurchaseDate}.
                         </Text>
                         <Button
                             mt={4}
@@ -317,18 +313,13 @@ export default function Profil() {
                     </VStack>
                 ) : (
                     <Button asChild>
-                        <Link to="/checkout">Je voudrais profiter de Pro</Link>
+                        <Link to="/checkout">Passer à Recap'eps pro</Link>
                     </Button>
                 )}
             </Box>
-            <Heading as="h3" size="md" mb={4}>
-                Supprimer le Compte
-            </Heading>
-            <Text>
-                Vous pouvez supprimer votre compte à tout moment. Veuillez noter que
-                cette action est irréversible.
-            </Text>
-            <Button colorPalette="red" onClick={() => deleteUserAccount(currentPassword)}>Supprimer le Compte</Button>
+            <Box mt={8}>
+                <DeleteAccountDialog />
+            </Box>
         </Box>
     );
 }

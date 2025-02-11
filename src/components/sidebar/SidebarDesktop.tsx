@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { Link } from "react-router";
 import { SidebarItems } from "./SidebarItems";
 import { MenuRoot, MenuTrigger, MenuContent, MenuSeparator, MenuItem, MenuItemGroup } from "../ui/menu";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   LuSparkles,
   LuBadge,
@@ -15,7 +15,8 @@ import {
   LuUser,
   LuInbox,
   LuNotebookPen,
-  LuListTodo
+  LuListTodo,
+  LuLogIn
 } from "react-icons/lu";
 import {
   PopoverArrow,
@@ -51,7 +52,7 @@ import {
 import Logo from "../ui/logo-recapeps";
 
 export default function SidebarDesktop() {
-  const { currentUser, signOut, handleTourPreference } = useAuth();
+  const { currentUser, signOut, handleTourPreference, isAuthenticated } = useAuth();
   const [openPopover, setOpenPopover] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(true);
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -150,7 +151,7 @@ export default function SidebarDesktop() {
                 <MenuItem value="checkout" asChild>
                   <Link to="/checkout">
                     <LuSparkles />
-                    Passez à Recap'eps Pro
+                    Passez à Recap'eps pro
                   </Link>
                 </MenuItem>
                 <MenuSeparator />
@@ -169,15 +170,24 @@ export default function SidebarDesktop() {
                   </MenuItem>
                 </MenuItemGroup>
                 <MenuSeparator />
-                <MenuItem
-                  value="log-out"
-                  onClick={() => {
-                    signOut();
-                  }}
-                >
-                  <LuLogOut />
-                  Déconnexion
-                </MenuItem>
+                {isAuthenticated ?
+                  <MenuItem
+                    value="log-out"
+                    onClick={() => {
+                      signOut();
+                    }}
+                  >
+                    <LuLogOut />
+                    Déconnexion
+                  </MenuItem>
+                  :
+                  <MenuItem value="log-out" asChild>
+                    <Link to="/login">
+                      <LuLogIn />
+                      Se connecter
+                    </Link>
+                  </MenuItem>
+                }
               </MenuContent>
             </MenuRoot>
           </PopoverTrigger>

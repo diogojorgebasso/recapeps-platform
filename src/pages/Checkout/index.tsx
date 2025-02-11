@@ -1,4 +1,4 @@
-import { Box, Heading, List, Button, Card } from "@chakra-ui/react";
+import { Box, Heading, List, Button, Card, Text, Center } from "@chakra-ui/react";
 import { LuCircleCheck } from "react-icons/lu";
 import { httpsCallable } from 'firebase/functions';
 import { functions } from "@/utils/firebase";
@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useSubscription } from "@/hooks/useSubscription";
+import { Link } from "@chakra-ui/react";
 
 export default function CheckoutPage() {
     const { isAuthenticated } = useAuth();
@@ -50,22 +51,40 @@ export default function CheckoutPage() {
     ];
 
     return (
-        <Box p={8} maxW="2xl" mx="auto" textAlign="center">
+        <Box p={8} rounded="md" maxW="2xl" mx="auto" textAlign="center">
             <Heading as="h1" size="xl" mb={6}>Choisissez votre plan</Heading>
             {plans.map((plan) => (
-                <Card.Root key={plan.id} variant="elevated" mb={4}>
-                    <Card.Header fontWeight="bold">{plan.price} par mois</Card.Header>
+                <Card.Root border="1px solid orange" key={plan.id} variant="elevated" mb={4} textAlign="center">
+                    <Card.Header fontWeight="bold"> Offre de dernière minute ⏰<br />4,99€ par mois seulement 🔥🔥</Card.Header>
                     <Card.Body>
-                        <List.Root mt={3} variant="plain" align="center">
-                            <List.Item>
-                                <List.Indicator asChild color="green.500">
-                                    <LuCircleCheck />
-                                </List.Indicator>
-                                {plan.description}
-                            </List.Item>
-                        </List.Root>
+                        Débloque l’accès à tout le contenu du site:
+                        <Center>
+                            <List.Root mt={3} variant="plain" textAlign="center">
+                                <List.Item>
+                                    <List.Indicator asChild color="green.500">
+                                        <LuCircleCheck />
+                                    </List.Indicator>
+                                    Fiches de révision
+                                </List.Item>
+                                <List.Item>
+                                    <List.Indicator asChild color="green.500">
+                                        <LuCircleCheck />
+                                    </List.Indicator>
+                                    Quiz ascociés
+                                </List.Item>
+                                <List.Item>
+                                    <List.Indicator asChild color="green.500">
+                                        <LuCircleCheck />
+                                    </List.Indicator>
+                                    Flashcards
+                                </List.Item>
+                            </List.Root>
+                        </Center>
+                        <Text mt={2}>
+                            En appuyant sur le bouton ci-dessous, l’Utilisateur <Link href="/legal/conditions-generales">accepte nos CGV</Link>.
+                        </Text>
                     </Card.Body>
-                    <Card.Footer>
+                    <Card.Footer justifyContent={"center"}>
                         <Button
                             onClick={() => handleCheckout(plan)}
                             loading={loading}
@@ -76,7 +95,7 @@ export default function CheckoutPage() {
                             color="white"
                             _hover={{ bg: "orange.600", transform: "scale(1.1)" }}
                         >
-                            Confirmer et Payer
+                            Confirmer et payer
                         </Button>
                     </Card.Footer>
                 </Card.Root>

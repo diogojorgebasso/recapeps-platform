@@ -109,7 +109,7 @@ function ExamCard({
                     <Card.Title>{name}</Card.Title>
                 </Card.Body>
                 <Card.Footer gap="2" p="4">
-                    <Button variant="solid" colorScheme="blue" asChild>
+                    <Button variant="solid" asChild>
                         <a target="_blank" href={vers}>Voir plus</a>
                     </Button>
                 </Card.Footer>
@@ -145,7 +145,7 @@ function ExamCard({
                                     <DialogActionTrigger asChild>
                                         <Button variant="outline">Non, merci</Button>
                                     </DialogActionTrigger>
-                                    <Button>
+                                    <Button variant="solid">
                                         <Link href="/checkout">Oui par pitié</Link>
                                     </Button>
                                 </DialogFooter>
@@ -153,7 +153,7 @@ function ExamCard({
                             </DialogContent>
                         </DialogRoot>
                         :
-                        <Button variant="solid" colorScheme="blue" asChild>
+                        <Button variant="solid" asChild>
                             <a target="_blank" href={vers}>Voir plus</a>
                         </Button>}
                 </Card.Footer>

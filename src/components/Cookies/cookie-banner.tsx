@@ -30,10 +30,10 @@ const CookieBanner = () => {
                     Ce site utilise des cookies pour l'analyse et pour améliorer votre expérience. Acceptez-vous l'utilisation des cookies ?
                 </Text>
                 <Flex gap={2}>
-                    <Button onClick={() => handleConsent(false)} variant="outline" colorScheme="red">
+                    <Button onClick={() => handleConsent(false)} variant="outline">
                         Je refuse
                     </Button>
-                    <Button onClick={() => handleConsent(true)} colorScheme="green">
+                    <Button onClick={() => handleConsent(true)} colorPalette="green">
                         J'accepte
                     </Button>
                 </Flex>
