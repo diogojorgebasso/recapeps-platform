@@ -17,7 +17,7 @@ export async function getSubjectsFlashcards() {
     );
     const querySnapshot = await getDocs(subjectsQuery);
 
-    const subjects = querySnapshot.docs.map((doc) => ({
+    let subjects = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       name: doc.data().name,
       evaluation: doc.data().evaluation,
@@ -25,7 +25,21 @@ export async function getSubjectsFlashcards() {
       premium: doc.data().premium,
     }));
 
-    subjects.sort((a, b) => Number(a.premium) - Number(b.premium));
+    // Group subjects by evaluation and premium status
+    const freeEcrit1 = subjects.filter(
+      (subject) => !subject.premium && subject.evaluation === 1
+    );
+    const paidEcrit1 = subjects.filter(
+      (subject) => subject.premium && subject.evaluation === 1
+    );
+    const freeEcrit2 = subjects.filter(
+      (subject) => !subject.premium && subject.evaluation === 2
+    );
+    const paidEcrit2 = subjects.filter(
+      (subject) => subject.premium && subject.evaluation === 2
+    );
+    subjects = [...freeEcrit1, ...paidEcrit1, ...freeEcrit2, ...paidEcrit2];
+
     cachedSubjects = subjects;
     return subjects;
   } catch {

@@ -10,7 +10,7 @@ const CACHE_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 export async function getSubjects() {
   const now = Date.now();
   if (subjectsCache && subjectsCache.expiry > now) {
-    console.log("Cache hit");
+    console.log(subjectsCache.data);
     return subjectsCache.data;
   }
   try {
@@ -20,7 +20,7 @@ export async function getSubjects() {
     );
     const querySnapshot = await getDocs(q);
 
-    const subjects: Subject[] = [];
+    let subjects: Subject[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       subjects.push({
@@ -32,7 +32,19 @@ export async function getSubjects() {
       });
     });
 
-    subjects.sort((a, b) => Number(a.premium) - Number(b.premium));
+    const freeEcrit1 = subjects.filter(
+      (subject) => !subject.premium && subject.evaluation === 1
+    );
+    const paidEcrit1 = subjects.filter(
+      (subject) => subject.premium && subject.evaluation === 1
+    );
+    const freeEcrit2 = subjects.filter(
+      (subject) => !subject.premium && subject.evaluation === 2
+    );
+    const paidEcrit2 = subjects.filter(
+      (subject) => subject.premium && subject.evaluation === 2
+    );
+    subjects = [...freeEcrit1, ...paidEcrit1, ...freeEcrit2, ...paidEcrit2];
     subjectsCache = { data: subjects, expiry: now + CACHE_TIMEOUT };
     return subjects;
   } catch (error) {
@@ -66,10 +78,29 @@ export async function getNotes() {
         link: data.link,
       });
     });
-
     subjects.sort((a, b) => Number(a.premium) - Number(b.premium));
-    notesCache = { data: subjects, expiry: now + CACHE_TIMEOUT };
-    return subjects;
+    // Group notes by evaluation and premium status
+    const freeEcrit1 = subjects.filter(
+      (note) => !note.premium && note.evaluation === 1
+    );
+    const paidEcrit1 = subjects.filter(
+      (note) => note.premium && note.evaluation === 1
+    );
+    const freeEcrit2 = subjects.filter(
+      (note) => !note.premium && note.evaluation === 2
+    );
+    const paidEcrit2 = subjects.filter(
+      (note) => note.premium && note.evaluation === 2
+    );
+    const orderedSubjects = [
+      ...freeEcrit1,
+      ...paidEcrit1,
+      ...freeEcrit2,
+      ...paidEcrit2,
+    ];
+
+    notesCache = { data: orderedSubjects, expiry: now + CACHE_TIMEOUT };
+    return orderedSubjects;
   } catch (error) {
     console.error("Error fetching notes:", error);
     return [];
