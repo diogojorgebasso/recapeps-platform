@@ -7,6 +7,8 @@ const admin = require("firebase-admin");
 
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const path = require("path");
+const sharp = require("sharp");
 
 initializeApp();
 
@@ -45,17 +47,35 @@ exports.deleteUserDocument = functions.auth.user().onDelete(async (user) => {
   try {
     const docSnapshot = await userDocRef.get();
 
-    if (!docSnapshot.exists) {
-      logger.warn(`Document for user ${userUid} not found in Firestore.`);
-    } else {
+    // Stripe deletion logic
+    if (docSnapshot.exists) {
+      if (docSnapshot.data().stripeCustomerId) {
+        const stripeCustomerId = docSnapshot.data().stripeCustomerId;
+        const subscriptions = await stripe.subscriptions.list({
+          customer: stripeCustomerId,
+          status: "all",
+        });
+        for (let subscription of subscriptions.data) {
+          if (subscription.status !== "canceled") {
+            await stripe.subscriptions.del(subscription.id);
+            logger.info(
+              `Cancelled subscription ${subscription.id} for user ${userUid}.`
+            );
+          }
+        }
+        await stripe.customers.del(stripeCustomerId);
+        logger.info(
+          `Stripe customer ${stripeCustomerId} deleted for user ${userUid}.`
+        );
+      }
       await userDocRef.delete();
       logger.info(`User ${userUid} deleted from Firestore successfully.`);
+    } else {
+      logger.info(`No Stripe customer ID found for user ${userUid}.`);
     }
 
     const userFolderRef = admin.storage().bucket().file(`user/${userUid}`);
-
     const [exists] = await userFolderRef.exists();
-
     if (exists) {
       await userFolderRef.delete();
       logger.info(
@@ -106,6 +126,7 @@ exports.createStripeCheckoutSession = onRequest(
       // Recupera ou cria um cliente no Stripe
       let customer;
       const userDoc = await db.collection("users").doc(userId).get();
+
       if (userDoc.exists && userDoc.data().stripeCustomerId) {
         logger.info(`Customer found for user ${userId}.`);
         customer = userDoc.data().stripeCustomerId;
@@ -176,9 +197,7 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
       webhookSecret
     );
 
-    // Send response immediately to avoid timeout
-    res.json({ received: true });
-
+    logger.debug(event.type);
     if (event.type === "customer.subscription.updated") {
       const subscription = event.data.object;
       const userId = subscription.metadata.firebaseUID;
@@ -188,26 +207,26 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
         logger.error("No userId found in subscription metadata");
         return;
       }
-
+      logger.debug("starting to search user.");
       const subscriptionRef = db
         .collection("users")
         .doc(userId)
         .collection("subscriptions")
         .doc(subscriptionId);
 
+      logger.debug("starting to update subscription.");
       const updateData = {
         status: subscription.cancel_at_period_end
           ? "canceled"
           : subscription.status,
         cancelAt: subscription.cancel_at || null,
-        cancelAtPeriodEnd: subscription.cancel_at_period_end,
         currentPeriodEnd: subscription.current_period_end,
         currentPeriodStart: subscription.current_period_start,
         canceledAt: subscription.canceled_at || null,
         updatedAt: FieldValue.serverTimestamp(),
       };
 
-      if (subscription.cancellation_details) {
+      if (subscription.cancel_at_period_end) {
         updateData.cancellationDetails = subscription.cancellation_details;
       }
 
@@ -267,3 +286,22 @@ exports.createPortalSession = onRequest(
     }
   }
 );
+
+exports.resizeImageOnUpload = functions.storage
+  .object()
+  .onFinalize(async (object) => {
+    if (!object.name || !object.contentType?.startsWith("image/")) return;
+    try {
+      const bucket = admin.storage().bucket(object.bucket);
+      const tempFilePath = path.join("/tmp", path.basename(object.name));
+      await bucket.file(object.name).download({ destination: tempFilePath });
+      const resizedFilePath = `${tempFilePath}_resized`;
+      await sharp(tempFilePath).resize(50, 50).toFile(resizedFilePath);
+      await bucket.upload(resizedFilePath, {
+        destination: object.name,
+        metadata: { contentType: object.contentType },
+      });
+    } catch (error) {
+      logger.error("Error resizing image:", error);
+    }
+  });
