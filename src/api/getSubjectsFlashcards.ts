@@ -26,19 +26,9 @@ export async function getSubjectsFlashcards() {
     }));
 
     // Group subjects by evaluation and premium status
-    const freeEcrit1 = subjects.filter(
-      (subject) => !subject.premium && subject.evaluation === 1
-    );
-    const paidEcrit1 = subjects.filter(
-      (subject) => subject.premium && subject.evaluation === 1
-    );
-    const freeEcrit2 = subjects.filter(
-      (subject) => !subject.premium && subject.evaluation === 2
-    );
-    const paidEcrit2 = subjects.filter(
-      (subject) => subject.premium && subject.evaluation === 2
-    );
-    subjects = [...freeEcrit1, ...paidEcrit1, ...freeEcrit2, ...paidEcrit2];
+    const freeSubjects = subjects.filter((subject) => !subject.premium);
+    const paidSubjects = subjects.filter((subject) => subject.premium);
+    subjects = [...freeSubjects, ...paidSubjects];
 
     cachedSubjects = subjects;
     return subjects;
