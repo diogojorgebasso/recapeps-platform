@@ -1,32 +1,32 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { Subject } from "@/types/Subject";
 
-/**
- * Fetches all subjects from the Firestore collection.
- *
- * @returns {Promise<Subject[]>} A promise that resolves to an array of subjects. If an error occurs, returns an empty array.
- */
-export async function getSubjectsFlashcards() {
-  try {
-    const subjectsCollectionRef = collection(db, "subjects");
-    const querySnapshot = await getDocs(subjectsCollectionRef);
+let cachedSubjects: Subject[] | null = null;
 
-    const subjects: Subject[] = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.contains?.includes("flashcard")) {
-        subjects.push({
-          id: doc.id,
-          name: data.name,
-          evaluation: data.evaluation,
-          image: data.image,
-          premium: data.premium,
-        });
-      }
-    });
+export async function getSubjectsFlashcards() {
+  if (cachedSubjects) {
+    console.log("Cache hit in Flashcards");
+    return cachedSubjects;
+  }
+
+  try {
+    const subjectsQuery = query(
+      collection(db, "subjects"),
+      where("contains", "array-contains", "flashcard")
+    );
+    const querySnapshot = await getDocs(subjectsQuery);
+
+    const subjects = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      name: doc.data().name,
+      evaluation: doc.data().evaluation,
+      image: doc.data().image,
+      premium: doc.data().premium,
+    }));
 
     subjects.sort((a, b) => Number(a.premium) - Number(b.premium));
+    cachedSubjects = subjects;
     return subjects;
   } catch {
     return [];
