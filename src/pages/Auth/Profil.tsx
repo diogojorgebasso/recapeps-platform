@@ -265,7 +265,6 @@ export default function Profil() {
                 </VStack>
             </Flex>
 
-
             <Box mt={8}>
                 <Heading as="h3" size="md" mb={4}>
                     Préférences Email

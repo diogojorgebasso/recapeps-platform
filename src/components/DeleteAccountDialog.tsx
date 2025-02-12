@@ -10,21 +10,27 @@ import {
     DialogCloseTrigger,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router";
 
 export default function DeleteAccountDialog() {
-    const { deleteUserAccount } = useAuth();
+    const { deleteUserAccount, currentUser } = useAuth();
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const hasPasswordProvider = currentUser?.providerData.some(
+        (provider) => provider.providerId === "password"
+    );
 
     const handleDelete = async () => {
         setLoading(true);
         setError(null);
         try {
             await deleteUserAccount(password);
-            // Optionally: redirect or show success feedback.
+            navigate("/");
+            return;
         } catch (err) {
-            setError("Erro ao excluir conta. Verifique sua senha e tente novamente.");
+            setError("Erreur en suprimant le compte. Veuillez réessayer.");
         }
         setLoading(false);
     };
@@ -40,13 +46,14 @@ export default function DeleteAccountDialog() {
                     <Text mb={4}>
                         Êtes-vous sûr de vouloir supprimer votre compte? Cette action est irréversible.
                     </Text>
-                    <Input
-                        mb={2}
-                        type="password"
-                        placeholder="Mot de passe"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                    {hasPasswordProvider && (
+                        <Input
+                            mb={2}
+                            type="password"
+                            placeholder="Mot de passe"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />)}
                     {error && <Text color="red.500">{error}</Text>}
                 </DialogBody>
                 <DialogFooter>

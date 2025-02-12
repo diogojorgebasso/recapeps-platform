@@ -95,17 +95,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return result.user;
     };
 
-    const deleteUserAccount = async (currentPassword: string) => {
-        console.log("Deleting user account...");
+    const deleteUserAccount = async (currentPassword?: string) => {
+        if (!currentUser) return;
+        const hasPasswordProvider = currentUser.providerData.some(
+            (provider) => provider.providerId === EmailAuthProvider.PROVIDER_ID
+        );
+
         try {
-            if (currentUser && currentUser.email) {
-                const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+            if (hasPasswordProvider) {
+                if (!currentPassword) {
+                    throw new Error("Senha é necessária para reautenticação.");
+                }
+                const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
                 await reauthenticateWithCredential(currentUser, credential);
-                await deleteUser(currentUser);
+            } else {
+                const googleProvider = new GoogleAuthProvider();
+                await signInWithPopup(auth, googleProvider);
             }
-        } catch (error) {
-            console.error("Error deleting user account:", error);
-            throw error; // rethrow the error to propagate it to the caller
+            await deleteUser(auth.currentUser!);
+            // New: sign out and clear state after deletion to terminate active listeners.
+            await signOut(auth);
+            setCurrentUser(null);
+            setIsAuthenticated(false);
+        } catch (error: any) {
+            if (error.code === "auth/requires-recent-login") {
+                await signOut(auth);
+                setTimeout(() => {
+                    alert("Please sign in again to delete your account.");
+                }, 1);
+            } else {
+                console.error("Error deleting account:", error);
+            }
         }
     };
 
