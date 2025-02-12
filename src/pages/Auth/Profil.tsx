@@ -41,7 +41,7 @@ import { httpsCallable } from "firebase/functions";
 
 import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 export default function Profil() {
-    const { handleEmailChange, updateUserName,
+    const { handleEmailChange, updateUserName, isAuthenticated,
         isEmailNotificationEnabled, updateEmailNotificationPreference, currentUser } = useAuth();
     const { isSubscribed, lastPurchaseDate } = useSubscription();
     const [newEmailNotification, setNewEmailNotification] = useState(isEmailNotificationEnabled);
@@ -317,7 +317,8 @@ export default function Profil() {
                 )}
             </Box>
             <Box mt={8}>
-                <DeleteAccountDialog />
+                {isAuthenticated &&
+                    <DeleteAccountDialog />}
             </Box>
         </Box>
     );
