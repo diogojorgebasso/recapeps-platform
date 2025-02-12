@@ -93,8 +93,7 @@ export default function Dashboard() {
     }));
 
     if (quizData.length === 0) {
-        return (<>
-
+        return (
             <EmptyState
                 icon={<HiColorSwatch />}
                 title="Aucun résultat disponible"
@@ -109,7 +108,6 @@ export default function Dashboard() {
                     </Link>
                 </HStack>
             </EmptyState>
-        </>
         );
     }
 
@@ -119,7 +117,7 @@ export default function Dashboard() {
                 Vos derniers résultats
             </Heading>
             <Box display="flex" justifyContent="center" mb={8}>
-                <ResponsiveContainer width="50%" height={400}>
+                <ResponsiveContainer height={400}>
                     <LineChart data={ChartData}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="quizName" label={{ position: "insideBottom", offset: -5 }} />

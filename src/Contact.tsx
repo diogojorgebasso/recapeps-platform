@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { db } from "@/utils/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { postContactForm } from "./api/postContactForm";
 import {
     Box,
     Button,
@@ -24,7 +23,7 @@ export default function Contact() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await addDoc(collection(db, "contact"), formData);
+            await postContactForm(formData);
             setSubmitted(true);
             setFormData({ name: "", email: "", message: "" });
         } catch (error) {
