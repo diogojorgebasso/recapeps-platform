@@ -1,6 +1,7 @@
 import {
   VStack, IconButton, Text, Group,
-  AspectRatio
+  AspectRatio,
+  useMediaQuery
 } from "@chakra-ui/react";
 import { Button } from "../ui/button";
 import { Link } from "react-router";
@@ -54,8 +55,14 @@ import Logo from "../ui/logo-recapeps";
 export default function SidebarDesktop() {
   const { currentUser, signOut, handleTourPreference, isAuthenticated } = useAuth();
   const [openPopover, setOpenPopover] = useState<number | null>(null);
-  const [openDialog, setOpenDialog] = useState(true);
   const [currentStep, setCurrentStep] = useState<number>(0);
+  console.log("current Step", currentStep);
+  console.log("open Popover", openPopover);
+  console.log("currentStep", currentStep);
+  let [isNotMobile] = useMediaQuery(["(min-width: 768px)"], { ssr: false });
+  console.log(isNotMobile)
+  const [openDialog, setOpenDialog] = useState(isNotMobile && currentUser?.tourEnabled);
+
   const steps = [
     {
       title: "Profil",
@@ -95,37 +102,35 @@ export default function SidebarDesktop() {
 
   return (
     <>
-      {currentUser?.tourEnabled && (
-        <DialogRoot role="alertdialog" open={openDialog} onOpenChange={(e) => setOpenDialog(e.open)} placement="top">
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Salut !</DialogTitle>
-            </DialogHeader>
-            <DialogBody pt="4">
-              <DialogDescription mb="4">
-                Tu es prêt à démarrer tes révisions? Alors laisse moi te faire un petit tour du site pour que tu te repères plus facilement. Suis moi…
-                <AspectRatio ratio={4 / 3}>
-                  <Logo />
-                </AspectRatio>
-              </DialogDescription>
-            </DialogBody>
-            <DialogFooter>
-              <DialogActionTrigger asChild>
-                <Button
-                  variant="outline"
-                  onClick={async () => {
-                    await handleTourPreference(false);
-                  }}
-                >
-                  Non, merci
-                </Button>
-              </DialogActionTrigger>
-              <Button colorPalette="green" onClick={startWizard}>oui, bien sûr!</Button>
-            </DialogFooter>
-            <DialogCloseTrigger />
-          </DialogContent>
-        </DialogRoot>
-      )}
+      <DialogRoot role="alertdialog" open={openDialog} onOpenChange={(e) => setOpenDialog(e.open)} placement="top">
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Salut !</DialogTitle>
+          </DialogHeader>
+          <DialogBody pt="4">
+            <DialogDescription mb="4">
+              Tu es prêt à démarrer tes révisions? Alors laisse moi te faire un petit tour du site pour que tu te repères plus facilement. Suis moi…
+              <AspectRatio ratio={4 / 3}>
+                <Logo />
+              </AspectRatio>
+            </DialogDescription>
+          </DialogBody>
+          <DialogFooter>
+            <DialogActionTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await handleTourPreference(false);
+                }}
+              >
+                Non, merci
+              </Button>
+            </DialogActionTrigger>
+            <Button colorPalette="green" onClick={startWizard}>oui, bien sûr!</Button>
+          </DialogFooter>
+          <DialogCloseTrigger />
+        </DialogContent>
+      </DialogRoot>
       <VStack
         as="nav"
         position="fixed"
@@ -198,7 +203,7 @@ export default function SidebarDesktop() {
               <Text my="4">
                 {steps[0].description}
               </Text>
-              <StepsRoot defaultValue={1} count={3}>
+              <StepsRoot defaultValue={1} count={4}>
                 <StepsList>
                   <StepsItem index={0} icon={<LuUser />} />
                   <StepsItem index={1} icon={<LuInbox />} />
