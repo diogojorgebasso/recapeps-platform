@@ -18,8 +18,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <link rel="canonical" href="https://recapeps.fr" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <link rel="icon" type="image/svg+xml" href="/logo.svg" sizes="any" />
-                <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-                <link rel="icon" type="image/png" href="/favicon-48x48.png" sizes="48x48" />
                 <link rel="mask-icon" href="/logo.svg" color="#FF7F2A" />
                 <meta name="description" content="Recap’eps est un outil de révision imparable pour réussir les concours du CAPEPS externe. Que ce soit grâce à nos fiches de révisions thématiques, quiz ou flashcards, réviser n’a jamais été aussi facile." />
                 <title>Recap'eps</title>
