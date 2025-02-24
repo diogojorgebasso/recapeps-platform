@@ -4,11 +4,15 @@ const { onRequest } = require("firebase-functions/v2/https");
 const { logger } = require("firebase-functions");
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
-
+const sgMail = require("@sendgrid/mail");
+import {
+  onDocumentCreated,
+} from "firebase-functions/v2/firestore";
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const path = require("path");
-const sharp = require("sharp");
+
+// Initialize SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 initializeApp();
 
@@ -216,9 +220,7 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
 
       logger.debug("starting to update subscription.");
       const updateData = {
-        status: subscription.cancel_at_period_end
-          ? "canceled"
-          : subscription.status,
+        status: subscription.status,
         cancelAt: subscription.cancel_at || null,
         currentPeriodEnd: subscription.current_period_end,
         currentPeriodStart: subscription.current_period_start,
@@ -232,6 +234,7 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
 
       await subscriptionRef.update(updateData);
       logger.info(`Subscription ${subscriptionId} updated successfully`);
+      res.status(200).send("Webhook received");
     }
   } catch (error) {
     logger.error("Webhook error:", error.message);
@@ -241,6 +244,7 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
   }
 });
 
+// create the Billing Portal for the especified user.
 exports.createPortalSession = onRequest(
   { cors: "https://recapeps.fr" },
   async (req, res) => {
@@ -287,21 +291,34 @@ exports.createPortalSession = onRequest(
   }
 );
 
-exports.resizeImageOnUpload = functions.storage
-  .object()
-  .onFinalize(async (object) => {
-    if (!object.name || !object.contentType?.startsWith("image/")) return;
+// New function: Trigger on new contact document creation to send emails
+exports.sendContactEmail = onDocumentCreated("contact/{contactID}", async (event) => {
+  const snapshot = event.data;
+
+  if (!snapshot) {
+      logger.error("No data associated with the event");
+      return;
+  }
+  const data = snapshot.data();
+    const userEmail = data?.email;
+    const message = data?.message || "";
+    const userName = data?.name || "";
+
+    // Configuração do email para o usuário
+    const emailToUser = {
+      to: userEmail,
+      from: "no-reply@recapeps.fr",
+      cc: "support@recapeps.fr",
+      subject: `Nous avons reçu votre message !`,
+      text: `Bonjour ${userName},\n\nVotre message est bien reçu:\n${message}\n\nNous répondrons biêntot.`,
+    };
+
     try {
-      const bucket = admin.storage().bucket(object.bucket);
-      const tempFilePath = path.join("/tmp", path.basename(object.name));
-      await bucket.file(object.name).download({ destination: tempFilePath });
-      const resizedFilePath = `${tempFilePath}_resized`;
-      await sharp(tempFilePath).resize(50, 50).toFile(resizedFilePath);
-      await bucket.upload(resizedFilePath, {
-        destination: object.name,
-        metadata: { contentType: object.contentType },
-      });
+      if (userEmail) {
+        await sgMail.send(emailToUser);
+      }
+      logger.info("Emails enviados com sucesso para o contato e suporte.");
     } catch (error) {
-      logger.error("Error resizing image:", error);
+      logger.error("Erro ao enviar emails via SendGrid:", error);
     }
   });

@@ -80,10 +80,11 @@ export default function CheckoutPage() {
                                 </List.Item>
                             </List.Root>
                         </Center>
-                        <Text mt={2}>
-                            En appuyant sur le bouton ci-dessous, l’Utilisateur <Link href="/legal/conditions-generales">accepte nos CGV</Link>.
-                        </Text>
                     </Card.Body>
+                    <Text>Résiliable à tout moment !</Text>
+                    <Text mt={2}>
+                        En appuyant sur le bouton ci-dessous, l’Utilisateur <Link href="/legal/conditions-generales">accepte nos CGV</Link>.
+                    </Text>
                     <Card.Footer justifyContent={"center"}>
                         <Button
                             onClick={() => handleCheckout(plan)}

@@ -21,7 +21,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
-const perf = getPerformance(app);
+
 
 // Initialize App Check only on the client side
 const initAppCheck = async () => {
@@ -43,4 +43,5 @@ const initAppCheck = async () => {
 // Only run in browser
 if (typeof document !== "undefined") {
   initAppCheck();
+  getPerformance(app);
 }
