@@ -7,6 +7,23 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Link } from "@chakra-ui/react";
+import { loadStripe } from "@stripe/stripe-js";
+
+interface Plan {
+    id: string;
+    price: string;
+    amount: number;
+    description: string;
+    priceId: string;
+}
+
+interface StripeResponse {
+    data: {
+        id: string;
+    };
+}
+
+const stripePromise = loadStripe("pk_live_51QqK3jEfLSFXfvk1Ysx877RxVyMoWj4NMoFUWGvyvVKbI7Zw9bT4FzuJ4TKf0ne3LxO7FjKCaTGdwJZ1VTRgBkpv00eNrzjryZ");
 
 export default function CheckoutPage() {
     const { isAuthenticated } = useAuth();
@@ -26,18 +43,24 @@ export default function CheckoutPage() {
         }
     }, [isAuthenticated, navigate]);
 
-    const handleCheckout = async (plan: { id: string; price: string; amount: number, priceId: string }) => {
+
+    const handleCheckout = async (plan: Plan) => {
         setLoading(true);
         try {
             const createStripeCheckoutSession = httpsCallable(functions, 'createStripeCheckoutSession');
-            const result = await createStripeCheckoutSession({ priceId: plan.priceId, quantity: 1 });
-            const data = result.data as { clientSecret?: string };
-            if (!data.clientSecret) {
-                console.error("Client secret missing in response:", data);
+            const response = await createStripeCheckoutSession({ priceId: plan.priceId }) as StripeResponse;
+
+            const { id: sessionId } = response.data;
+
+            const stripe = await stripePromise;
+
+            if (stripe) {
+                await stripe.redirectToCheckout({ sessionId });
+            } else {
+                console.error("Stripe failed to load.");
                 navigate("/error");
-                return;
             }
-            navigate("/payment", { state: { clientSecret: data.clientSecret, selectedPlan: { id: plan.id, price: plan.price, amount: plan.amount } } });
+
         } catch (error: any) {
             console.error("Error calling function:", error);
             navigate("/error");
@@ -48,6 +71,7 @@ export default function CheckoutPage() {
 
     const plans = [
         { id: "basic", price: "4.99€", amount: 499, description: "Basic Plan", priceId: 'price_1QrIBREfLSFXfvk1pguf3yl6' },
+        {}
     ];
 
     return (

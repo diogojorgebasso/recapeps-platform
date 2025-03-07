@@ -1,13 +1,12 @@
 const { initializeApp } = require("firebase-admin/app");
-const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+const { getFirestore } = require("firebase-admin/firestore");
 const { onRequest } = require("firebase-functions/v2/https");
 const { logger } = require("firebase-functions");
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const sgMail = require("@sendgrid/mail");
-import {
-  onDocumentCreated,
-} from "firebase-functions/v2/firestore";
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -99,15 +98,12 @@ exports.createStripeCheckoutSession = onRequest(
       return;
     }
 
+    // Authentication check
     const authHeader = req.headers.authorization || "";
-    const token = authHeader.startsWith("Bearer ")
-      ? authHeader.split("Bearer ")[1]
-      : null;
+    const token = authHeader.startsWith("Bearer ") ? authHeader.split("Bearer ")[1] : null;
 
     if (!token) {
-      res
-        .status(401)
-        .json({ error: "Unauthenticated request. Token missing." });
+      res.status(401).json({ error: "Unauthenticated request. Token missing." });
       return;
     }
 
@@ -120,14 +116,17 @@ exports.createStripeCheckoutSession = onRequest(
       return;
     }
     logger.info(`User ${userId} authenticated successfully.`);
-    const { priceId, quantity = 1 } = req.body.data;
+
+    // Extract priceId and quantity from request body
+    const { priceId } = req.body.data || {};
+
     if (!priceId) {
-      res.status(400).json({ error: "Invalid subscription data." });
+      res.status(400).json({ error: "Invalid subscription data. priceId is required." });
       return;
     }
 
     try {
-      // Recupera ou cria um cliente no Stripe
+      // Retrieve or create a Stripe customer
       let customer;
       const userDoc = await db.collection("users").doc(userId).get();
 
@@ -141,100 +140,83 @@ exports.createStripeCheckoutSession = onRequest(
           metadata: { firebaseUID: userId },
         });
         customer = customerData.id;
-        await db
-          .collection("users")
-          .doc(userId)
-          .update({ stripeCustomerId: customer });
+        await db.collection("users").doc(userId).update({ stripeCustomerId: customer });
       }
 
-      // Cria a assinatura no Stripe
-      const subscription = await stripe.subscriptions.create({
-        customer,
-        items: [{ price: priceId, quantity }],
-        payment_behavior: "default_incomplete",
-        expand: ["latest_invoice.payment_intent"],
+      // Create a Stripe Checkout Session for a subscription
+      const session = await stripe.checkout.sessions.create({
+        customer, // Link to the Stripe customer
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: priceId, // Stripe Price ID for the subscription
+          },
+        ],
+        mode: "subscription",
+        success_url: "https://recapeps.fr/success?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url: "https://recapeps.fr/cancel",
         metadata: { firebaseUID: userId },
       });
 
-      logger.info("Subscription created:", subscription);
+      logger.info(`Checkout session created for user ${userId}: ${session.id}`);
 
-      // Salva no Firestore
-      await db
-        .collection("users")
-        .doc(userId)
-        .collection("subscriptions")
-        .doc(subscription.id)
-        .set({
-          priceId,
-          createdAt: FieldValue.serverTimestamp(),
-          status: subscription.status,
-          subscriptionId: subscription.id,
-          cancelAt: subscription.cancel_at,
-        });
-
-      // Retorna o client_secret para o front
-      const paymentIntent = subscription.latest_invoice.payment_intent;
-      res
-        .status(200)
-        .json({ data: { clientSecret: paymentIntent.client_secret } });
+      // Return the session ID to the frontend
+      res.status(200).json({ data: { id: session.id } });
     } catch (error) {
-      console.error("Error creating subscription:", error);
-      res
-        .status(500)
-        .json({ data: { error: "Failed to create subscription." } });
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ data: { error: "Failed to create checkout session." } });
     }
   }
 );
 
-exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
+exports.stripeWebhook = onRequest({ rawBody: true }, async (req, res) => {
   try {
     const sig = req.headers["stripe-signature"];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+    // Check if webhook secret is configured
     if (!webhookSecret) {
       throw new Error("Webhook secret not configured");
     }
 
+    // Construct the Stripe event using the raw body
     const event = stripe.webhooks.constructEvent(
       req.rawBody,
       sig,
       webhookSecret
     );
 
-    logger.debug(event.type);
+    logger.debug(`Received event: ${event.type}`);
+
+    // Handle customer.subscription.updated event
     if (event.type === "customer.subscription.updated") {
       const subscription = event.data.object;
       const userId = subscription.metadata.firebaseUID;
       const subscriptionId = subscription.id;
 
+      // Validate userId
       if (!userId) {
         logger.error("No userId found in subscription metadata");
+        res.status(400).send("No userId found in subscription metadata");
         return;
       }
-      logger.debug("starting to search user.");
+
+      logger.debug("Starting to search user.");
       const subscriptionRef = db
         .collection("users")
         .doc(userId)
         .collection("subscriptions")
         .doc(subscriptionId);
 
-      logger.debug("starting to update subscription.");
-      const updateData = {
-        status: subscription.status,
-        cancelAt: subscription.cancel_at || null,
-        currentPeriodEnd: subscription.current_period_end,
-        currentPeriodStart: subscription.current_period_start,
-        canceledAt: subscription.canceled_at || null,
-        updatedAt: FieldValue.serverTimestamp(),
-      };
+      logger.debug("Starting to update subscription.");
 
-      if (subscription.cancel_at_period_end) {
-        updateData.cancellationDetails = subscription.cancellation_details;
-      }
-
-      await subscriptionRef.update(updateData);
+      await subscriptionRef.set(subscription, { merge: true });
       logger.info(`Subscription ${subscriptionId} updated successfully`);
       res.status(200).send("Webhook received");
+    }
+    else {
+      // Acknowledge unhandled event types
+      res.status(200).send("Event type not handled");
     }
   } catch (error) {
     logger.error("Webhook error:", error.message);
@@ -296,29 +278,29 @@ exports.sendContactEmail = onDocumentCreated("contact/{contactID}", async (event
   const snapshot = event.data;
 
   if (!snapshot) {
-      logger.error("No data associated with the event");
-      return;
+    logger.error("No data associated with the event");
+    return;
   }
   const data = snapshot.data();
-    const userEmail = data?.email;
-    const message = data?.message || "";
-    const userName = data?.name || "";
+  const userEmail = data?.email;
+  const message = data?.message || "";
+  const userName = data?.name || "";
 
-    // Configuração do email para o usuário
-    const emailToUser = {
-      to: userEmail,
-      from: "no-reply@recapeps.fr",
-      cc: "support@recapeps.fr",
-      subject: `Nous avons reçu votre message !`,
-      text: `Bonjour ${userName},\n\nVotre message est bien reçu:\n${message}\n\nNous répondrons biêntot.`,
-    };
+  // Configuração do email para o usuário
+  const emailToUser = {
+    to: userEmail,
+    from: "no-reply@recapeps.fr",
+    cc: "support@recapeps.fr",
+    subject: `Nous avons reçu votre message !`,
+    text: `Bonjour ${userName},\n\nVotre message est bien reçu:\n${message}\n\nNous répondrons biêntot.`,
+  };
 
-    try {
-      if (userEmail) {
-        await sgMail.send(emailToUser);
-      }
-      logger.info("Emails enviados com sucesso para o contato e suporte.");
-    } catch (error) {
-      logger.error("Erro ao enviar emails via SendGrid:", error);
+  try {
+    if (userEmail) {
+      await sgMail.send(emailToUser);
     }
-  });
+    logger.info("Emails enviados com sucesso para o contato e suporte.");
+  } catch (error) {
+    logger.error("Erro ao enviar emails via SendGrid:", error);
+  }
+});

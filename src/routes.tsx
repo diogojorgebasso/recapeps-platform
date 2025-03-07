@@ -22,7 +22,6 @@ export default [
         route("quiz/:subjectId", "./pages/Quiz/SubjectQuiz.tsx"),
         ...prefix("notes", [
             index("./pages/Notes/index.tsx"),
-            // route(":subject", "./pages/Notes/DynamicPage.tsx"),
         ]),
         route("profil", "./pages/Auth/Profil.tsx"),
         ...prefix("flashcards", [
@@ -30,7 +29,6 @@ export default [
             route(":subjectId", "./pages/Flashcards/subject.tsx"),
         ]),
         route("checkout", "./pages/Checkout/index.tsx"),
-        route("payment", "./pages/Checkout/Payment.tsx"),
         route("success", "./Success.tsx"),
         route("error", "./Error.tsx"),
         route("*?", "catchall.tsx"),
