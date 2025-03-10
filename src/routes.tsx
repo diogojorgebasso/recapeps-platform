@@ -20,6 +20,7 @@ export default [
         route("dashboard", "./Dashboard.tsx"),
         route("quiz", "./pages/Quiz/index.tsx"),
         route("oral", "./pages/Oral/index.tsx"),
+        route("oral/:subjectId", "./pages/Oral/Subject.ts"),
         route("quiz/:subjectId", "./pages/Quiz/SubjectQuiz.tsx"),
         ...prefix("notes", [
             index("./pages/Notes/index.tsx"),

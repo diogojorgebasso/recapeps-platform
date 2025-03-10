@@ -1,4 +1,3 @@
-const { initializeApp } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 const { onRequest } = require("firebase-functions/v2/https");
 const { logger } = require("firebase-functions");
@@ -13,7 +12,9 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // Initialize SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-initializeApp();
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
 
 const db = getFirestore();
 
@@ -40,7 +41,8 @@ exports.saveRoleToFirestore = functions.auth.user().onCreate(async (user) => {
   } catch (error) {
     logger.error("Error saving user to Firestore:", error);
   }
-});
+}
+);
 
 exports.deleteUserDocument = functions.auth.user().onDelete(async (user) => {
   console.log("Deleting user data:", user.uid);
@@ -137,6 +139,7 @@ exports.createStripeCheckoutSession = onRequest(
         logger.info(`Creating customer for user ${userId}.`);
         const customerData = await stripe.customers.create({
           email: userDoc.data().email,
+          name: userDoc.data().name,
           metadata: { firebaseUID: userId },
         });
         customer = customerData.id;
@@ -149,7 +152,8 @@ exports.createStripeCheckoutSession = onRequest(
         payment_method_types: ["card"],
         line_items: [
           {
-            price: priceId, // Stripe Price ID for the subscription
+            price: priceId,
+            quantity: 1,
           },
         ],
         mode: "subscription",
@@ -191,17 +195,18 @@ exports.stripeWebhook = onRequest({ rawBody: true }, async (req, res) => {
     // Handle customer.subscription.updated event
     if (event.type === "customer.subscription.updated") {
       const subscription = event.data.object;
-      const userId = subscription.metadata.firebaseUID;
       const subscriptionId = subscription.id;
+      const stripeCustomerId = subscription.customer;
+      logger.debug(`Subscription ${subscriptionId} updated for user ${stripeCustomerId}`);
+      const userSnapshot = await db.collection("users").where("stripeCustomerId", "==", stripeCustomerId).get();
 
-      // Validate userId
-      if (!userId) {
-        logger.error("No userId found in subscription metadata");
-        res.status(400).send("No userId found in subscription metadata");
+      if (userSnapshot.empty) {
+        logger.error(`No user found for Stripe customer ID ${stripeCustomerId}`);
+        res.status(404).send("User not found");
         return;
       }
 
-      logger.debug("Starting to search user.");
+      const userId = userSnapshot.docs[0].id;
       const subscriptionRef = db
         .collection("users")
         .doc(userId)
@@ -283,7 +288,6 @@ exports.sendContactEmail = onDocumentCreated("contact/{contactID}", async (event
   }
   const data = snapshot.data();
   const userEmail = data?.email;
-  const message = data?.message || "";
   const userName = data?.name || "";
 
   // Configuração do email para o usuário
@@ -291,8 +295,8 @@ exports.sendContactEmail = onDocumentCreated("contact/{contactID}", async (event
     to: userEmail,
     from: "no-reply@recapeps.fr",
     cc: "support@recapeps.fr",
-    subject: `Nous avons reçu votre message !`,
-    text: `Bonjour ${userName},\n\nVotre message est bien reçu:\n${message}\n\nNous répondrons biêntot.`,
+    subject: `Confirmation de réception de votre message`,
+    text: `Bonjour ${userName},\n\nNous avons bien reçu votre message, nous y répondrons dans les meilleurs délais.\n\nMerci pour votre confiance,\nL'équipe Recapeps.`
   };
 
   try {

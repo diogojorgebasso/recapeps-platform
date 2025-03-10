@@ -5,9 +5,9 @@
   },
   "functions": [
     {
+      "source": "functions/node",
       "runtime": "nodejs20",
-      "source": "functions",
-      "codebase": "default",
+      "codebase": "nodejs",
       "ignore": [
         "node_modules",
         ".git",
@@ -15,6 +15,11 @@
         "firebase-debug.*.log",
         "*.local"
       ]
+    },
+    {
+      "runtime": "python310",
+      "source": "functions/python",
+      "codebase": "python"
     }
   ],
   "hosting": {
