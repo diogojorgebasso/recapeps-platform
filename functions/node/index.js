@@ -5,6 +5,8 @@ const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const sgMail = require("@sendgrid/mail");
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { onObjectFinalized } = require("firebase-functions/v2/storage");
+const speech = require('@google-cloud/speech').v2;
 
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -278,33 +280,189 @@ exports.createPortalSession = onRequest(
   }
 );
 
-// New function: Trigger on new contact document creation to send emails
-exports.sendContactEmail = onDocumentCreated("contact/{contactID}", async (event) => {
-  const snapshot = event.data;
+exports.sendContactEmail = onDocumentCreated("contact/{contactID}",
+  async (event) => {
+    const snapshot = event.data;
 
-  if (!snapshot) {
-    logger.error("No data associated with the event");
+    if (!snapshot) {
+      logger.error("No data associated with the event");
+      return;
+    }
+
+    const data = snapshot.data();
+    const userEmail = data?.email;
+    const userName = data?.name || "";
+
+    const emailToUser = {
+      to: userEmail,
+      from: "no-reply@recapeps.fr",
+      cc: "support@recapeps.fr",
+      subject: `Confirmation de réception de votre message`,
+      text: `Bonjour ${userName},\n\nNous avons bien reçu votre message, nous y répondrons dans les meilleurs délais.\n\nMerci pour votre confiance,\nL'équipe Recapeps.`
+    };
+
+    try {
+      if (userEmail) {
+        await sgMail.send(emailToUser);
+      }
+      logger.info("Emails enviados com sucesso para o contato e suporte.");
+    } catch (error) {
+      logger.error("Erro ao enviar emails via SendGrid:", error);
+    }
+  })
+
+// Export User Data Function
+exports.exportUserData = onRequest({ cors: ["https://recapeps.fr"] }, async (req, res) => {
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Method Not Allowed" });
     return;
   }
-  const data = snapshot.data();
-  const userEmail = data?.email;
-  const userName = data?.name || "";
 
-  // Configuração do email para o usuário
-  const emailToUser = {
-    to: userEmail,
-    from: "no-reply@recapeps.fr",
-    cc: "support@recapeps.fr",
-    subject: `Confirmation de réception de votre message`,
-    text: `Bonjour ${userName},\n\nNous avons bien reçu votre message, nous y répondrons dans les meilleurs délais.\n\nMerci pour votre confiance,\nL'équipe Recapeps.`
-  };
+  const authHeader = req.headers.authorization || "";
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split("Bearer ")[1]
+    : null;
+
+  if (!token) {
+    res.status(401).json({ error: "Unauthenticated request" });
+    return;
+  }
 
   try {
-    if (userEmail) {
-      await sgMail.send(emailToUser);
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const userId = decodedToken.uid;
+    logger.info(`Exporting data for user ${userId}`);
+
+    const userDoc = await db.collection("users").doc(userId).get();
+    if (!userDoc.exists) {
+      res.status(404).json({ error: "User not found" });
+      return;
     }
-    logger.info("Emails enviados com sucesso para o contato e suporte.");
+
+    const userData = {};
+    const userEmail = userDoc.data().email;
+
+    if (!userEmail) {
+      res.status(400).json({ error: "User email not found" });
+      return;
+    }
+
+    userData.profile = userDoc.data();
+
+    // Subscriptions
+    const subscriptionsSnapshot = await db.collection("users").doc(userId).collection("subscriptions").get();
+    if (!subscriptionsSnapshot.empty) {
+      userData.subscriptions = subscriptionsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    }
+
+    // Quizzes
+    const quizzesSnapshot = await db.collection("users").doc(userId).collection("quizzes").get();
+    if (!quizzesSnapshot.empty) {
+      userData.quizzes = quizzesSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    }
+
+    // Prepare email
+    const emailData = {
+      to: userEmail,
+      from: "no-reply@recapeps.fr",
+      subject: "Votre export de données RecapEPS",
+      text: "Veuillez trouver ci-joint l'export de vos données RecapEPS.",
+      html: `
+          <p>Bonjour ${userData.profile.name || ""},</p>
+          <p>Vous avez demandé un export de vos données personnelles sur RecapEPS.</p>
+          <p>Vos données sont disponibles en pièce jointe à cet email.</p>
+          <p>Cordialement,<br>L'équipe RecapEPS</p>`,
+      attachments: [
+        {
+          filename: 'recapeps-data-export.json',
+          content: Buffer.from(JSON.stringify(userData, null, 2)).toString('base64'),
+          type: 'application/json',
+          disposition: 'attachment'
+        }
+      ]
+    };
+
+    await sgMail.send(emailData);
+    logger.info(`Data export email sent to user ${userId} at ${userEmail}`);
+
+    res.status(202).json({ message: "Export request accepted and processing" });
   } catch (error) {
-    logger.error("Erro ao enviar emails via SendGrid:", error);
+    logger.error("Error exporting user data:", error);
+    res.status(500).json({ error: "Failed to export user data" });
+  }
+});
+
+// Transcribe Uploaded Document Function
+exports.transcribeUploadedDocument = onObjectFinalized(async (event) => {
+  const filePath = event.data.name;
+  const pathMatch = filePath.match(/^user\/(.*?)\/transcripts\/(.*?)$/);
+  const speechClient = new speech.SpeechClient();
+
+  if (!pathMatch) {
+    logger.info(`File ${filePath} does not match the target path pattern. Skipping.`);
+    return;
+  }
+
+  const userId = pathMatch[1];
+  const documentId = pathMatch[2];
+  const bucketName = event.data.bucket;
+  const gcsUri = `gs://${bucketName}/${filePath}`;
+
+  logger.info(`Processing transcription for user ${userId}, document ${documentId}`);
+
+  try {
+    const bucket = admin.storage().bucket(bucketName);
+    const file = bucket.file(filePath);
+    const [metadata] = await file.getMetadata();
+    const contentType = metadata.contentType;
+
+    let transcriptionText = "";
+
+    if (contentType.startsWith('audio/') || contentType.startsWith('video/')) {
+      const request = {
+        recognizer: `projects/recapeps-platform/locations/global/recognizers/_`,
+        config: {
+          languageCodes: ["fr-FR"],
+          model: "latest_long",
+          profanityFilter: true,
+          autoDecodingConfig: {}
+        },
+        uri: gcsUri,
+      };
+
+      logger.info(`Sending recognition request for ${gcsUri}`);
+      const [response] = await speechClient.recognize(request);
+
+      if (response.results && response.results.length > 0) {
+        transcriptionText = response.results
+          .map(result => result.alternatives[0].transcript)
+          .join(" ")
+          .trim();
+      }
+      logger.info("Audio transcription completed successfully");
+    } else {
+      logger.warn(`Unsupported file type for transcription: ${contentType}`);
+      transcriptionText = "Unsupported file type";
+    }
+
+    // Save to Firestore
+    const docRef = db.collection("users").doc(userId).collection("transcripts").doc(documentId);
+    await docRef.set({
+      transcription: transcriptionText,
+      originalFile: filePath,
+      contentType: contentType,
+      fileSize: metadata.size,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    logger.info(`Transcription saved successfully for user ${userId}, document ${documentId}`);
+  } catch (error) {
+    logger.error(`Error transcribing document ${filePath}:`, error);
   }
 });

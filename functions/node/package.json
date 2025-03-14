@@ -2,10 +2,10 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase - Node.js",
   "scripts": {
-    "serve": "firebase emulators:start --only functions:nodejs-recapeps",
+    "serve": "firebase emulators:start --only functions:node",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions:nodejs-recapeps",
+    "deploy": "firebase deploy --only functions:node",
     "logs": "firebase functions:log"
   },
   "engines": {
@@ -13,6 +13,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@google-cloud/speech": "^6.7.1",
     "@sendgrid/mail": "^8.1.4",
     "dotenv": "^16.4.7",
     "firebase-admin": "^13.1.0",
