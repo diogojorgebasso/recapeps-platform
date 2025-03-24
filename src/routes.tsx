@@ -19,8 +19,8 @@ export default [
     layout("./layouts/AuthenticatedClientLayout.tsx", [
         route("dashboard", "./Dashboard.tsx"),
         route("quiz", "./pages/Quiz/index.tsx"),
-        route("oral", "./pages/Oral/index.tsx"),
-        route("oral/:subjectId", "./pages/Oral/Subject.ts"),
+        route("oral-3", "./pages/Oral/index.tsx"),
+        route("oral-3/:subjectId", "./pages/Oral/Subject.tsx"),
         route("quiz/:subjectId", "./pages/Quiz/SubjectQuiz.tsx"),
         ...prefix("notes", [
             index("./pages/Notes/index.tsx"),

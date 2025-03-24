@@ -56,11 +56,7 @@ export default function SidebarDesktop() {
   const { currentUser, signOut, handleTourPreference, isAuthenticated } = useAuth();
   const [openPopover, setOpenPopover] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(0);
-  console.log("current Step", currentStep);
-  console.log("open Popover", openPopover);
-  console.log("currentStep", currentStep);
   let [isNotMobile] = useMediaQuery(["(min-width: 768px)"], { ssr: false });
-  console.log(isNotMobile)
   const [openDialog, setOpenDialog] = useState(isNotMobile && currentUser?.tourEnabled);
 
   const steps = [
@@ -83,6 +79,10 @@ export default function SidebarDesktop() {
     {
       title: "Flashcards",
       description: "Tu as des difficultés à retenir des informations? Les flashcards sont faites pour toi! Elles te permettront de réviser de manière plus ludique et plus efficace."
+    },
+    {
+      title: "Oral 3",
+      description: "Tu peux enrigestre et transcrire tes réponses pour t'entrainer à l'oral."
     },
     {
       title: "Contact",
