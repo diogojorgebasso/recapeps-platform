@@ -26,7 +26,7 @@ export const firebaseApp = initializeApp(firebaseConfig);
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     try {
         initializeAppCheck(firebaseApp, {
-            provider: new ReCaptchaEnterpriseProvider('6Lco8f4qAAAAAPFNsctWY6ASBbDBnWZ50v5jF9eP'),
+            provider: new ReCaptchaEnterpriseProvider('6Le-6H8qAAAAABnX3YE60B2yDwojG0nZAEd0a7ne'),
             isTokenAutoRefreshEnabled: true
         });
 
