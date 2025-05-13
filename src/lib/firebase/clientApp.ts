@@ -9,7 +9,6 @@ import { getMessaging, isSupported } from "firebase/messaging";
 import {
     initializeAppCheck,
     ReCaptchaEnterpriseProvider,
-    CustomProvider,
 } from 'firebase/app-check'
 
 const firebaseConfig = {
