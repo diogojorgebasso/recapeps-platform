@@ -14,10 +14,26 @@ import {
     CloseButton
 } from "@chakra-ui/react";
 import { uploadRecordingAction } from "./uploadRecordingAction";
+import { getOral } from "./getOral";
 
-
-export default function ClientComponent({ title, subjectId }: { title: string, subjectId: string }) {
+export default function ClientComponent({ subjectId }: { subjectId: string }) {
     const router = useRouter();
+    const [title, setTitle] = useState("");
+
+    useEffect(() => {
+        getOral(subjectId)
+            .then((oralDoc) => {
+                if (oralDoc.exists()) {
+                    setTitle(oralDoc.data().title);
+                } else {
+                    console.error("Document does not exist");
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching document:", error);
+            });
+    }, [subjectId]);
+
     const [isRecording, setIsRecording] = useState(false);
     const [timeLeft, setTimeLeft] = useState(180);
     const [open, setOpen] = useState(false);
