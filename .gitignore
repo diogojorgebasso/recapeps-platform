@@ -1,40 +1,59 @@
-src/api/boilerPlateQuizzes.ts
-src/api/boilerPlateFlashcard.ts
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# React Router
-.react-router/
-.firebase/
-build/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Logs
-logs
-*.log
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# firebase
+firebase-debug.log
+firestore-debug.log
+pubsub-debug.log
+/firebase.json
+/.firebase/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+.pnpm-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-.env
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+apphosting.local.yaml
 
 *storybook.log
 
-# Playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+#terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars.secret
+*.tfvars.local

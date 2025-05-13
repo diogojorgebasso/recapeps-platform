@@ -1,5 +1,4 @@
 import styles from './logo.module.css';
-styles['cls-5']
 export default function Logo() {
     return (
         <svg width="220px" height="220px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585.65 594.86">

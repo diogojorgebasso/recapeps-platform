@@ -11,14 +11,13 @@ import {
   HStack,
   IconButton,
   Input,
+  InputGroup,
   Stack,
   mergeRefs,
   useControllableState,
 } from "@chakra-ui/react"
-import { Field } from "./field"
 import * as React from "react"
 import { LuEye, LuEyeOff } from "react-icons/lu"
-import { InputGroup } from "./input-group"
 
 export interface PasswordVisibilityProps {
   defaultVisible?: boolean
@@ -56,11 +55,6 @@ export const PasswordInput = React.forwardRef<
 
   return (
     <InputGroup
-      width="full"
-      align="center"
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
       endElement={
         <VisibilityTrigger
           disabled={rest.disabled}
@@ -76,19 +70,11 @@ export const PasswordInput = React.forwardRef<
       }
       {...rootProps}
     >
-      <Field label="Mot de Passe">
-        <Input
-          {...rest}
-          css={{
-            "::MsReveal": {
-              display: "none", // Oculta o botão de revelação de senha no IE/Edge
-            },
-          }}
-          ref={mergeRefs(ref, inputRef)}
-          autoComplete="new-password"
-          type={visible ? "text" : "password"}
-        />
-      </Field>
+      <Input
+        {...rest}
+        ref={mergeRefs(ref, inputRef)}
+        type={visible ? "text" : "password"}
+      />
     </InputGroup>
   )
 })
@@ -103,6 +89,7 @@ const VisibilityTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
         aspectRatio="square"
         size="sm"
         variant="ghost"
+        height="calc(100% - {spacing.2})"
         aria-label="Toggle password visibility"
         {...props}
       />
