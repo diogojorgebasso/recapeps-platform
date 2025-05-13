@@ -29,10 +29,17 @@ export default function ProfilePhotoUploader() {
 
     const onSave = async () => {
         if (!file || !area) return;
-        const blob = await cropToBlob(file, area);
-        await savePhoto(blob);
-        setOpen(false);
-        setFile(null);
+        try {
+            const blob = await cropToBlob(file, area);
+            await savePhoto(blob);
+        } catch (error) {
+            console.error("Failed to process image:", error);
+            // Optionally, display a user-friendly error message here
+        } finally {
+            // Ensure dialog is closed and file state is reset even if an error occurs
+            setOpen(false);
+            setFile(null);
+        }
     };
 
     return (
@@ -82,12 +89,34 @@ export default function ProfilePhotoUploader() {
 /* helper local */
 async function cropToBlob(file: File, a: Area): Promise<Blob> {
     const img = new Image();
-    img.src = URL.createObjectURL(file);
-    await new Promise((r) => (img.onload = r));
-    const canvas = document.createElement('canvas');
-    canvas.width = a.width;
-    canvas.height = a.height;
-    const ctx = canvas.getContext('2d')!;
-    ctx.drawImage(img, a.x, a.y, a.width, a.height, 0, 0, a.width, a.height);
-    return new Promise((res) => canvas.toBlob((b) => res(b!), 'image/jpeg'));
+    const objectUrl = URL.createObjectURL(file);
+    img.src = objectUrl;
+
+    try {
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = () => reject(new Error('Image failed to load.'));
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = a.width;
+        canvas.height = a.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            throw new Error('Failed to get 2D context from canvas.');
+        }
+        ctx.drawImage(img, a.x, a.y, a.width, a.height, 0, 0, a.width, a.height);
+
+        return await new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    resolve(blob);
+                } else {
+                    reject(new Error('Failed to convert canvas to blob.'));
+                }
+            }, 'image/jpeg');
+        });
+    } finally {
+        URL.revokeObjectURL(objectUrl);
+    }
 }
