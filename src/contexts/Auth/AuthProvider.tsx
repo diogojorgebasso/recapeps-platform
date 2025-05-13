@@ -19,10 +19,11 @@ export function AuthProvider({ children, initialUser }: { children: ReactNode, i
             } else {
                 await deleteCookie("__session");
             }
-            if (initialUser?.uid !== user?.uid) {
-                console.log("User changed, reloading page");
-                window.location.reload();
+            if (initialUser?.uid === user?.uid) {
+                return;
             }
+            window.location.reload();
+
         });
     }, [initialUser]);
 
