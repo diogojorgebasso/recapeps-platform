@@ -9,14 +9,11 @@ export const TrackingConsentContext = createContext<TrackingConsentCtx | undefin
 
 export function TrackingConsentProvider({ children }: { children: ReactNode }) {
     const [consentGiven, setConsentGiven] = useState<boolean | null>(null);
-
-    // read persisted choice
     useEffect(() => {
         const stored = window.localStorage.getItem('consent');
         if (stored !== null) setConsentGiven(stored === 'true');
     }, []);
 
-    // lazily create Analytics / Performance *after* we know the choice
     useEffect(() => {
         if (consentGiven === null) return;
         import('firebase/analytics').then(({ getAnalytics, setAnalyticsCollectionEnabled }) => {
