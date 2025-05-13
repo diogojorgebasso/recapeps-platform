@@ -7,17 +7,12 @@ runConfig:
 
 env:
   - variable: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-    value: pk_test_51QqK3sIj1lxZjyG3UJ7RWgAsPinlIZHeUdbthRk6OUHuRS5VoAGVXzR69vtW2jkxe6DWOY2ZQZybQdYliWhFpa3G00GHICwwgy
+    value: pk_live_51QqK3jEfLSFXfvk1Ysx877RxVyMoWj4NMoFUWGvyvVKbI7Zw9bT4FzuJ4TKf0ne3LxO7FjKCaTGdwJZ1VTRgBkpv00eNrzjryZ
     availability:
       - BUILD
       - RUNTIME
   - variable: STRIPE_SECRET_KEY
     secret: stripe_secret_key
-    availability:
-      - RUNTIME
-      - BUILD
-  - variable: NEXT_PUBLIC_FIREBASE_APP_CHECK_KEY
-    value: 6Lco8f4qAAAAAPFNsctWY6ASBbDBnWZ50v5jF9eP
     availability:
       - RUNTIME
       - BUILD
