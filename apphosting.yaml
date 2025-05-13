@@ -6,16 +6,6 @@ runConfig:
   memoryMiB: 1024
 
 env:
-  - variable: AUTH_COOKIE_SIGNATURE_KEY_CURRENT
-    secret: COOKIE_SECRET_CURRENT
-    availability:
-      - RUNTIME
-      - BUILD
-  - variable: AUTH_COOKIE_SIGNATURE_KEY_PREVIOUS
-    secret: COOKIE_SECRET_PREVIOUS
-    availability:
-      - RUNTIME
-      - BUILD
   - variable: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
     value: pk_test_51QqK3sIj1lxZjyG3UJ7RWgAsPinlIZHeUdbthRk6OUHuRS5VoAGVXzR69vtW2jkxe6DWOY2ZQZybQdYliWhFpa3G00GHICwwgy
     availability:
