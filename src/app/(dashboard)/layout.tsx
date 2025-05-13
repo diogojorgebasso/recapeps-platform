@@ -7,8 +7,8 @@ import {
     Spinner,
 } from "@chakra-ui/react";
 
-import DesktopMenu from "@/components/menu/dashboard/DesktopMenu";   // ← client (tour + sidebar)
-import MobileMenu from "@/components/menu/dashboard/MobileMenu"; // optional
+import DesktopMenu from "@/components/menu/dashboard/DesktopMenu";
+import MobileMenu from "@/components/menu/dashboard/MobileMenu";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
     return (
