@@ -1,9 +1,9 @@
 import { VStack } from '@chakra-ui/react';
-import { Notification } from '@/types/Notification';
+import { PushNotification } from '@/types/PushNotification';
 import NotificationItem from './NotificationItem';
 
 interface NotificationsListProps {
-    notifications: Notification[];
+    notifications: PushNotification[];
     userId: string;
 }
 

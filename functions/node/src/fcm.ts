@@ -33,6 +33,8 @@ export const savefcmtoken = onCall(
                 { merge: true }
             );
 
+            // check if the tokens that the user has are valid.
+
             info(`FCM token saved/updated for user ${userId}.`);
             return { success: true };
         } catch (err) {

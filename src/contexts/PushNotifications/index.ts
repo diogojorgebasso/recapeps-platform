@@ -1,1 +1,1 @@
-export { PushNotificationsProvider } from './PushNotificationsProvider';
+export { PushNotificationsProvider, PushNotificationsContext } from './PushNotificationsProvider';

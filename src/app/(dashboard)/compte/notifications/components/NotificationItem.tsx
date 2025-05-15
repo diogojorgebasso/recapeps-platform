@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { Box, HStack, Heading, Text, Button } from '@chakra-ui/react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/clientApp';
-import { Notification } from '@/types/Notification';
+import { PushNotification } from '@/types/PushNotification';
 
 interface NotificationItemProps {
-    notification: Notification;
+    notification: PushNotification;
     userId: string;
 }
 

@@ -28,10 +28,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function ClientComponent() {
-    const [formData, setFormData] = useState<LoginFormData>({
-        email: "",
-        password: "",
-    });
+    const [formData, setFormData] = useState<LoginFormData>({ email: "", password: "" });
     const [errors, setErrors] = useState<Partial<Record<keyof LoginFormData, string>>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [generalError, setGeneralError] = useState<string | null>(null);

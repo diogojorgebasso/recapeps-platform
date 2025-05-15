@@ -1,6 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 
-export interface Notification {
+export interface PushNotification {
     id: string;
     type: string;
     title: string;
