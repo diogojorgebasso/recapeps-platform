@@ -51,10 +51,6 @@
           {
             "key": "Set-Cookie",
             "value": "SameSite=Lax; Secure"
-          },
-          {
-            "key": "Cross-Origin-Opener-Policy",
-            "value": "same-origin-allow-popups"
           }
         ]
       }
