@@ -2,13 +2,13 @@ importScripts('https://www.gstatic.com/firebasejs/11.7.0/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/11.7.0/firebase-messaging-compat.js');
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCQL9kH3r-y4Q4PtzQ_t9lBJl5J3zuty7k",
-    authDomain: "recapeps-test.firebaseapp.com",
-    projectId: "recapeps-test",
-    storageBucket: "recapeps-test.firebasestorage.app",
-    messagingSenderId: "298375526115",
-    appId: "1:298375526115:web:784cb51da316177ad637d6",
-    measurementId: "G-9PK8PPVBSE"
+    apiKey: "AIzaSyCXb49PmpcCpPCyXaUxCMJnpJpTs0t0nLI",
+    authDomain: "recapeps-platform.firebaseapp.com",
+    projectId: "recapeps-platform",
+    storageBucket: "recapeps-platform.firebasestorage.app",
+    messagingSenderId: "148248325935",
+    appId: "1:148248325935:web:27093543499cf6a55b3bda",
+    measurementId: "G-RK00EBVHZN"
 };
 
 const app = firebase.initializeApp(firebaseConfig);
