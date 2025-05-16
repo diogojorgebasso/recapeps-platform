@@ -23,7 +23,6 @@ export function AuthProvider({ children, initialUser }: { children: ReactNode, i
                 return;
             }
             window.location.reload();
-
         });
     }, [initialUser]);
 

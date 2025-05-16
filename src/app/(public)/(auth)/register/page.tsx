@@ -139,68 +139,66 @@ export default function Register() {
                 </Card.Header>
 
                 <Card.Body>
-                    <form onSubmit={handleSubmit}>
-                        <Stack gap={4}>
-                            <Fieldset.Root>
-                                <Field.Root>
-                                    <Field.Label>Email</Field.Label>
-                                    <Input
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="exemple@email.com"
-                                        required
-                                    />
-                                    {errors.email && errors.email.map((error, index) => (
-                                        <Field.ErrorText key={index}>{error}</Field.ErrorText>
-                                    ))}
-                                </Field.Root>
+                    <Stack gap={4}>
+                        <Fieldset.Root>
+                            <Field.Root>
+                                <Field.Label>Email</Field.Label>
+                                <Input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="exemple@email.com"
+                                    required
+                                />
+                                {errors.email && errors.email.map((error, index) => (
+                                    <Field.ErrorText key={index}>{error}</Field.ErrorText>
+                                ))}
+                            </Field.Root>
 
-                                <Field.Root>
-                                    <Field.Label>Mot de passe</Field.Label>
-                                    <PasswordInput
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        placeholder="Entrez votre mot de passe"
-                                        required
-                                    />
-                                    {errors.password && errors.password.map((error, index) => (
-                                        <Field.ErrorText key={index}>- {error}</Field.ErrorText>
-                                    ))}
-                                </Field.Root>
+                            <Field.Root>
+                                <Field.Label>Mot de passe</Field.Label>
+                                <PasswordInput
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="Entrez votre mot de passe"
+                                    required
+                                />
+                                {errors.password && errors.password.map((error, index) => (
+                                    <Field.ErrorText key={index}>- {error}</Field.ErrorText>
+                                ))}
+                            </Field.Root>
 
-                                <Field.Root required>
-                                    <Checkbox
-                                        name="acceptTerms"
-                                        checked={formData.acceptTerms}
-                                        onCheckedChange={handleCheckboxChange}
-                                    >
-                                        J&apos;ai lu et j&apos;accepte la <Link href="/legal/politique-confidentialite">Politique de Confidentialité</Link>
-                                    </Checkbox>
-                                    {errors.acceptTerms && errors.acceptTerms.map((error, index) => (
-                                        <Field.ErrorText key={index}>{error}</Field.ErrorText>
-                                    ))}
-                                </Field.Root>
-                            </Fieldset.Root>
+                            <Field.Root required>
+                                <Checkbox
+                                    name="acceptTerms"
+                                    checked={formData.acceptTerms}
+                                    onCheckedChange={handleCheckboxChange}
+                                >
+                                    J&apos;ai lu et j&apos;accepte la <Link href="/legal/politique-confidentialite">Politique de Confidentialité</Link>
+                                </Checkbox>
+                                {errors.acceptTerms && errors.acceptTerms.map((error, index) => (
+                                    <Field.ErrorText key={index}>{error}</Field.ErrorText>
+                                ))}
+                            </Field.Root>
+                        </Fieldset.Root>
 
-                            {generalError && (
-                                <Text color="red.500" fontSize="sm">{generalError}</Text>
-                            )}
+                        {generalError && (
+                            <Text color="red.500" fontSize="sm">{generalError}</Text>
+                        )}
 
-                            <Button
-                                type="submit"
-                                colorPalette="blue"
-                                w="full"
-                                loading={isLoading}
-                                disabled={isLoading}
-                            >
-                                Créer un compte
-                            </Button>
-                        </Stack>
-                    </form>
-
+                        <Button
+                            type="submit"
+                            colorPalette="blue"
+                            w="full"
+                            onClick={handleSubmit}
+                            loading={isLoading}
+                            disabled={isLoading}
+                        >
+                            Créer un compte
+                        </Button>
+                    </Stack>
                     <HStack>
                         <Separator flex="1" />
                         <Text flexShrink="0">ou</Text>
